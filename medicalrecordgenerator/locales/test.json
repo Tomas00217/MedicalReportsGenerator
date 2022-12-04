@@ -1,0 +1,42 @@
+{
+  "diagnosis": {
+    "variants": [
+      {
+        "condition": {
+          "stroke_type": "ischemic"
+        },
+        "ischemicStroke": {
+          "variants": [
+            {
+              "condition": {
+                "AND": [
+                  {"occlusion_position": true},
+                  {"aspects_score": true}
+                ]
+              },
+              "text": "Cerebral Infarction due to occlusion of $occlusion_position, ASPECT score $aspects_score. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"occlusion_position": true},
+                  {"aspects_score": false}
+                ]
+              },
+              "text": "Cerebral Infarction due to occlusion of $occlusion_position. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"occlusion_position": false},
+                  {"aspects_score": false}
+                ]
+              },
+              "text": "Cerebral Infarction without occlusion $imaging_type angiogram. "
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

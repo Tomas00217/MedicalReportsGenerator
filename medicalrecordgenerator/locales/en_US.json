@@ -1,0 +1,347 @@
+{
+  "diagnosis": {
+    "variants": [
+      {
+        "condition": {
+          "stroke_type": "ischemic"
+        },
+        "ischemicStroke": {
+          "variants": [
+            {
+              "condition": {
+                "AND": [
+                  {"occlusion_position": true},
+                  {"aspects_score": true}
+                ]
+              },
+              "text": "Cerebral Infarction due to occlusion of $occlusion_position, ASPECT score $aspects_score. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"occlusion_position": true},
+                  {"aspects_score": false}
+                ]
+              },
+              "text": "Cerebral Infarction due to occlusion of $occlusion_position. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"occlusion_position": false},
+                  {"aspects_score": false}
+                ]
+              },
+              "text": "Cerebral Infarction without occlusion $imaging_type angiogram. "
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "onset": {
+    "variants": [
+      {
+        "condition": {
+          "AND": [
+            {"onset_time": true},
+            {"wake_up_stroke": false}
+          ]
+        },
+        "text": "Onset on $onset_date at $onset_time. "
+      },
+      {
+        "condition": {
+          "AND": [
+            {"onset_time": false},
+            {"wake_up_stroke": true}
+          ]
+        },
+        "text": "Onset on $onset_date, wake up stroke. "
+      },
+      {
+        "condition": {
+          "AND": [
+            {"onset_time": false},
+            {"wake_up_stroke": false}
+          ]
+        },
+        "text": "Onset on $onset_date at an unknown time. "
+        }
+    ]
+  },
+  "admission": {
+    "variants": [
+      {
+        "condition": {
+          "AND": [
+            {"admission_nihss": true},
+            {"admission_type": true}
+          ]
+        },
+        "text": "At baseline NIHSS $admission_nihss. Admitted to $admission_type. "
+      },
+      {
+        "condition": {
+          "AND": [
+            {"admission_nihss": true},
+            {"admission_type": false}
+          ]
+        },
+        "text": "At baseline NIHSS $admission_nihss. "
+      }
+    ]
+  },
+  "treatment": {
+    "variants": [
+      {
+        "condition": {
+          "thrombolysis_done": true
+        },
+        "thrombolysis": {
+          "variants": [
+            {
+              "condition": {
+                "AND": [
+                  {"ivt_dose": true},
+                  {"ivt_treatment": true}
+                ]
+              },
+              "text": "Intravenous thrombolysis with $ivt_dose mg of $ivt_treatment given $dtn minutes after arrival to hospital. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"ivt_dose": false},
+                  {"ivt_treatment": true}
+                ]
+              },
+              "text": "Intravenous thrombolysis with $ivt_treatment given $dtn minutes after arrival to hospital. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"ivt_dose": true},
+                  {"ivt_treatment": false}
+                ]
+              },
+              "text": "Intravenous thrombolysis at $ivt_dose mg given $dtn minutes after arrival to hospital. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"ivt_dose": false},
+                  {"ivt_treatment": false}
+                ]
+              },
+              "text": "Intravenous thrombolysis given $dtn minutes after arrival to hospital. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "thrombolysis_done": false
+        },
+        "thrombolysis_not_provided": {
+          "variants": [
+            {
+              "condition": {},
+              "text": "Thrombolysis not given because of $thrombolysis_reasons. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "thrombectomy_done": true
+        },
+        "thrombectomy": {
+          "variants": [
+            {
+              "condition": {
+                "tici_score": true
+              },
+              "text": "Mechanical thrombectomy performed $dtg minutes after arrival, TICI $tici_score $tici_score_meaning. "
+            },
+            {
+              "condition": {
+                "tici_score": false
+              },
+              "text": "Mechanical thrombectomy performed $dtg after arrival. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "thrombectomy_done": true
+        },
+        "thrombectomy_not_provided": {
+          "variants": [
+            {
+              "condition": {},
+              "text": "Thrombectomy not given because of $thrombectomy_reasons. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "thrombectomy_transport": true
+        },
+        "transport_for_thrombectomy": {
+          "variants": [
+            {
+              "condition": {},
+              "text": "Patient transported to interventional center for mechanical thrombectomy after $dio after arrival. "
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "follow_up_imaging": {
+    "variants": [
+      {
+        "condition": {
+          "findings": true,
+          "aspects_score": true
+        },
+        "text": "$findings on follow up $imaging_type. ASPECT score $aspects_score. "
+      },
+      {
+        "condition": {
+          "findings": true,
+          "aspects_score": false
+        },
+        "text": "$findings on follow up $imaging_type. "
+      }
+    ],
+    "text": "No follow up imaging. "
+  },
+  "post_acute_care": {
+    "dysphagia": {
+      "text1": "Dysphagia absent. ",
+      "text2": "Dysphagia present. ",
+      "text3": "Dysphagia not screened. "
+    },
+    "therapies": {
+      "text1": "Patient received $therapies. "
+    }
+  },
+  "post_stroke_complications": {
+    "text1": "Post stroke complications: $complications. "
+  },
+  "etiology": {
+    "large_artery_atherosclerosis": {
+      "text1": "",
+      "text2": "",
+      "text3": ""
+    },
+    "cardioembolism": {
+      "text1": "Cardioembolic etiology due to $reasons. "
+    }
+  },
+  "discharge": {
+    "text1": "Patient discharged on $discharge_date to $discharge_destination. ",
+    "text2": "Patient discharged on $discharge_date. ",
+    "findings": {
+      "text1": "At discharge, $findings. "
+    },
+    "scores": {
+      "text1": "NIHSS $nihss, mRS $mrs. ",
+      "text2": "NIHSS $nihss. ",
+      "text3": "mRS $mrs. "
+    },
+    "medication": {
+      "text1": "Medication: $discharge_medication. "
+    },
+    "next_appointment": {
+      "text1": "Next appointment scheduled to $contact_date. "
+    }
+  },
+  "settings": {
+    "date_time_format": "%b %d %Y at %H:%M",
+    "date_format": "%b %d %Y",
+    "time_format": "%H:%M"
+  },
+  "variables": {
+    "occlusion_position": {
+      "left_mca_m1": "left MCA M1",
+      "left_mca_m2": "left MCA M2",
+      "left_mca_m3": "left MCA M3",
+      "left_aca": "left ACA",
+      "left_pca_p1": "left PCA P1",
+      "left_pca_p2": "left PCA P2",
+      "left_cae": "left CAE",
+      "left_cai": "left CAI",
+      "right_mca_m1": "right MCA M1",
+      "right_mca_m2": "right MCA M2",
+      "right_mca_m3": "right MCA M3",
+      "right_aca": "right ACA",
+      "right_pca_p1": "right PCA P1",
+      "right_pca_p2": "right PCA P2",
+      "right_cae": "right CAE",
+      "right_cai": "right CAI",
+      "ba": "BA",
+      "va": "VA"
+    },
+    "post_treatment_findings": {
+      "infarction": "Brain infarct",
+      "no_bleeding": "No bleeding",
+      "remote": "Remote bleeding in the brain",
+      "hi_i": "Bleeding at the site of infarction hemorrhage HI type 1",
+      "hi_ii": "Bleeding at the site of infarction hemorrhage HI type 2",
+      "ph_i": "Bleeding at the site of infarction parenchymal hemorrhage PH type 1",
+      "ph_ii": "Bleeding at the site of infarction parenchymal hemorrhage PH type 2"
+    },
+    "post_stroke_complications": {
+      "pneumonia": "Pneumonia",
+      "dvt": "Deep vein thrombosis (DVT)",
+      "embolism": "Pulmonary embolism",
+      "infection": "Urinary tract infection",
+      "sores": "Pressure sores",
+      "sepsis": "Drip site sepsis",
+      "extension": "Reccurence/Extension of stroke",
+      "other": "Other",
+      "none": "None"
+    },
+    "therapies": {
+      "physiotherapy": "physiotherapy",
+      "ergotherapy": "ergotherapy",
+      "speechtherapy": "speech therapy"
+    },
+    "etiology": {
+      "large_artery": "Large artery atherosclerosis (e.g. Carotid or basilar stenosis)",
+      "cardioembolism": "Cardioembolism (e.g. AF/flutter/prosthetic heart valve)",
+      "other": "Stroke of other determined etiology (dissection, vasculopathy or hematologic disorder)",
+      "cryptogenic_stroke": "Cryptogenic stroke (stroke of undetermined etiology including ESUS)",
+      "small_vessel": "Small vessel disease/lacunar"
+    },
+    "medications": {
+      "antidiabetics": "anti-diabetics",
+      "antihypertensives": "anti-hypertensives",
+      "asa": "asa",
+      "cilostazol": "cilostazol",
+      "clopidrogel": "clopidrogel",
+      "ticagrelor": "ticagrelor",
+      "ticlopidine": "ticlopidine",
+      "prasugrel": "prasugrel",
+      "dipyridamol": "dipyridamol",
+      "warfarin": "warfarin",
+      "dabigatran": "dabigatran",
+      "rivaroxaban": "rivaroxaban",
+      "apixaban": "apixaban",
+      "edoxaban": "edoxaban",
+      "statin": "statin",
+      "heparin": "heparin",
+      "other": "other",
+      "anticoagulant_recommended": "anticoagulant recommended",
+      "other_antiplatelet": "other antiplatelet",
+      "other_anticoagulant": "other anticoagulant",
+      "any_anticoagulant": "any anticoagulant",
+      "any_antiplatelet": "any antiplatelet"
+    }
+  }
+}

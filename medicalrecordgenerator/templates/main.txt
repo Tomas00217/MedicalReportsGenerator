@@ -1,0 +1,9 @@
+{{record.diagnosis -}}
+{{record.onset -}}
+{{record.admission -}}
+{{record.treatment -}}
+{{record.imaging -}}
+{{record.post_acute_care -}}
+{{record.post_stroke_complications -}}
+{{record.etiology -}}
+{{record.discharge -}}
