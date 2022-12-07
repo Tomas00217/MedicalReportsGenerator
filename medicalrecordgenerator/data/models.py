@@ -9,10 +9,10 @@ class GeneratedObject:
     def generate(self, dictionary):
         text = self.get_text(dictionary)
 
-        return Template(text).safe_substitute(self.__dict__)
+        return Template(text).safe_substitute(vars(self))
 
     def get_text(self, dictionary):
-        text = parse(dictionary, self.__dict__)
+        text = parse(dictionary, vars(self))
 
         return text if text else ""
 
@@ -67,11 +67,11 @@ class Treatment(GeneratedObject):
         self.thrombectomy = thrombectomy
 
     def get_text(self, dictionary):
-        dict_to_parse = self.__dict__
-        dict_to_parse.update(self.thrombolysis.__dict__)
-        dict_to_parse.update(self.thrombectomy.__dict__)
+        dict_to_parse = vars(self)
+        dict_to_parse.update(vars(self.thrombolysis))
+        dict_to_parse.update(vars(self.thrombectomy))
 
-        text = parse(dictionary, self.__dict__)
+        text = parse(dictionary, vars(self))
 
         return text if text else ""
 
@@ -94,8 +94,8 @@ class PostAcuteCare(GeneratedObject):
 
 
 class PostStrokeComplications(GeneratedObject):
-    def __init__(self):
-        pass
+    def __init__(self, complications: Optional[str]):
+        self.complications = complications if complications != "" else None
 
 
 class Etiology(GeneratedObject):

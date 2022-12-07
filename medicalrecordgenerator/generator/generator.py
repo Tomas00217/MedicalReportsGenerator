@@ -1,12 +1,14 @@
 from datetime import datetime, time
 
 from medicalrecordgenerator.data.data_objects import StrokeType, DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
-    ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData
+    ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
+    DiagnosisOcclusionsData, ImagingTreatmentData
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from string import Template
 
 from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
-    FollowUpImaging
+    FollowUpImaging, PostAcuteCare, PostStrokeComplications
+from medicalrecordgenerator.data.parser import parse_data
 from medicalrecordgenerator.generator import generator_helpers
 
 
@@ -26,14 +28,12 @@ def generate_structure(dictionary, data):
         "onset": generate_onset(dictionary, data),
         "admission": generate_admission(dictionary, data),
         "treatment": generate_treatment(dictionary, data),
+        "imaging": generate_follow_up_imaging(dictionary, data),
+        "post_acute_care": generate_post_acute_care(dictionary, data),
+        "post_stroke_complications": generate_post_stroke_complications(dictionary, data),
     }
 
     '''
-    "imaging": generate_follow_up_imaging(dictionary, data),
-    "post_acute_care": generate_post_acute_care(dictionary, data),
-    "post_stroke_complications": generate_post_stroke_complications(dictionary.post_stroke_complications,
-                                                                    dictionary.variables.post_stroke_complications,
-                                                                    data),
     "etiology": generate_etiology(dictionary.etiology,
                                   data),
     "discharge": generate_discharge(dictionary.discharge,
@@ -46,12 +46,13 @@ def generate_structure(dictionary, data):
 
 def generate_diagnosis(dictionary, data):
     diagnosis_data = DiagnosisData.from_dict(data)
+    diagnosis_occlusions = DiagnosisOcclusionsData.from_dict(data)
     variables = dictionary["variables"]["occlusion_position"]
 
     diagnosis = Diagnosis(diagnosis_data.stroke_type,
                           diagnosis_data.aspects_score,
                           diagnosis_data.imaging_type,
-                          generator_helpers.get_occlusion(variables, diagnosis_data))
+                          parse_data(variables, diagnosis_occlusions))
 
     return diagnosis.generate(dictionary["diagnosis"])
 
@@ -92,63 +93,43 @@ def generate_treatment(dictionary, data):
 
 def generate_follow_up_imaging(dictionary, data):
     imaging_data = ImagingData.from_dict(data)
-    variables = dictionary.variables.post_treatment_findings
+    imaging_treatment_data = ImagingTreatmentData.from_dict(data)
 
-    imaging = FollowUpImaging(generator_helpers.get_imaging_findings(variables, imaging_data),
+    variables = dictionary["variables"]["post_treatment_findings"]
+
+    imaging = FollowUpImaging(parse_data(variables, imaging_treatment_data),
                               imaging_data.imaging_type,
                               imaging_data.aspects_score)
 
-    return imaging.generate(dictionary.follow_up_imaging)
+    return imaging.generate(dictionary["follow_up_imaging"])
 
 
 def generate_post_acute_care(dictionary, data):
-    post_acute_care = PostAcuteCareData.from_dict(data)
-    variables = dictionary.variables.therapies
+    post_acute_care_data = PostAcuteCareData.from_dict(data)
+    variables = dictionary["variables"]["therapies"]
 
-    post_acute_care.physiotherapy = post_acute_care.physiotherapy_received and \
-        post_acute_care.physiotherapy_received == "yes"
-    post_acute_care.ergotherapy = post_acute_care.occup_physiotherapy_received and \
-        post_acute_care.occup_physiotherapy_received == "yes"
-    post_acute_care.speechtherapy = post_acute_care.speech_therapy_received and \
-        post_acute_care.speech_therapy_received == "yes"
+    post_acute_care = PostAcuteCare(post_acute_care_data.dysphagia_screening,
+                                    post_acute_care_data.physiotherapy_received,
+                                    post_acute_care_data.occup_physiotherapy_received,
+                                    post_acute_care_data.speech_therapy_received,
+                                    None)
 
-    post_acute_care_str = ""
+    post_acute_care_therapies = {"physiotherapy": post_acute_care.physiotherapy,
+                                 "ergotherapy": post_acute_care.ergotherapy,
+                                 "speechtherapy": post_acute_care.speechtherapy}
 
-    if post_acute_care.dysphagia_screening == "no":
-        post_acute_care_str += dictionary.post_acute_care.dysphagia.text1
-    elif post_acute_care.dysphagia_screening == "yes":
-        post_acute_care_str += dictionary.post_acute_care.dysphagia.text2
-    else:
-        post_acute_care_str += dictionary.post_acute_care.dysphagia.text3
+    post_acute_care.therapies = parse_data(variables, post_acute_care_therapies)
 
-    if post_acute_care.physiotherapy or post_acute_care.ergotherapy or post_acute_care.speechtherapy:
-        post_acute_care_str += dictionary.post_acute_care.therapies.text1
-
-    therapies = generator_helpers.get_therapies(variables, post_acute_care)
-
-    substitutes = {
-        "therapies": therapies
-    }
-
-    return Template(post_acute_care_str).safe_substitute(substitutes)
+    return post_acute_care.generate(dictionary["post_acute_care"])
 
 
-def generate_post_stroke_complications(dictionary, variables, data):
-    post_stroke_complications = PostStrokeComplicationsData.from_dict(data)
+def generate_post_stroke_complications(dictionary, data):
+    post_stroke_complications_data = PostStrokeComplicationsData.from_dict(data)
+    variables = dictionary["variables"]["post_stroke_complications"]
 
-    post_stroke_complications_str = ""
+    post_stroke_complications = PostStrokeComplications(parse_data(variables, post_stroke_complications_data))
 
-    complications = generator_helpers.get_complications(variables, post_stroke_complications)
-
-    # TODO what if post stroke complications None true vs all undefined
-    if complications:
-        post_stroke_complications_str = dictionary.text1
-
-    substitutes = {
-        "complications": complications
-    }
-
-    return Template(post_stroke_complications_str).safe_substitute(substitutes)
+    return post_stroke_complications.generate(dictionary["post_stroke_complications"])
 
 
 def generate_etiology(dictionary, data):

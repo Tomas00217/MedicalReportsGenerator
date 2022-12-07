@@ -1,20 +1,20 @@
 import json
-from datetime import time, datetime
+from datetime import time
 
 
-def parse(dictionary, data):
+def parse(dictionary, data, text=""):
     variants = dictionary["variants"]
-
-    # TODO fix return of variant
 
     for variant in variants:
         condition = list(variant.values())[0]
         rest = list(variant.values())[1]
         if parse_condition(condition, True, data):
             if type(rest) is dict:
-                return parse(rest, data)
+                text += parse(rest, data)
+            else:
+                text += rest
 
-            return rest
+    return text
 
 
 def parse_condition(condition, is_true, data):
@@ -79,9 +79,16 @@ def parse_con(condition, data):
     return condition_variable == variable
 
 
-def load_language_file(file_name):
-    with open(file_name, 'r', encoding='utf8') as file:
-        language = json.loads(file.read())
+def parse_data(dictionary, data):
+    result = ""
 
-        return language
+    if type(data) is not dict:
+        diagnosis_dict = vars(data)
+    else:
+        diagnosis_dict = data
 
+    for key, value in diagnosis_dict.items():
+        if value:
+            result += dictionary[key] if result == "" else f", {dictionary[key]}"
+
+    return result

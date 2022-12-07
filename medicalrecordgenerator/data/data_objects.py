@@ -21,6 +21,10 @@ class DiagnosisData(DataclassFromDict):
     stroke_type: Optional[str] = field_from_dict(default=None)
     aspects_score: Optional[float] = field_from_dict(default=None)
     imaging_type: Optional[str] = field_from_dict(default=None)
+
+
+@dataclass()
+class DiagnosisOcclusionsData(DataclassFromDict):
     occlusion_left_mca_m1: Optional[bool] = field_from_dict(default=None)
     occlusion_left_mca_m2: Optional[bool] = field_from_dict(default=None)
     occlusion_left_mca_m3: Optional[bool] = field_from_dict(default=None)
@@ -72,6 +76,10 @@ class TreatmentData(DataclassFromDict):
 class ImagingData(DataclassFromDict):
     imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
     aspects_score: Optional[float] = field_from_dict(default=None)
+
+
+@dataclass()
+class ImagingTreatmentData(DataclassFromDict):
     post_treatment_infarction: Optional[bool] = field_from_dict(default=None)
     post_treatment_no_bleeding: Optional[bool] = field_from_dict(default=None)
     post_treatment_remote: Optional[bool] = field_from_dict(default=None)
@@ -87,9 +95,6 @@ class PostAcuteCareData(DataclassFromDict):
     physiotherapy_received: Optional[str] = field_from_dict(default=None)
     occup_physiotherapy_received: Optional[str] = field_from_dict(default=None)
     speech_therapy_received: Optional[str] = field_from_dict(default=None)
-    physiotherapy: bool = False
-    ergotherapy: bool = False
-    speechtherapy: bool = False
 
 
 @dataclass()
