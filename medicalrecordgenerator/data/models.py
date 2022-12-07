@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import time, datetime
 from string import Template
 from typing import Optional, Any
 
@@ -135,5 +135,13 @@ class Etiology(GeneratedObject):
 
 
 class Discharge(GeneratedObject):
-    def __init__(self):
-        pass
+    def __init__(self, discharge_date: datetime, discharge_destination: Optional[str], nihss: Optional[int],
+                 mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
+                 discharge_medication: str):
+        self.discharge_date = discharge_date.date().strftime('%b %d %Y')
+        self.discharge_destination = discharge_destination
+        self.nihss = nihss
+        self.mrs = mrs,
+        self.contact_date = contact_date.strftime('%b %d %Y at %H:%M') if contact_date else None
+        self.mode_contact = mode_contact
+        self.discharge_medication = discharge_medication

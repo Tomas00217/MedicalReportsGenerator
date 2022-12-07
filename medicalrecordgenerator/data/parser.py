@@ -23,6 +23,8 @@ def parse_condition(condition, is_true, data):
             is_true = is_true and parse_and(condition[con], True, data)
         elif con == "OR":
             is_true = is_true and parse_or(condition[con], False, data)
+        elif con == "NOT":
+            is_true = is_true and not parse_condition(condition[con], True, data)
         else:
             is_true = is_true and parse_con(condition, data)
 
@@ -36,6 +38,8 @@ def parse_and(condition, is_true, data):
             is_true = is_true and parse_and(con[key], True, data)
         elif key == "OR":
             is_true = is_true and parse_or(con[key], False, data)
+        elif key == "NOT":
+            is_true = is_true and not parse_condition(con[key], True, data)
         else:
             is_true = is_true and parse_con(con, data)
 
@@ -52,6 +56,8 @@ def parse_or(condition, is_true, data):
             is_true = is_true or parse_and(con[key], True, data)
         elif key == "OR":
             is_true = is_true or parse_or(con[key], False, data)
+        elif key == "NOT":
+            is_true = is_true or not parse_condition(con[key], True, data)
         else:
             is_true = is_true or parse_con(con, data)
 

@@ -7,7 +7,8 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from string import Template
 
 from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
-    FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism
+    FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
+    Discharge
 from medicalrecordgenerator.data.parser import parse_data
 from medicalrecordgenerator.generator import generator_helpers
 
@@ -32,13 +33,8 @@ def generate_structure(dictionary, data):
         "post_acute_care": generate_post_acute_care(dictionary, data),
         "post_stroke_complications": generate_post_stroke_complications(dictionary, data),
         "etiology": generate_etiology(dictionary, data),
+        "discharge": generate_discharge(dictionary, data)
     }
-
-    '''
-    "discharge": generate_discharge(dictionary.discharge,
-                                    dictionary.variables.medications,
-                                    data)
-    '''
 
     return record
 
@@ -149,39 +145,14 @@ def generate_etiology(dictionary, data):
     return etiology.generate(dictionary["etiology"])
 
 
-def generate_discharge(dictionary, variables, data):
-    discharge = DischargeData.from_dict(data)
-    medication = MedicationData.from_dict(data)
+def generate_discharge(dictionary, data):
+    discharge_data = DischargeData.from_dict(data)
+    medication_data = MedicationData.from_dict(data)
 
-    discharge_str = ""
+    variables = dictionary["variables"]["medications"]
 
-    discharge_date = discharge.discharge_date.date().strftime('%b %d %Y')
-    contact_date = discharge.contact_date.strftime('%b %d %Y at %H:%M') if discharge.contact_date else None
-    discharge_medication = generator_helpers.get_medication(variables, medication)
+    discharge = Discharge(discharge_data.discharge_date, discharge_data.discharge_destination,
+                          discharge_data.nihss, discharge_data.mrs, discharge_data.contact_date,
+                          discharge_data.mode_contact, parse_data(variables, medication_data))
 
-    if discharge.discharge_destination:
-        discharge_str += dictionary.text1
-    else:
-        discharge_str += dictionary.text2
-
-    if discharge.nihss and discharge.mrs:
-        discharge_str += dictionary.scores.text1
-    elif discharge.nihss:
-        discharge_str += dictionary.scores.text2
-    elif discharge.mrs:
-        discharge_str += dictionary.scores.text3
-
-    if discharge_medication != "":
-        discharge_str += dictionary.medication.text1
-
-    if discharge.contact_date:
-        discharge_str += dictionary.next_appointment.text1
-
-    substitutes = {"discharge_date": discharge_date,
-                   "discharge_destination": discharge.discharge_destination,
-                   "discharge_medication": discharge_medication,
-                   "nihss": discharge.nihss,
-                   "mrs": discharge.mrs,
-                   "contact_date": contact_date}
-
-    return Template(discharge_str).safe_substitute(substitutes)
+    return discharge.generate(dictionary["discharge"])

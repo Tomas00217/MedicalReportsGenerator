@@ -318,19 +318,91 @@
     ]
   },
   "discharge": {
-    "text1": "Patient discharged on $discharge_date to $discharge_destination. ",
-    "text2": "Patient discharged on $discharge_date. ",
-    "scores": {
-      "text1": "NIHSS $nihss, mRS $mrs. ",
-      "text2": "NIHSS $nihss. ",
-      "text3": "mRS $mrs. "
-    },
-    "medication": {
-      "text1": "Medication: $discharge_medication. "
-    },
-    "next_appointment": {
-      "text1": "Next appointment scheduled to $contact_date. "
-    }
+    "variants": [
+      {
+        "condition": {},
+        "discharged": {
+          "variants": [
+            {
+              "condition": {
+                "AND": [
+                  {"discharge_destination": true},
+                  {"NOT": {"discharge_destination": "dead"}}
+                ]
+              },
+              "text": "Patient discharged on $discharge_date to $discharge_destination. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"discharge_destination": true},
+                  {"discharge_destination": "dead"}
+                ]
+              },
+              "text": "Patient died on $discharge_date. "
+            },
+            {
+              "condition": {
+                "discharge_destination": false
+              },
+              "text": "Patient discharged on $discharge_date. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {},
+        "scores": {
+          "variants": [
+            {
+              "condition": {
+                "AND": [
+                  {"nihss": true},
+                  {"mrs": true}
+                ]
+              },
+              "text": "NIHSS $nihss, mRS $mrs. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"nihss": true},
+                  {"mrs": false}
+                ]
+              },
+              "text": "NIHSS $nihss. "
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"nihss": false},
+                  {"mrs": true}
+                ]
+              },
+              "text3": "mRS $mrs. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "AND": [
+            {"discharge_medication": true},
+            {"NOT": {"discharge_destination": "dead"}}
+          ]
+        },
+        "text": "Medication: $discharge_medication. "
+      },
+      {
+        "condition": {
+          "AND": [
+            {"contact_date": true},
+            {"NOT": {"discharge_destination": "dead"}}
+          ]
+        },
+        "text": "Next appointment scheduled to $contact_date. "
+      }
+    ]
   },
   "settings": {
     "date_time_format": "%b %d %Y at %H:%M",
