@@ -257,21 +257,69 @@
     ]
   },
   "etiology": {
-    "large_artery_atherosclerosis": {
-      "text1": "",
-      "text2": "",
-      "text3": ""
-    },
-    "cardioembolism": {
-      "text1": "Cardioembolic etiology due to $reasons. "
-    }
+    "variants": [
+      {
+        "condition": {
+          "large_artery": true
+        },
+        "large_artery_atherosclerosis": {
+          "variants": [
+            {
+              "condition": {
+                "AND": [
+                  {"carotid_stenosis": true},
+                  {"carotid_stenosis_followup": true}
+                ]
+              },
+              "text": ""
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"carotid_stenosis": true},
+                  {"carotid_stenosis_followup": false}
+                ]
+              },
+              "text": ""
+            },
+            {
+              "condition": {
+                "AND": [
+                  {"carotid_stenosis": false},
+                  {"carotid_stenosis_followup": false}
+                ]
+              },
+              "text": ""
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "cardioembolism": true
+        },
+        "cardioembolism": {
+          "variants": [
+            {
+              "condition": {
+                "afib_flutter": true
+              },
+              "text": "Cardioembolic etiology due to $reasons. "
+            },
+            {
+              "condition": {
+                "afib_flutter": false
+              },
+              "text": ""
+            }
+          ]
+        }
+      }
+    ]
   },
   "discharge": {
     "text1": "Patient discharged on $discharge_date to $discharge_destination. ",
     "text2": "Patient discharged on $discharge_date. ",
-    "findings": {
-      "text1": "At discharge, $findings. "
-    },
     "scores": {
       "text1": "NIHSS $nihss, mRS $mrs. ",
       "text2": "NIHSS $nihss. ",

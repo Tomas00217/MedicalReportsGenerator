@@ -14,7 +14,7 @@ class GeneratedObject:
     def get_text(self, dictionary):
         text = parse(dictionary, vars(self))
 
-        return text if text else ""
+        return text
 
 
 class Diagnosis(GeneratedObject):
@@ -39,14 +39,14 @@ class Admission(GeneratedObject):
         self.admission_type = admission_type
 
 
-class Thrombolysis(GeneratedObject):
+class Thrombolysis:
     def __init__(self, dtn: Optional[int], ivt_treatment: Optional[str], ivt_dose: Optional[float]):
         self.dtn = int(dtn) if dtn else None
         self.ivt_treatment = ivt_treatment
         self.ivt_dose = ivt_dose
 
 
-class Thrombectomy(GeneratedObject):
+class Thrombectomy:
     def __init__(self, dtg: Optional[int], tici_score: Optional[str], dio: Optional[int]):
         self.dtg = int(dtg) if dtg else None
         self.tici_score = tici_score
@@ -73,7 +73,7 @@ class Treatment(GeneratedObject):
 
         text = parse(dictionary, vars(self))
 
-        return text if text else ""
+        return text
 
 
 class FollowUpImaging(GeneratedObject):
@@ -98,9 +98,40 @@ class PostStrokeComplications(GeneratedObject):
         self.complications = complications if complications != "" else None
 
 
+class LargeArteryAtherosclerosis:
+    def __init__(self, carotid_stenosis: Optional[bool], carotid_stenosis_level: Optional[str],
+                 carotid_stenosis_followup: Optional[str]):
+        self.carotid_stenosis = carotid_stenosis
+        self.carotid_stenosis_level = carotid_stenosis_level
+        self.carotid_stenosis_followup = carotid_stenosis_followup
+
+
+class Cardioembolism:
+    def __init__(self, afib_flutter: Optional[str], reasons: Optional[str]):
+        self.afib_flutter = afib_flutter
+        self.reasons = reasons
+
+
 class Etiology(GeneratedObject):
-    def __init__(self):
-        pass
+    def __init__(self, large_artery: Optional[bool], cardioembolism: Optional[bool], other: Optional[bool],
+                 cryptogenic_stroke: Optional[bool], small_vessel: Optional[bool],
+                 large_artery_atherosclerosis_dat: LargeArteryAtherosclerosis, cardioembolism_dat: Cardioembolism):
+        self.large_artery = large_artery
+        self.cardioembolism = cardioembolism
+        self.other = other
+        self.cryptogenic_stroke = cryptogenic_stroke
+        self.small_vessel = small_vessel
+        self.large_artery_atherosclerosis_dat = large_artery_atherosclerosis_dat
+        self.cardioembolism_dat = cardioembolism_dat
+
+    def get_text(self, dictionary):
+        dict_to_parse = vars(self)
+        dict_to_parse.update(vars(self.large_artery_atherosclerosis_dat))
+        dict_to_parse.update(vars(self.cardioembolism_dat))
+
+        text = parse(dictionary, vars(self))
+
+        return text
 
 
 class Discharge(GeneratedObject):

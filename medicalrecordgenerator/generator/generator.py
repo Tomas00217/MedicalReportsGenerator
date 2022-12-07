@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from string import Template
 
 from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
-    FollowUpImaging, PostAcuteCare, PostStrokeComplications
+    FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism
 from medicalrecordgenerator.data.parser import parse_data
 from medicalrecordgenerator.generator import generator_helpers
 
@@ -31,11 +31,10 @@ def generate_structure(dictionary, data):
         "imaging": generate_follow_up_imaging(dictionary, data),
         "post_acute_care": generate_post_acute_care(dictionary, data),
         "post_stroke_complications": generate_post_stroke_complications(dictionary, data),
+        "etiology": generate_etiology(dictionary, data),
     }
 
     '''
-    "etiology": generate_etiology(dictionary.etiology,
-                                  data),
     "discharge": generate_discharge(dictionary.discharge,
                                     dictionary.variables.medications,
                                     data)
@@ -133,31 +132,21 @@ def generate_post_stroke_complications(dictionary, data):
 
 
 def generate_etiology(dictionary, data):
-    etiology = EtiologyData.from_dict(data)
+    etiology_data = EtiologyData.from_dict(data)
 
-    etiology_str = ""
-    # TODO reasons ??
-    reasons = ""
+    large_artery = LargeArteryAtherosclerosis(etiology_data.carotid_stenosis,
+                                              etiology_data.carotid_stenosis_level,
+                                              etiology_data.carotid_stenosis_followup)
 
-    if etiology.afib_flutter:
-        reasons = "afib flutter"
+    cardioembolism = Cardioembolism(etiology_data.afib_flutter, None)
+    if cardioembolism.afib_flutter is not None:
+        cardioembolism.reasons = "atrial fibrilation/flutter"
 
-    if etiology.etiology_large_artery:
-        pass
-    if etiology.etiology_cardioembolism:
-        etiology_str = dictionary.cardioembolism.text1
-    if etiology.etiology_other:
-        pass
-    if etiology.etiology_cryptogenic_stroke:
-        pass
-    if etiology.etiology_small_vessel:
-        pass
+    etiology = Etiology(etiology_data.etiology_large_artery, etiology_data.etiology_cardioembolism,
+                        etiology_data.etiology_other, etiology_data.etiology_cryptogenic_stroke,
+                        etiology_data.etiology_small_vessel, large_artery, cardioembolism)
 
-    substitutes = {
-        "reasons": reasons
-    }
-
-    return Template(etiology_str).safe_substitute(substitutes)
+    return etiology.generate(dictionary["etiology"])
 
 
 def generate_discharge(dictionary, variables, data):
@@ -170,16 +159,10 @@ def generate_discharge(dictionary, variables, data):
     contact_date = discharge.contact_date.strftime('%b %d %Y at %H:%M') if discharge.contact_date else None
     discharge_medication = generator_helpers.get_medication(variables, medication)
 
-    # TODO findings ?
-    findings = []
-
     if discharge.discharge_destination:
         discharge_str += dictionary.text1
     else:
         discharge_str += dictionary.text2
-
-    if findings:
-        discharge_str += dictionary.findings.text1
 
     if discharge.nihss and discharge.mrs:
         discharge_str += dictionary.scores.text1
@@ -197,7 +180,6 @@ def generate_discharge(dictionary, variables, data):
     substitutes = {"discharge_date": discharge_date,
                    "discharge_destination": discharge.discharge_destination,
                    "discharge_medication": discharge_medication,
-                   "findings": findings,
                    "nihss": discharge.nihss,
                    "mrs": discharge.mrs,
                    "contact_date": contact_date}
