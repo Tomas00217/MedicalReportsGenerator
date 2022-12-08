@@ -1,16 +1,13 @@
-from datetime import datetime, time
 
-from medicalrecordgenerator.data.data_objects import StrokeType, DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
+from medicalrecordgenerator.data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
     ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from string import Template
 
 from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
     FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
     Discharge
-from medicalrecordgenerator.data.parser import parse_data
-from medicalrecordgenerator.generator import generator_helpers
+from medicalrecordgenerator.data.parser import parse_data, get_tici_meaning
 
 
 # TODO Čo s prekladmi premennych z DB ??
@@ -76,8 +73,10 @@ def generate_admission(dictionary, data):
 
 def generate_treatment(dictionary, data):
     treatment_data = TreatmentData.from_dict(data)
+    variables = dictionary["variables"]["tici_score_meaning"]
     thrombolysis = Thrombolysis(treatment_data.dtn, treatment_data.ivt_treatment, treatment_data.ivt_dose)
-    thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio)
+    thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio,
+                                get_tici_meaning(variables, treatment_data.tici_score))
 
     treatment = Treatment(treatment_data.thrombolysis, treatment_data.thrombectomy,
                           treatment_data.no_thrombolysis_reason, treatment_data.no_thrombectomy_reason,

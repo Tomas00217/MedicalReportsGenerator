@@ -1,42 +1,82 @@
 {
-  "diagnosis": {
-    "variants": [
-      {
-        "condition": {
-          "stroke_type": "ischemic"
-        },
-        "ischemicStroke": {
-          "variants": [
-            {
-              "condition": {
-                "AND": [
-                  {"occlusion_position": true},
-                  {"aspects_score": true}
-                ]
-              },
-              "text": "Cerebral Infarction due to occlusion of $occlusion_position, ASPECT score $aspects_score. "
+  "variants": [
+    {
+      "condition": {
+        "test_and": true
+      },
+      "test_and": {
+        "variants": [
+          {
+            "condition": {
+              "AND": [
+                {"first": true},
+                {"second": false},
+                {"third": true}
+              ]
             },
-            {
-              "condition": {
-                "AND": [
-                  {"occlusion_position": true},
-                  {"aspects_score": false}
-                ]
-              },
-              "text": "Cerebral Infarction due to occlusion of $occlusion_position. "
+            "tft": "tft"
+          },
+          {
+            "condition": {
+              "AND": [
+                {"first": false},
+                {"second": false},
+                {"third": true}
+              ]
             },
-            {
-              "condition": {
-                "AND": [
-                  {"occlusion_position": false},
-                  {"aspects_score": false}
-                ]
-              },
-              "text": "Cerebral Infarction without occlusion $imaging_type angiogram. "
-            }
-          ]
-        }
+            "tft": "fft"
+          },
+          {
+            "condition": {
+              "AND": [
+                {"first": true},
+                {"second": true},
+                {"third": false}
+              ]
+            },
+            "tft": "ttf"
+          }
+        ]
       }
-    ]
-  }
+    },
+    {
+      "condition": {
+        "test_or": true
+      },
+      "test_or": {
+        "variants": [
+          {
+            "condition": {
+              "OR": [
+                {"first": false},
+                {"second": false},
+                {"third": false}
+              ]
+            },
+            "tft": "fff"
+          },
+          {
+            "condition": {
+              "OR": [
+                {"first": false},
+                {"second": false},
+                {"third": true}
+              ]
+            },
+            "tft": "fft"
+          },
+          {
+            "condition": {
+              "OR": [
+                {"first": true},
+                {"second": true},
+                {"third": false}
+              ]
+            },
+            "tft": "ttf"
+          }
+        ]
+      }
+    }
+  ]
 }

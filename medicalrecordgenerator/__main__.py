@@ -13,7 +13,7 @@ def main():
     data = load_utils.load_csv("data/anonymized_data.csv")
 
     for idx, row in enumerate(data):
-        # print(row)
+
         report = generator.generate_medical_record(language, row)
         print(report)
         """

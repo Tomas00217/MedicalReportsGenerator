@@ -1,35 +1,36 @@
-from medicalrecordgenerator.generator import generator
+from medicalrecordgenerator.data.parser import parse
 from medicalrecordgenerator.utils import load_utils
 
-dictionary = load_utils.load_language("en_US")
+dictionary = load_utils.load_language_file("..\\locales\\test.json")
 
 
-def test_diagnosis():
-    data = {"stroke_type": "ischemic",
-            "imaging_type": "CT"}
+def test_and():
+    data = {"test_and": True, "test_or": False, "first": True, "second": False, "third": True}
 
-    assert generator.generate_diagnosis(dictionary.diagnosis, dictionary.variables.occlusion_position, data) \
-           == "Cerebral Infarction without occlusion CT angiogram. "
+    assert parse(dictionary, data) == "tft"
 
-    data["occlusion_left_mca_m1"] = True
+    data = {"test_and": True, "test_or": False, "first": False, "second": False, "third": True}
 
-    assert generator.generate_diagnosis(dictionary.diagnosis, dictionary.variables.occlusion_position, data) \
-           == "Cerebral Infarction due to occlusion of left MCA. "
+    assert parse(dictionary, data) == "fft"
 
-    data["aspects_score"] = 8.0
-    data["occlusion_right_mca_m1"] = True
+    data = {"test_and": True, "test_or": False, "first": True, "second": True, "third": False}
 
-    assert generator.generate_diagnosis(dictionary.diagnosis, dictionary.variables.occlusion_position, data) \
-           == "Cerebral Infarction due to occlusion of left MCA, right MCA, ASPECT score 8.0. "
+    assert parse(dictionary, data) == "ttf"
+
+
+def test_or():
+    data = {"test_and": False, "test_or": True, "first": True, "second": True, "third": True}
+
+    assert parse(dictionary, data) == "fftttf"
 
 
 if __name__ == "__main__":
-    print("Testing diagnosis")
-    test_diagnosis()
+    print("Testing diagnosis AND")
+    test_and()
     print("PASSED")
 
-    print("Testing onset")
-    test_diagnosis()
+    print("Testing diagnosis OR")
+    test_or()
     print("PASSED")
 
     print("Everything passed")

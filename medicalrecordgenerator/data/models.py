@@ -47,12 +47,13 @@ class Thrombolysis:
 
 
 class Thrombectomy:
-    def __init__(self, dtg: Optional[int], tici_score: Optional[str], dio: Optional[int]):
+    def __init__(self, dtg: Optional[int], tici_score: Optional[str], dio: Optional[int],
+                 tici_score_meaning: Optional[str]):
         self.dtg = int(dtg) if dtg else None
         self.tici_score = tici_score
         self.dio = int(dio) if dio else None
         self.thrombectomy_transport = dio is not None
-        self.tici_score_meaning = "TODO"
+        self.tici_score_meaning = tici_score_meaning
 
 
 class Treatment(GeneratedObject):
@@ -140,8 +141,8 @@ class Discharge(GeneratedObject):
                  discharge_medication: str):
         self.discharge_date = discharge_date.date().strftime('%b %d %Y')
         self.discharge_destination = discharge_destination
-        self.nihss = nihss
+        self.nihss = int(nihss) if nihss else None
         self.mrs = mrs,
-        self.contact_date = contact_date.strftime('%b %d %Y at %H:%M') if contact_date else None
+        self.contact_date = contact_date.strftime('%b %d %Y') if contact_date else None
         self.mode_contact = mode_contact
         self.discharge_medication = discharge_medication

@@ -176,7 +176,7 @@
         "condition": {
           "thrombectomy_transport": true
         },
-        "text": "Patient transported to interventional center for mechanical thrombectomy after $dio after arrival. "
+        "text": "Patient transported to interventional center for mechanical thrombectomy after $dio minutes arrival. "
       }
     ]
   },
@@ -485,6 +485,14 @@
       "discharge_other_anticoagulant": "other anticoagulant",
       "discharge_any_anticoagulant": "any anticoagulant",
       "discharge_any_antiplatelet": "any antiplatelet"
+    },
+    "tici_score_meaning": {
+      "tici_score_0": "no perfusion",
+      "tici_score_1": "penetration with minimal perfusion",
+      "tici_score_2A": "partial filling <2/3 territory",
+      "tici_score_2B": "partial filling >2/3 territory",
+      "tici_score_2C": "near complete perfusion",
+      "tici_score_3": "complete perfusion"
     }
   }
 }
