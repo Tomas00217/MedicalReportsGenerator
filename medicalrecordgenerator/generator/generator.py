@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
     FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
     Discharge
-from medicalrecordgenerator.data.parser import parse_data, get_tici_meaning
+from medicalrecordgenerator.data.parser_old import parse_data, get_tici_meaning
 
 
 # TODO Čo s prekladmi premennych z DB ??

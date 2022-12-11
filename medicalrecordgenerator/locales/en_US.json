@@ -3,33 +3,62 @@
     "variants": [
       {
         "condition": {
-          "stroke_type": "ischemic"
+          "type": "VALUE",
+          "scope": "stroke_type",
+          "value": "ischemic"
         },
         "ischemicStroke": {
           "variants": [
             {
               "condition": {
-                "AND": [
-                  {"occlusion_position": true},
-                  {"aspects_score": true}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "occlusion_position",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "aspects_score",
+                    "value": true
+                  }
                 ]
               },
               "text": "Cerebral Infarction due to occlusion of $occlusion_position, ASPECT score $aspects_score. "
             },
             {
               "condition": {
-                "AND": [
-                  {"occlusion_position": true},
-                  {"aspects_score": false}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "occlusion_position",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "aspects_score",
+                    "value": false
+                  }
                 ]
               },
               "text": "Cerebral Infarction due to occlusion of $occlusion_position. "
             },
             {
               "condition": {
-                "AND": [
-                  {"occlusion_position": false},
-                  {"aspects_score": false}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "occlusion_position",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "aspects_score",
+                    "value": false
+                  }
                 ]
               },
               "text": "Cerebral Infarction without occlusion $imaging_type angiogram. "
@@ -43,27 +72,54 @@
     "variants": [
       {
         "condition": {
-          "AND": [
-            {"onset_time": true},
-            {"wake_up_stroke": false}
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "onset_time",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "wake_up_stroke",
+              "value": false
+            }
           ]
         },
         "text": "Onset on $onset_date at $onset_time. "
       },
       {
         "condition": {
-          "AND": [
-            {"onset_time": false},
-            {"wake_up_stroke": true}
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "onset_time",
+              "value": false
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "wake_up_stroke",
+              "value": true
+            }
           ]
         },
         "text": "Onset on $onset_date, wake up stroke. "
       },
       {
         "condition": {
-          "AND": [
-            {"onset_time": false},
-            {"wake_up_stroke": false}
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "onset_time",
+              "value": false
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "wake_up_stroke",
+              "value": false
+            }
           ]
         },
         "text": "Onset on $onset_date at an unknown time. "
@@ -74,18 +130,36 @@
     "variants": [
       {
         "condition": {
-          "AND": [
-            {"admission_nihss": true},
-            {"admission_type": true}
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "admission_nihss",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission_type",
+              "value": true
+            }
           ]
         },
         "text": "At baseline NIHSS $admission_nihss. Admitted to $admission_type. "
       },
       {
         "condition": {
-          "AND": [
-            {"admission_nihss": true},
-            {"admission_type": false}
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "admission_nihss",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission_type",
+              "value": false
+            }
           ]
         },
         "text": "At baseline NIHSS $admission_nihss. "
@@ -96,42 +170,80 @@
     "variants": [
       {
         "condition": {
-          "thrombolysis_done": true
+          "type": "EXISTENCE",
+          "scope": "thrombolysis_done",
+          "value": true
         },
         "thrombolysis": {
           "variants": [
             {
               "condition": {
-                "AND": [
-                  {"ivt_dose": true},
-                  {"ivt_treatment": true}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "ivt_dose",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "ivt_treatment",
+                    "value": true
+                  }
                 ]
               },
               "text": "Intravenous thrombolysis with $ivt_dose mg of $ivt_treatment given $dtn minutes after arrival to hospital. "
             },
             {
               "condition": {
-                "AND": [
-                  {"ivt_dose": false},
-                  {"ivt_treatment": true}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "ivt_dose",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "ivt_treatment",
+                    "value": true
+                  }
                 ]
               },
               "text": "Intravenous thrombolysis with $ivt_treatment given $dtn minutes after arrival to hospital. "
             },
             {
               "condition": {
-                "AND": [
-                  {"ivt_dose": true},
-                  {"ivt_treatment": false}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "ivt_dose",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "ivt_treatment",
+                    "value": false
+                  }
                 ]
               },
               "text": "Intravenous thrombolysis at $ivt_dose mg given $dtn minutes after arrival to hospital. "
             },
             {
               "condition": {
-                "AND": [
-                  {"ivt_dose": false},
-                  {"ivt_treatment": false}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "ivt_dose",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "ivt_treatment",
+                    "value": false
+                  }
                 ]
               },
               "text": "Intravenous thrombolysis given $dtn minutes after arrival to hospital. "
@@ -141,25 +253,33 @@
       },
       {
         "condition": {
-          "thrombolysis_done": false
+          "type": "EXISTENCE",
+          "scope": "thrombolysis_done",
+          "value": false
         },
         "text": "Thrombolysis not given because of $thrombolysis_reasons. "
       },
       {
         "condition": {
-          "thrombectomy_done": true
+          "type": "EXISTENCE",
+          "scope": "thrombectomy_done",
+          "value": true
         },
         "thrombectomy": {
           "variants": [
             {
               "condition": {
-                "tici_score": true
+                "type": "EXISTENCE",
+                "scope": "tici_score",
+                "value": true
               },
               "text": "Mechanical thrombectomy performed $dtg minutes after arrival, TICI $tici_score $tici_score_meaning. "
             },
             {
               "condition": {
-                "tici_score": false
+                "type": "EXISTENCE",
+                "scope": "tici_score",
+                "value": false
               },
               "text": "Mechanical thrombectomy performed $dtg after arrival. "
             }
@@ -168,15 +288,19 @@
       },
       {
         "condition": {
-          "thrombectomy_done": false
+          "type": "EXISTENCE",
+          "scope": "thrombectomy_done",
+          "value": false
         },
         "text": "Thrombectomy not given because of $thrombectomy_reasons. "
       },
       {
         "condition": {
-          "thrombectomy_transport": true
+          "type": "EXISTENCE",
+          "scope": "thrombectomy_transport",
+          "value": true
         },
-        "text": "Patient transported to interventional center for mechanical thrombectomy after $dio minutes arrival. "
+        "text": "Patient transported to interventional center for mechanical thrombectomy after $dio minutes after arrival. "
       }
     ]
   },
@@ -184,27 +308,54 @@
     "variants": [
       {
         "condition": {
-          "AND": [
-            {"findings": true},
-            {"aspects_score": true}
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "findings",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "aspects_score",
+              "value": true
+            }
           ]
         },
         "text": "$findings on follow up $imaging_type. ASPECT score $aspects_score. "
       },
       {
         "condition": {
-          "AND": [
-            {"findings": true},
-            {"aspects_score": false}
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "findings",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "aspects_score",
+              "value": false
+            }
           ]
         },
         "text": "$findings on follow up $imaging_type. "
       },
       {
         "condition": {
-          "OR": [
-            {"imaging_type": false},
-            {"imaging_type": "no"}
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "imaging_type",
+              "value": false
+            },
+            {
+              "type": "VALUE",
+              "scope": "imaging_type",
+              "value": "no"
+            }
           ]
         },
         "text": "No follow up imaging. "
@@ -215,31 +366,57 @@
     "variants": [
       {
         "condition": {
-          "dysphagia_screening": "no"
+          "type": "VALUE",
+          "scope": "dysphagia_screening",
+          "value": "no"
         },
         "text": "Dysphagia absent. "
       },
       {
         "condition": {
-          "dysphagia_screening": "yes"
+          "type": "VALUE",
+          "scope": "dysphagia_screening",
+          "value": "yes"
         },
         "text": "Dysphagia present. "
       },
       {
         "condition": {
-          "OR": [
-            {"dysphagia_screening": false},
-            {"dysphagia_screening": "not applicable"}
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "dysphagia_screening",
+              "value": false
+            },
+            {
+              "type": "VALUE",
+              "scope": "dysphagia_screening",
+              "value": "not applicable"
+            }
           ]
         },
         "text": "Dysphagia not screened. "
       },
       {
         "condition": {
-          "OR": [
-            {"physiotherapy": true},
-            {"ergotherapy": true},
-            {"speechtherapy": true}
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "physiotherapy",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "ergotherapy",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "speechtherapy",
+              "value": true
+            }
           ]
         },
         "text": "Patient received $therapies. "
@@ -250,7 +427,9 @@
     "variants": [
       {
         "condition": {
-          "complications": true
+          "type": "EXISTENCE",
+          "scope": "complications",
+          "value": true
         },
         "text": "Post stroke complications: $complications. "
       }
@@ -260,33 +439,62 @@
     "variants": [
       {
         "condition": {
-          "large_artery": true
+          "type": "EXISTENCE",
+          "scope": "large_artery",
+          "value": true
         },
         "large_artery_atherosclerosis": {
           "variants": [
             {
               "condition": {
-                "AND": [
-                  {"carotid_stenosis": true},
-                  {"carotid_stenosis_followup": true}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "carotid_stenosis",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "carotid_stenosis_followup",
+                    "value": true
+                  }
                 ]
               },
               "text": ""
             },
             {
               "condition": {
-                "AND": [
-                  {"carotid_stenosis": true},
-                  {"carotid_stenosis_followup": false}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "carotid_stenosis",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "carotid_stenosis_followup",
+                    "value": false
+                  }
                 ]
               },
               "text": ""
             },
             {
               "condition": {
-                "AND": [
-                  {"carotid_stenosis": false},
-                  {"carotid_stenosis_followup": false}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "carotid_stenosis",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "carotid_stenosis_followup",
+                    "value": false
+                  }
                 ]
               },
               "text": ""
@@ -296,19 +504,25 @@
       },
       {
         "condition": {
-          "cardioembolism": true
+          "type": "EXISTENCE",
+          "scope": "cardioembolism",
+          "value": true
         },
         "cardioembolism": {
           "variants": [
             {
               "condition": {
-                "afib_flutter": true
+                "type": "EXISTENCE",
+                "scope": "afib_flutter",
+                "value": true
               },
               "text": "Cardioembolic etiology due to $reasons. "
             },
             {
               "condition": {
-                "afib_flutter": false
+                "type": "EXISTENCE",
+                "scope": "afib_flutter",
+                "value": false
               },
               "text": ""
             }
@@ -325,25 +539,50 @@
           "variants": [
             {
               "condition": {
-                "AND": [
-                  {"discharge_destination": true},
-                  {"NOT": {"discharge_destination": "dead"}}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge_destination",
+                    "value": true
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "discharge_destination",
+                        "value": "dead"
+                      }
+                    ]
+                  }
                 ]
               },
               "text": "Patient discharged on $discharge_date to $discharge_destination. "
             },
             {
               "condition": {
-                "AND": [
-                  {"discharge_destination": true},
-                  {"discharge_destination": "dead"}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge_destination",
+                    "value": true
+                  },
+                  {
+                    "type": "VALUE",
+                    "scope": "discharge_destination",
+                    "value": "dead"
+                  }
                 ]
               },
               "text": "Patient died on $discharge_date. "
             },
             {
               "condition": {
-                "discharge_destination": false
+                "type": "EXISTENCE",
+                "scope": "discharge_destination",
+                "value": false
               },
               "text": "Patient discharged on $discharge_date. "
             }
@@ -356,27 +595,54 @@
           "variants": [
             {
               "condition": {
-                "AND": [
-                  {"nihss": true},
-                  {"mrs": true}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "nihss",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "mrs",
+                    "value": true
+                  }
                 ]
               },
               "text": "NIHSS $nihss, mRS $mrs. "
             },
             {
               "condition": {
-                "AND": [
-                  {"nihss": true},
-                  {"mrs": false}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "nihss",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "mrs",
+                    "value": false
+                  }
                 ]
               },
               "text": "NIHSS $nihss. "
             },
             {
               "condition": {
-                "AND": [
-                  {"nihss": false},
-                  {"mrs": true}
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "nihss",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "mrs",
+                    "value": true
+                  }
                 ]
               },
               "text3": "mRS $mrs. "
@@ -386,18 +652,46 @@
       },
       {
         "condition": {
-          "AND": [
-            {"discharge_medication": true},
-            {"NOT": {"discharge_destination": "dead"}}
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "discharge_medication",
+              "value": true
+            },
+            {
+              "type": "NOT",
+              "conditions": [
+                {
+                  "type": "VALUE",
+                  "scope": "discharge_destination",
+                  "value": "dead"
+                }
+              ]
+            }
           ]
         },
         "text": "Medication: $discharge_medication. "
       },
       {
         "condition": {
-          "AND": [
-            {"contact_date": true},
-            {"NOT": {"discharge_destination": "dead"}}
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "contact_date",
+              "value": true
+            },
+            {
+              "type": "NOT",
+              "conditions": [
+                {
+                  "type": "VALUE",
+                  "scope": "discharge_destination",
+                  "value": "dead"
+                }
+              ]
+            }
           ]
         },
         "text": "Next appointment scheduled to $contact_date. "

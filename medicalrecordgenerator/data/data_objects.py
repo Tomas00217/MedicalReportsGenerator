@@ -16,6 +16,14 @@ class StrokeType(Enum):
     Undetermined = "undetermined"
 
 
+class ConditionType(Enum):
+    Value = "VALUE"
+    Existence = "EXISTENCE"
+    And = "AND"
+    Or = "OR"
+    Not = "NOT"
+
+
 @dataclass()
 class DiagnosisData(DataclassFromDict):
     stroke_type: Optional[str] = field_from_dict(default=None)
