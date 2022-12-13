@@ -1,7 +1,7 @@
 import locale
 
+from medicalrecordgenerator.generator.generator import MedicalRecordsGenerator
 from medicalrecordgenerator.utils import load_utils
-from medicalrecordgenerator.generator import generator
 
 
 def main():
@@ -14,7 +14,8 @@ def main():
 
     for idx, row in enumerate(data):
 
-        report = generator.generate_medical_record(language, row)
+        generator = MedicalRecordsGenerator(language, row)
+        report = generator.generate_medical_record()
         print(report)
         """
         with open(f"med_record{idx+1}.txt", "w") as file:

@@ -5,7 +5,7 @@ import pandas as pd
 from collections import namedtuple
 
 
-DEFAULT_LANGUAGE = 'locales\\cs_CZ.json'
+DEFAULT_LANGUAGE = 'locales\\en_US.json'
 PATH = 'locales\\*.json'
 
 
