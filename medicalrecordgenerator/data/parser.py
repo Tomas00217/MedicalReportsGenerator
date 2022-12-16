@@ -93,3 +93,31 @@ def parse_not(condition, data):
         is_true = is_true and not parse_condition(con, True, data)
 
     return is_true
+
+
+def parse_data(dictionary, data):
+    result = ""
+
+    if type(data) is not dict:
+        diagnosis_dict = vars(data)
+    else:
+        diagnosis_dict = data
+
+    for key, value in diagnosis_dict.items():
+        if value:
+            result += dictionary[key] if result == "" else f", {dictionary[key]}"
+
+    result = replace_last(result, ",", " and")
+
+    return result
+
+
+def get_tici_meaning(dictionary, tici_score):
+    if tici_score is not None and tici_score != "occlusion not confirmed":
+        tici_score = int(tici_score)
+        return dictionary[f"tici_score_{tici_score}"]
+
+
+def replace_last(string, old, new):
+    return new.join(string.rsplit(old, 1))
+

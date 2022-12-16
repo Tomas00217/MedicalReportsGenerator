@@ -1,4 +1,4 @@
-from medicalrecordgenerator.data.parser_old import parse
+from medicalrecordgenerator.data.parser import parse
 from medicalrecordgenerator.utils import load_utils
 
 dictionary = load_utils.load_language_file("..\\locales\\test.json")

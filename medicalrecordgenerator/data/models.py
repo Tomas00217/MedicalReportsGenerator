@@ -80,10 +80,9 @@ class Treatment(GeneratedObject):
 
 
 class FollowUpImaging(GeneratedObject):
-    def __init__(self, findings: Optional[str], imaging_type: Optional[str], aspects_score: Optional[int]):
+    def __init__(self, findings: Optional[str], imaging_type: Optional[str]):
         self.findings = findings
         self.imaging_type = imaging_type
-        self.aspects_score = int(aspects_score) if aspects_score else None
 
 
 class PostAcuteCare(GeneratedObject):

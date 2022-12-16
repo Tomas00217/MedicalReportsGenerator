@@ -25,7 +25,7 @@
                   }
                 ]
               },
-              "text": "Cerebral Infarction due to occlusion of $occlusion_position, ASPECT score $aspects_score. "
+              "text": "Cerebral ischemic stroke due to occlusion of $occlusion_position, ASPECT score $aspects_score. "
             },
             {
               "condition": {
@@ -43,7 +43,7 @@
                   }
                 ]
               },
-              "text": "Cerebral Infarction due to occlusion of $occlusion_position. "
+              "text": "Cerebral ischemic stroke due to occlusion of $occlusion_position. "
             },
             {
               "condition": {
@@ -61,7 +61,7 @@
                   }
                 ]
               },
-              "text": "Cerebral Infarction without occlusion $imaging_type angiogram. "
+              "text": "Cerebral ischemic stroke with no occlusion on $imaging_type angiogram. "
             }
           ]
         }
@@ -144,7 +144,7 @@
             }
           ]
         },
-        "text": "At baseline NIHSS $admission_nihss. Admitted to $admission_type. "
+        "text": "Baseline NIHSS $admission_nihss. Admitted to $admission_type. "
       },
       {
         "condition": {
@@ -162,7 +162,7 @@
             }
           ]
         },
-        "text": "At baseline NIHSS $admission_nihss. "
+        "text": "Baseline NIHSS $admission_nihss. "
       }
     ]
   },
@@ -257,7 +257,90 @@
           "scope": "thrombolysis_done",
           "value": false
         },
-        "text": "Thrombolysis not given because of $thrombolysis_reasons. "
+        "thrombolysis_done": {
+          "variants": [
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "thrombolysis_reasons",
+                        "value": "other"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "thrombolysis_reasons",
+                        "value": "time window"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "thrombolysis_reasons",
+                        "value": "not available"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "thrombolysis_reasons",
+                        "value": "done elsewhere"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "text": "Thrombolysis not given because of $thrombolysis_reasons. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "thrombolysis_reasons",
+                "value": "other"
+              },
+              "text": "Thrombolysis not given because for not specified reason. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "thrombolysis_reasons",
+                "value": "time window"
+              },
+              "text": "Thrombolysis not given because of outside time window. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "thrombolysis_reasons",
+                "value": "not available"
+              },
+              "text": "Thrombolysis not given because not available. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "thrombolysis_reasons",
+                "value": "done elsewhere"
+              },
+              "text": "Thrombolysis done in the other hospital before admission. "
+            }
+          ]
+        }
       },
       {
         "condition": {
@@ -273,7 +356,7 @@
                 "scope": "tici_score",
                 "value": true
               },
-              "text": "Mechanical thrombectomy performed $dtg minutes after arrival, TICI $tici_score $tici_score_meaning. "
+              "text": "Mechanical thrombectomy performed $dtg minutes after arrival, achieved TICI $tici_score $tici_score_meaning. "
             },
             {
               "condition": {
@@ -292,7 +375,90 @@
           "scope": "thrombectomy_done",
           "value": false
         },
-        "text": "Thrombectomy not given because of $thrombectomy_reasons. "
+        "thrombectomy_done": {
+          "variants": [
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "thrombectomy_reasons",
+                        "value": "other"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "thrombectomy_reasons",
+                        "value": "time window"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "thrombectomy_reasons",
+                        "value": "not available"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "thrombectomy_reasons",
+                        "value": "done elsewhere"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "text": "Thrombectomy not given because of $thrombectomy_reasons. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "thrombectomy_reasons",
+                "value": "other"
+              },
+              "text": "Thrombectomy not given because for not specified reason. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "thrombectomy_reasons",
+                "value": "time window"
+              },
+              "text": "Thrombectomy not given because of outside time window. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "thrombectomy_reasons",
+                "value": "not available"
+              },
+              "text": "Thrombectomy not given because not available. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "thrombectomy_reasons",
+                "value": "done elsewhere"
+              },
+              "text": "Thrombectomy done in the other hospital before admission. "
+            }
+          ]
+        }
       },
       {
         "condition": {
@@ -300,7 +466,7 @@
           "scope": "thrombectomy_transport",
           "value": true
         },
-        "text": "Patient transported to interventional center for mechanical thrombectomy after $dio minutes after arrival. "
+        "text": "Patient transported to interventional center for mechanical thrombectomy after $dio minutes from the arrival. "
       }
     ]
   },
@@ -308,37 +474,9 @@
     "variants": [
       {
         "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "findings",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "aspects_score",
-              "value": true
-            }
-          ]
-        },
-        "text": "$findings on follow up $imaging_type. ASPECT score $aspects_score. "
-      },
-      {
-        "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "findings",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "aspects_score",
-              "value": false
-            }
-          ]
+          "type": "EXISTENCE",
+          "scope": "findings",
+          "value": true
         },
         "text": "$findings on follow up $imaging_type. "
       },
@@ -358,7 +496,7 @@
             }
           ]
         },
-        "text": "No follow up imaging. "
+        "text": "No follow up imaging performed. "
       }
     ]
   },
@@ -370,7 +508,7 @@
           "scope": "dysphagia_screening",
           "value": "no"
         },
-        "text": "Dysphagia absent. "
+        "text": "Patient screened for dysphagia but dysphagia not present. "
       },
       {
         "condition": {
@@ -378,7 +516,7 @@
           "scope": "dysphagia_screening",
           "value": "yes"
         },
-        "text": "Dysphagia present. "
+        "text": "Patient diagnosed with dysphagia. "
       },
       {
         "condition": {
@@ -396,7 +534,7 @@
             }
           ]
         },
-        "text": "Dysphagia not screened. "
+        "text": "Patient not screened for dysphagia. "
       },
       {
         "condition": {
@@ -431,7 +569,7 @@
           "scope": "complications",
           "value": true
         },
-        "text": "Post stroke complications: $complications. "
+        "text": "Post stroke complications $complications. "
       }
     ]
   },
@@ -609,7 +747,7 @@
                   }
                 ]
               },
-              "text": "NIHSS $nihss, mRS $mrs. "
+              "text": "NIHSS at discharge $nihss, mRS at discharge $mrs. "
             },
             {
               "condition": {
@@ -627,7 +765,7 @@
                   }
                 ]
               },
-              "text": "NIHSS $nihss. "
+              "text": "NIHSS at discharge $nihss. "
             },
             {
               "condition": {
@@ -645,7 +783,7 @@
                   }
                 ]
               },
-              "text3": "mRS $mrs. "
+              "text": "mRS at discharge $mrs. "
             }
           ]
         }
@@ -705,22 +843,22 @@
   },
   "variables": {
     "occlusion_position": {
-      "occlusion_left_mca_m1": "left MCA M1",
-      "occlusion_left_mca_m2": "left MCA M2",
-      "occlusion_left_mca_m3": "left MCA M3",
+      "occlusion_left_mca_m1": "left M1 MCA",
+      "occlusion_left_mca_m2": "left M2 MCA",
+      "occlusion_left_mca_m3": "left M3 MCA",
       "occlusion_left_aca": "left ACA",
-      "occlusion_left_pca_p1": "left PCA P1",
-      "occlusion_left_pca_p2": "left PCA P2",
+      "occlusion_left_pca_p1": "left P1 PCA",
+      "occlusion_left_pca_p2": "left P2 PCA",
       "occlusion_left_cae": "left CAE",
-      "occlusion_left_cai": "left CAI",
-      "occlusion_right_mca_m1": "right MCA M1",
-      "occlusion_right_mca_m2": "right MCA M2",
-      "occlusion_right_mca_m3": "right MCA M3",
+      "occlusion_left_cai": "left ICA",
+      "occlusion_right_mca_m1": "right M1 MCA",
+      "occlusion_right_mca_m2": "right M2 MCA",
+      "occlusion_right_mca_m3": "right M3 MCA",
       "occlusion_right_aca": "right ACA",
-      "occlusion_right_pca_p1": "right PCA P1",
-      "occlusion_right_pca_p2": "right PCA P2",
+      "occlusion_right_pca_p1": "right P1 PCA",
+      "occlusion_right_pca_p2": "right P2 PCA",
       "occlusion_right_cae": "right CAE",
-      "occlusion_right_cai": "right CAI",
+      "occlusion_right_cai": "right ICA",
       "occlusion_ba": "BA",
       "occlusion_va": "VA"
     },
@@ -734,15 +872,15 @@
       "post_treatment_ph_ii": "Bleeding at the site of infarction parenchymal hemorrhage PH type 2"
     },
     "post_stroke_complications": {
-      "post_stroke_pneumonia": "Pneumonia",
-      "post_stroke_dvt": "Deep vein thrombosis (DVT)",
-      "post_stroke_embolism": "Pulmonary embolism",
-      "post_stroke_infection": "Urinary tract infection",
-      "post_stroke_sores": "Pressure sores",
-      "post_stroke_sepsis": "Drip site sepsis",
-      "post_stroke_extension": "Reccurence/Extension of stroke",
-      "post_stroke_other": "Other",
-      "post_stroke_none": "None"
+      "post_stroke_pneumonia": "pneumonia",
+      "post_stroke_dvt": "deep vein thrombosis (DVT)",
+      "post_stroke_embolism": "pulmonary embolism",
+      "post_stroke_infection": "urinary tract infection",
+      "post_stroke_sores": "pressure sores",
+      "post_stroke_sepsis": "drip site sepsis",
+      "post_stroke_extension": "reccurence/Extension of stroke",
+      "post_stroke_other": "other",
+      "post_stroke_none": "none"
     },
     "therapies": {
       "physiotherapy": "physiotherapy",
@@ -759,7 +897,7 @@
     "medications": {
       "discharge_antidiabetics": "anti-diabetics",
       "discharge_antihypertensives": "anti-hypertensives",
-      "discharge_asa": "asa",
+      "discharge_asa": "aspirin",
       "discharge_cilostazol": "cilostazol",
       "discharge_clopidrogel": "clopidrogel",
       "discharge_ticagrelor": "ticagrelor",
@@ -781,12 +919,12 @@
       "discharge_any_antiplatelet": "any antiplatelet"
     },
     "tici_score_meaning": {
-      "tici_score_0": "no perfusion",
-      "tici_score_1": "penetration with minimal perfusion",
+      "tici_score_0": "no reperfusion",
+      "tici_score_1": "penetration with minimal reperfusion",
       "tici_score_2A": "partial filling <2/3 territory",
       "tici_score_2B": "partial filling >2/3 territory",
-      "tici_score_2C": "near complete perfusion",
-      "tici_score_3": "complete perfusion"
+      "tici_score_2C": "near complete reperfusion",
+      "tici_score_3": "complete reperfusion"
     }
   }
 }

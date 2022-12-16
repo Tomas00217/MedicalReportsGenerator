@@ -83,7 +83,6 @@ class TreatmentData(DataclassFromDict):
 @dataclass()
 class ImagingData(DataclassFromDict):
     imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
-    aspects_score: Optional[float] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -161,7 +160,4 @@ class MedicationData(DataclassFromDict):
     discharge_heparin: Optional[bool] = field_from_dict(default=None)
     discharge_other: Optional[bool] = field_from_dict(default=None)
     discharge_anticoagulant_recommended: Optional[bool] = field_from_dict(default=None)
-    discharge_other_antiplatelet: Optional[bool] = field_from_dict(default=None)
-    discharge_other_anticoagulant: Optional[bool] = field_from_dict(default=None)
-    discharge_any_anticoagulant: Optional[bool] = field_from_dict(default=None)
-    discharge_any_antiplatelet: Optional[bool] = field_from_dict(default=None)
+

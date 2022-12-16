@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
     FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
     Discharge
-from medicalrecordgenerator.data.parser_old import parse_data, get_tici_meaning
+from medicalrecordgenerator.data.parser import parse_data, get_tici_meaning
 
 
 class MedicalRecordsGenerator:
@@ -87,8 +87,7 @@ class MedicalRecordsGenerator:
         variables = self.dictionary["variables"]["post_treatment_findings"]
 
         imaging = FollowUpImaging(parse_data(variables, imaging_treatment_data),
-                                  imaging_data.imaging_type,
-                                  imaging_data.aspects_score)
+                                  imaging_data.imaging_type)
 
         return imaging.generate(self.dictionary["follow_up_imaging"])
 
