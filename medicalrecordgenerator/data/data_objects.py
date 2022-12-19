@@ -63,6 +63,7 @@ class OnsetData(DataclassFromDict):
 class AdmissionData(DataclassFromDict):
     hospitalized_in: Optional[str] = field_from_dict(default=None)
     nihss_score: Optional[float] = field_from_dict(default=None)
+    aspects_score: Optional[float] = field_from_dict(default=None)
 
 
 @dataclass()

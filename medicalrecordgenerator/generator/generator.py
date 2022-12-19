@@ -14,8 +14,8 @@ class MedicalRecordsGenerator:
     def __init__(self, dictionary, data):
         self.dictionary = dictionary
         self.data = data
+        self.transported = False
 
-    # TODO Čo s prekladmi premennych z DB ??
     def generate_medical_record(self):
         env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
         template = env.get_template("main.txt")
@@ -63,7 +63,7 @@ class MedicalRecordsGenerator:
 
     def generate_admission(self):
         admission_data = AdmissionData.from_dict(self.data)
-        admission = Admission(admission_data.nihss_score, admission_data.hospitalized_in)
+        admission = Admission(admission_data.nihss_score, admission_data.aspects_score, admission_data.hospitalized_in)
 
         return admission.generate(self.dictionary["admission"])
 
@@ -74,6 +74,8 @@ class MedicalRecordsGenerator:
         thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio,
                                     get_tici_meaning(variables, treatment_data.tici_score))
 
+        self.transported = thrombectomy.thrombectomy_transport
+
         treatment = Treatment(treatment_data.thrombolysis, treatment_data.thrombectomy,
                               treatment_data.no_thrombolysis_reason, treatment_data.no_thrombectomy_reason,
                               thrombolysis, thrombectomy)
@@ -81,6 +83,9 @@ class MedicalRecordsGenerator:
         return treatment.generate(self.dictionary["treatment"])
 
     def generate_follow_up_imaging(self):
+        if self.transported:
+            return ""
+
         imaging_data = ImagingData.from_dict(self.data)
         imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
 
@@ -92,6 +97,9 @@ class MedicalRecordsGenerator:
         return imaging.generate(self.dictionary["follow_up_imaging"])
 
     def generate_post_acute_care(self):
+        if self.transported:
+            return ""
+
         post_acute_care_data = PostAcuteCareData.from_dict(self.data)
         variables = self.dictionary["variables"]["therapies"]
 
@@ -118,6 +126,9 @@ class MedicalRecordsGenerator:
         return post_stroke_complications.generate(self.dictionary["post_stroke_complications"])
 
     def generate_etiology(self):
+        if self.transported:
+            return ""
+
         etiology_data = EtiologyData.from_dict(self.data)
 
         large_artery = LargeArteryAtherosclerosis(etiology_data.carotid_stenosis,

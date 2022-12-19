@@ -153,6 +153,24 @@
             {
               "type": "EXISTENCE",
               "scope": "admission_nihss",
+              "value": false
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "aspects_score",
+              "value": false
+            }
+          ]
+        },
+        "text": "NIHSS and ASPECT not performed. "
+      },
+      {
+        "condition": {
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "admission_nihss",
               "value": true
             },
             {

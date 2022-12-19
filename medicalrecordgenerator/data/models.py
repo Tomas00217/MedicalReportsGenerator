@@ -36,8 +36,9 @@ class Onset(GeneratedObject):
 
 
 class Admission(GeneratedObject):
-    def __init__(self, admission_nihss: Optional[int], admission_type: Optional[str]):
+    def __init__(self, admission_nihss: Optional[int], aspects_score: Optional[int], admission_type: Optional[str]):
         self.admission_nihss = int(admission_nihss) if admission_nihss else None
+        self.aspects_score = int(aspects_score) if aspects_score else None
         self.admission_type = admission_type
 
 
