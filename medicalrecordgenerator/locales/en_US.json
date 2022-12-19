@@ -860,6 +860,16 @@
     "time_format": "%H:%M"
   },
   "variables": {
+    "imaging_type": {
+      "CT": "CT",
+      "CT CTA": "CT CTA",
+      "CT CTA perfusion": "CT CTA perfusion",
+      "MR DWI/FLAIR": "MR DWI/FLAIR",
+      "MR DWI/FLAIR MRA": "MR DWI/FLAIR MRA\"",
+      "MR DWI/FLAIR MRA perfusion": "MR DWI/FLAIR MRA perfusion",
+      "done elsewhere": "done elsewhere",
+      "not done": "not done"
+    },
     "occlusion_position": {
       "occlusion_left_mca_m1": "left M1 MCA",
       "occlusion_left_mca_m2": "left M2 MCA",
@@ -879,6 +889,40 @@
       "occlusion_right_cai": "right ICA",
       "occlusion_ba": "BA",
       "occlusion_va": "VA"
+    },
+    "hospitalized_in": {
+      "ICU/stroke unit": "ICU/stroke unit",
+      "monitored bed": "monitored bed",
+      "standard bed": "standard bed"
+    },
+    "ivt_treatment": {
+      "alteplase": "alteplase",
+      "tenecteplase": "tenecteplase",
+      "streptokinase": "streptokinase",
+      "staphylokinase": "staphylokinase"
+    },
+    "no_thrombolysis_reason": {
+      "done elsewhere": "done elsewhere",
+      "time window": "time window",
+      "mild deficit": "mild deficit",
+      "consent": "consent",
+      "cost of treatment": "cost of treatment",
+      "transferred elsewhere": "transferred elsewhere",
+      "only MT": "only MT",
+      "not available": "not available",
+      "other": "other"
+    },
+    "no_thrombectomy_reason": {
+      "done elsewhere": "done elsewhere",
+      "time window": "time window",
+      "mild deficit": "mild deficit",
+      "large vessel occlusion": "large vessel occlusion",
+      "disability": "disability",
+      "consent": "consent",
+      "cost of treatment": "cost of treatment",
+      "transferred elsewhere": "transferred elsewhere",
+      "not available": "not available",
+      "other": "other"
     },
     "post_treatment_findings": {
       "post_treatment_infarction": "Brain infarct",
@@ -911,6 +955,13 @@
       "etiology_other": "Stroke of other determined etiology (dissection, vasculopathy or hematologic disorder)",
       "etiology_cryptogenic_stroke": "Cryptogenic stroke (stroke of undetermined etiology including ESUS)",
       "etiology_small_vessel": "Small vessel disease/lacunar"
+    },
+    "discharge_destination": {
+      "home": "home",
+      "same hospital": "same hospital",
+      "another hospital": "another hospital",
+      "social care": "social care",
+      "dead": "dead"
     },
     "medications": {
       "discharge_antidiabetics": "anti-diabetics",

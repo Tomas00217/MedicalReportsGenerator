@@ -121,3 +121,8 @@ def get_tici_meaning(dictionary, tici_score):
 def replace_last(string, old, new):
     return new.join(string.rsplit(old, 1))
 
+
+def translate_data(dictionary, key):
+    if key:
+        return dictionary[key]
+

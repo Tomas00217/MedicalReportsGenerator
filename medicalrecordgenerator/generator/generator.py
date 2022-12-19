@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
     FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
     Discharge
-from medicalrecordgenerator.data.parser import parse_data, get_tici_meaning
+from medicalrecordgenerator.data.parser import parse_data, get_tici_meaning, translate_data
 
 
 class MedicalRecordsGenerator:
@@ -42,12 +42,12 @@ class MedicalRecordsGenerator:
     def generate_diagnosis(self):
         diagnosis_data = DiagnosisData.from_dict(self.data)
         diagnosis_occlusions = DiagnosisOcclusionsData.from_dict(self.data)
-        variables = self.dictionary["variables"]["occlusion_position"]
+        variables = self.dictionary["variables"]
 
         diagnosis = Diagnosis(diagnosis_data.stroke_type,
                               diagnosis_data.aspects_score,
-                              diagnosis_data.imaging_type,
-                              parse_data(variables, diagnosis_occlusions))
+                              translate_data(variables["imaging_type"], diagnosis_data.imaging_type),
+                              parse_data(variables["occlusion_position"], diagnosis_occlusions))
 
         return diagnosis.generate(self.dictionary["diagnosis"])
 
@@ -63,21 +63,28 @@ class MedicalRecordsGenerator:
 
     def generate_admission(self):
         admission_data = AdmissionData.from_dict(self.data)
-        admission = Admission(admission_data.nihss_score, admission_data.aspects_score, admission_data.hospitalized_in)
+        variables = self.dictionary["variables"]
+        admission = Admission(admission_data.nihss_score, admission_data.aspects_score,
+                              translate_data(variables["hospitalized_in"], admission_data.hospitalized_in))
 
         return admission.generate(self.dictionary["admission"])
 
     def generate_treatment(self):
         treatment_data = TreatmentData.from_dict(self.data)
-        variables = self.dictionary["variables"]["tici_score_meaning"]
-        thrombolysis = Thrombolysis(treatment_data.dtn, treatment_data.ivt_treatment, treatment_data.ivt_dose)
+        variables = self.dictionary["variables"]
+        thrombolysis = Thrombolysis(treatment_data.dtn, translate_data(variables["ivt_treatment"],
+                                                                       treatment_data.ivt_treatment),
+                                    treatment_data.ivt_dose)
         thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio,
-                                    get_tici_meaning(variables, treatment_data.tici_score))
+                                    get_tici_meaning(variables["tici_score_meaning"], treatment_data.tici_score))
 
         self.transported = thrombectomy.thrombectomy_transport
 
         treatment = Treatment(treatment_data.thrombolysis, treatment_data.thrombectomy,
-                              treatment_data.no_thrombolysis_reason, treatment_data.no_thrombectomy_reason,
+                              translate_data(variables["no_thrombolysis_reason"],
+                                             treatment_data.no_thrombolysis_reason),
+                              translate_data(variables["no_thrombolysis_reason"],
+                                             treatment_data.no_thrombectomy_reason),
                               thrombolysis, thrombectomy)
 
         return treatment.generate(self.dictionary["treatment"])
@@ -149,12 +156,13 @@ class MedicalRecordsGenerator:
         discharge_data = DischargeData.from_dict(self.data)
         medication_data = MedicationData.from_dict(self.data)
 
-        variables = self.dictionary["variables"]["medications"]
+        variables = self.dictionary["variables"]
         settings = self.dictionary["settings"]
 
-        discharge = Discharge(discharge_data.discharge_date, discharge_data.discharge_destination,
+        discharge = Discharge(discharge_data.discharge_date,
+                              translate_data(variables["discharge_destination"], discharge_data.discharge_destination),
                               discharge_data.nihss, discharge_data.mrs, discharge_data.contact_date,
-                              discharge_data.mode_contact, parse_data(variables, medication_data),
+                              discharge_data.mode_contact, parse_data(variables["medications"], medication_data),
                               settings["date_format"])
 
         return discharge.generate(self.dictionary["discharge"])
