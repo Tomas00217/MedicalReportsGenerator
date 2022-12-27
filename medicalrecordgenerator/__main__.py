@@ -1,6 +1,6 @@
 import locale
 
-from medicalrecordgenerator.generator.generator import MedicalRecordsGenerator
+from medicalrecordgenerator.app.generator import MedicalRecordsGenerator
 from medicalrecordgenerator.utils import load_utils
 
 

@@ -1,8 +1,8 @@
-from datetime import time, datetime
+from datetime import datetime
 from string import Template
-from typing import Optional, Any
+from typing import Optional
 
-from medicalrecordgenerator.data.parser import parse
+from medicalrecordgenerator.app.parser import parse
 
 
 class GeneratedObject:

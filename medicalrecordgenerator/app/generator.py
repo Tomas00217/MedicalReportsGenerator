@@ -1,13 +1,11 @@
-
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+from medicalrecordgenerator.app.parser import parse_data, get_tici_meaning, translate_data
 from medicalrecordgenerator.data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
     ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData
-from jinja2 import Environment, FileSystemLoader, select_autoescape
-
 from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
     FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
     Discharge
-from medicalrecordgenerator.data.parser import parse_data, get_tici_meaning, translate_data
 
 
 class MedicalRecordsGenerator:

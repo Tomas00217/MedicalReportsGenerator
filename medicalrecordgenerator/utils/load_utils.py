@@ -2,7 +2,6 @@ import json
 import glob
 import numpy as np
 import pandas as pd
-from collections import namedtuple
 
 
 DEFAULT_LANGUAGE = 'locales\\en_US.json'
