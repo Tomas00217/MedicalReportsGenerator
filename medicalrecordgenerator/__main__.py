@@ -1,11 +1,25 @@
 import locale
+import sys
+import getopt
 
-from medicalrecordgenerator.app.generator import MedicalRecordsGenerator
-from medicalrecordgenerator.utils import load_utils
+from app.generator import MedicalRecordsGenerator
+from utils import load_utils
+
+OPTIONS = "l:"
+LONG_OPTIONS = ["language="]
 
 
-def main():
+def main(argv=None):
     app_language = 'en_US'
+
+    try:
+        opts, args = getopt.getopt(argv, OPTIONS, LONG_OPTIONS)
+        for opt, arg in opts:
+            if opt in "-l, --language":
+                app_language = arg
+    except getopt.GetoptError as err:
+        print(err)
+
     locale.setlocale(locale.LC_ALL, app_language)
 
     language = load_utils.load_language(app_language)
@@ -24,4 +38,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
