@@ -1,10 +1,16 @@
+import logging
+
 from datetime import time
 
 from medicalrecordgenerator.data.data_objects import ConditionType
 
 
 def parse(dictionary, data, text=""):
-    variants = dictionary["variants"]
+    try:
+        variants = dictionary["variants"]
+    except KeyError:
+        logging.error("Invalid key, try 'variants'")
+        return text
 
     for variant in variants:
         condition = list(variant.values())[0]
@@ -22,7 +28,11 @@ def parse_condition(condition, is_true, data):
     if len(condition.keys()) == 0:
         return True
 
-    condition_type = condition["type"]
+    try:
+        condition_type = condition["type"]
+    except KeyError:
+        logging.error("Invalid condition key for %s, try 'type'", condition)
+        raise
 
     if condition_type == ConditionType.Value.value:
         is_true = is_true and parse_value(condition, data)
@@ -39,15 +49,34 @@ def parse_condition(condition, is_true, data):
 
 
 def parse_value(condition, data):
-    scope = condition["scope"]
-    value = condition["value"]
+    try:
+        scope = condition["scope"]
+    except KeyError:
+        logging.error("Invalid 'scope' key for condition")
+        raise
+
+    try:
+        value = condition["value"]
+    except KeyError:
+        logging.error("Invalid 'value' key for condition")
+        raise
 
     return data[scope] == value
 
 
 def parse_existence(condition, data):
-    scope = condition["scope"]
-    condition_variable = condition["value"]
+    try:
+        scope = condition["scope"]
+    except KeyError:
+        logging.error("Invalid 'scope' key for condition")
+        raise
+
+    try:
+        condition_variable = condition["value"]
+    except KeyError:
+        logging.error("Invalid 'value' key for condition")
+        raise
+
     variable = data[scope]
 
     if variable:
@@ -64,7 +93,12 @@ def parse_existence(condition, data):
 
 
 def parse_and(condition, data):
-    conditions = condition["conditions"]
+    try:
+        conditions = condition["conditions"]
+    except KeyError:
+        logging.error("Invalid 'conditions' key for condition")
+        raise
+
     is_true = True
 
     for con in conditions:
@@ -76,7 +110,12 @@ def parse_and(condition, data):
 
 
 def parse_or(condition, data):
-    conditions = condition["conditions"]
+    try:
+        conditions = condition["conditions"]
+    except KeyError:
+        logging.error("Invalid 'conditions' key for condition")
+        raise
+
     is_true = False
 
     for con in conditions:
@@ -86,7 +125,12 @@ def parse_or(condition, data):
 
 
 def parse_not(condition, data):
-    conditions = condition["conditions"]
+    try:
+        conditions = condition["conditions"]
+    except KeyError:
+        logging.error("Invalid 'conditions' key for condition")
+        raise
+
     is_true = True
 
     for con in conditions:

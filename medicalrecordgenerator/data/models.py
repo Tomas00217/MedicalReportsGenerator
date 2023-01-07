@@ -13,7 +13,10 @@ class GeneratedObject:
         return Template(text).safe_substitute(vars(self))
 
     def get_text(self, dictionary):
-        text = parse(dictionary, vars(self))
+        try:
+            text = parse(dictionary, vars(self))
+        except KeyError:
+            return ""
 
         return text
 
@@ -75,7 +78,10 @@ class Treatment(GeneratedObject):
         dict_to_parse.update(vars(self.thrombolysis))
         dict_to_parse.update(vars(self.thrombectomy))
 
-        text = parse(dictionary, vars(self))
+        try:
+            text = parse(dictionary, vars(self))
+        except KeyError:
+            return ""
 
         return text
 
@@ -132,7 +138,10 @@ class Etiology(GeneratedObject):
         dict_to_parse.update(vars(self.large_artery_atherosclerosis_dat))
         dict_to_parse.update(vars(self.cardioembolism_dat))
 
-        text = parse(dictionary, vars(self))
+        try:
+            text = parse(dictionary, vars(self))
+        except KeyError:
+            return ""
 
         return text
 
