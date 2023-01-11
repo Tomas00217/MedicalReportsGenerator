@@ -5,7 +5,7 @@ from datetime import time
 from medicalrecordgenerator.data.data_objects import ConditionType
 
 
-def parse(dictionary, data, text=""):
+def parse(dictionary: dict, data: dict, text: str = "") -> str:
     try:
         variants = dictionary["variants"]
     except KeyError:
@@ -24,7 +24,7 @@ def parse(dictionary, data, text=""):
     return text
 
 
-def parse_condition(condition, is_true, data):
+def parse_condition(condition: dict, is_true: bool, data: dict) -> bool:
     if len(condition.keys()) == 0:
         return True
 
@@ -48,7 +48,7 @@ def parse_condition(condition, is_true, data):
     return is_true
 
 
-def parse_value(condition, data):
+def parse_value(condition: dict, data: dict) -> bool:
     try:
         scope = condition["scope"]
     except KeyError:
@@ -64,7 +64,7 @@ def parse_value(condition, data):
     return data[scope] == value
 
 
-def parse_existence(condition, data):
+def parse_existence(condition: dict, data: dict) -> bool:
     try:
         scope = condition["scope"]
     except KeyError:
@@ -92,7 +92,7 @@ def parse_existence(condition, data):
     return condition_variable is False
 
 
-def parse_and(condition, data):
+def parse_and(condition: dict, data: dict) -> bool:
     try:
         conditions = condition["conditions"]
     except KeyError:
@@ -109,7 +109,7 @@ def parse_and(condition, data):
     return is_true
 
 
-def parse_or(condition, data):
+def parse_or(condition: dict, data: dict) -> bool:
     try:
         conditions = condition["conditions"]
     except KeyError:
@@ -124,7 +124,7 @@ def parse_or(condition, data):
     return is_true
 
 
-def parse_not(condition, data):
+def parse_not(condition: dict, data: dict) -> bool:
     try:
         conditions = condition["conditions"]
     except KeyError:
@@ -139,7 +139,7 @@ def parse_not(condition, data):
     return is_true
 
 
-def parse_data(dictionary, data):
+def parse_data(dictionary: dict, data: dict) -> str:
     result = ""
 
     if type(data) is not dict:
@@ -156,17 +156,17 @@ def parse_data(dictionary, data):
     return result
 
 
-def get_tici_meaning(dictionary, tici_score):
+def get_tici_meaning(dictionary: dict, tici_score: str) -> str:
     if tici_score is not None and tici_score != "occlusion not confirmed":
         tici_score = int(tici_score)
         return dictionary[f"tici_score_{tici_score}"]
 
 
-def replace_last(string, old, new):
+def replace_last(string: str, old: str, new: str) -> str:
     return new.join(string.rsplit(old, 1))
 
 
-def translate_data(dictionary, key):
+def translate_data(dictionary: dict, key: dict):
     if key:
         return dictionary[key]
 

@@ -7,12 +7,12 @@ from medicalrecordgenerator.app.parser import parse
 
 class GeneratedObject:
 
-    def generate(self, dictionary):
+    def generate(self, dictionary: dict) -> str:
         text = self.get_text(dictionary)
 
         return Template(text).safe_substitute(vars(self))
 
-    def get_text(self, dictionary):
+    def get_text(self, dictionary: dict) -> str:
         try:
             text = parse(dictionary, vars(self))
         except KeyError:
@@ -73,7 +73,7 @@ class Treatment(GeneratedObject):
         self.thrombolysis = thrombolysis
         self.thrombectomy = thrombectomy
 
-    def get_text(self, dictionary):
+    def get_text(self, dictionary: dict) -> str:
         dict_to_parse = vars(self)
         dict_to_parse.update(vars(self.thrombolysis))
         dict_to_parse.update(vars(self.thrombectomy))
@@ -133,7 +133,7 @@ class Etiology(GeneratedObject):
         self.large_artery_atherosclerosis_dat = large_artery_atherosclerosis_dat
         self.cardioembolism_dat = cardioembolism_dat
 
-    def get_text(self, dictionary):
+    def get_text(self, dictionary: dict) -> str:
         dict_to_parse = vars(self)
         dict_to_parse.update(vars(self.large_artery_atherosclerosis_dat))
         dict_to_parse.update(vars(self.cardioembolism_dat))

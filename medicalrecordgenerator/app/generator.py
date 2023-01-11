@@ -9,7 +9,7 @@ from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thro
 
 
 class MedicalRecordsGenerator:
-    def __init__(self, dictionary, data):
+    def __init__(self, dictionary: dict, data: dict):
         self.dictionary = dictionary
         self.data = data
         self.transported = False

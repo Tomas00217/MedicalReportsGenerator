@@ -20,6 +20,10 @@ def main(argv=None):
     except getopt.GetoptError as err:
         print(err)
 
+    generate(app_language)
+
+
+def generate(app_language: str) -> None:
     locale.setlocale(locale.LC_ALL, app_language)
 
     language = load_utils.load_language(app_language)
