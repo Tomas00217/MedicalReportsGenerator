@@ -1,5 +1,5 @@
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from medicalrecordgenerator.app.parser import parse_data, get_tici_meaning, translate_data
+from medicalrecordgenerator.app.parser import Parser
 from medicalrecordgenerator.data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
     ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData
@@ -13,6 +13,7 @@ class MedicalRecordsGenerator:
         self.dictionary = dictionary
         self.data = data
         self.transported = False
+        self.parser = Parser({})
 
     def generate_medical_record(self):
         env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
@@ -42,10 +43,11 @@ class MedicalRecordsGenerator:
         diagnosis_occlusions = DiagnosisOcclusionsData.from_dict(self.data)
         variables = self.dictionary["variables"]
 
+        self.parser.data = diagnosis_occlusions
         diagnosis = Diagnosis(diagnosis_data.stroke_type,
                               diagnosis_data.aspects_score,
-                              translate_data(variables["imaging_type"], diagnosis_data.imaging_type),
-                              parse_data(variables["occlusion_position"], diagnosis_occlusions))
+                              self.parser.translate_data(variables["imaging_type"], diagnosis_data.imaging_type),
+                              self.parser.parse_data(variables["occlusion_position"]))
 
         return diagnosis.generate(self.dictionary["diagnosis"])
 
@@ -63,26 +65,27 @@ class MedicalRecordsGenerator:
         admission_data = AdmissionData.from_dict(self.data)
         variables = self.dictionary["variables"]
         admission = Admission(admission_data.nihss_score, admission_data.aspects_score,
-                              translate_data(variables["hospitalized_in"], admission_data.hospitalized_in))
+                              self.parser.translate_data(variables["hospitalized_in"], admission_data.hospitalized_in))
 
         return admission.generate(self.dictionary["admission"])
 
     def generate_treatment(self):
         treatment_data = TreatmentData.from_dict(self.data)
         variables = self.dictionary["variables"]
-        thrombolysis = Thrombolysis(treatment_data.dtn, translate_data(variables["ivt_treatment"],
-                                                                       treatment_data.ivt_treatment),
+        thrombolysis = Thrombolysis(treatment_data.dtn, self.parser.translate_data(variables["ivt_treatment"],
+                                                                                   treatment_data.ivt_treatment),
                                     treatment_data.ivt_dose)
         thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio,
-                                    get_tici_meaning(variables["tici_score_meaning"], treatment_data.tici_score))
+                                    self.parser.get_tici_meaning(variables["tici_score_meaning"],
+                                                                 treatment_data.tici_score))
 
         self.transported = thrombectomy.thrombectomy_transport
 
         treatment = Treatment(treatment_data.thrombolysis, treatment_data.thrombectomy,
-                              translate_data(variables["no_thrombolysis_reason"],
-                                             treatment_data.no_thrombolysis_reason),
-                              translate_data(variables["no_thrombolysis_reason"],
-                                             treatment_data.no_thrombectomy_reason),
+                              self.parser.translate_data(variables["no_thrombolysis_reason"],
+                                                         treatment_data.no_thrombolysis_reason),
+                              self.parser.translate_data(variables["no_thrombolysis_reason"],
+                                                         treatment_data.no_thrombectomy_reason),
                               thrombolysis, thrombectomy)
 
         return treatment.generate(self.dictionary["treatment"])
@@ -96,7 +99,8 @@ class MedicalRecordsGenerator:
 
         variables = self.dictionary["variables"]["post_treatment_findings"]
 
-        imaging = FollowUpImaging(parse_data(variables, imaging_treatment_data),
+        self.parser.data = imaging_treatment_data
+        imaging = FollowUpImaging(self.parser.parse_data(variables),
                                   imaging_data.imaging_type)
 
         return imaging.generate(self.dictionary["follow_up_imaging"])
@@ -118,7 +122,8 @@ class MedicalRecordsGenerator:
                                      "ergotherapy": post_acute_care.ergotherapy,
                                      "speechtherapy": post_acute_care.speechtherapy}
 
-        post_acute_care.therapies = parse_data(variables, post_acute_care_therapies)
+        self.parser.data = post_acute_care_therapies
+        post_acute_care.therapies = self.parser.parse_data(variables)
 
         return post_acute_care.generate(self.dictionary["post_acute_care"])
 
@@ -126,7 +131,8 @@ class MedicalRecordsGenerator:
         post_stroke_complications_data = PostStrokeComplicationsData.from_dict(self.data)
         variables = self.dictionary["variables"]["post_stroke_complications"]
 
-        post_stroke_complications = PostStrokeComplications(parse_data(variables, post_stroke_complications_data))
+        self.parser.data = post_stroke_complications_data
+        post_stroke_complications = PostStrokeComplications(self.parser.parse_data(variables))
 
         return post_stroke_complications.generate(self.dictionary["post_stroke_complications"])
 
@@ -157,10 +163,12 @@ class MedicalRecordsGenerator:
         variables = self.dictionary["variables"]
         settings = self.dictionary["settings"]
 
+        self.parser.data = medication_data
         discharge = Discharge(discharge_data.discharge_date,
-                              translate_data(variables["discharge_destination"], discharge_data.discharge_destination),
+                              self.parser.translate_data(variables["discharge_destination"],
+                                                         discharge_data.discharge_destination),
                               discharge_data.nihss, discharge_data.mrs, discharge_data.contact_date,
-                              discharge_data.mode_contact, parse_data(variables["medications"], medication_data),
+                              discharge_data.mode_contact, self.parser.parse_data(variables["medications"]),
                               settings["date_format"])
 
         return discharge.generate(self.dictionary["discharge"])

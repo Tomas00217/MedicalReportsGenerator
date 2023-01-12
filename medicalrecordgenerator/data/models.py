@@ -2,7 +2,7 @@ from datetime import datetime
 from string import Template
 from typing import Optional
 
-from medicalrecordgenerator.app.parser import parse
+from medicalrecordgenerator.app.parser import Parser
 
 
 class GeneratedObject:
@@ -14,7 +14,8 @@ class GeneratedObject:
 
     def get_text(self, dictionary: dict) -> str:
         try:
-            text = parse(dictionary, vars(self))
+            parser = Parser(vars(self))
+            text = parser.parse(dictionary)
         except KeyError:
             return ""
 
@@ -79,7 +80,8 @@ class Treatment(GeneratedObject):
         dict_to_parse.update(vars(self.thrombectomy))
 
         try:
-            text = parse(dictionary, vars(self))
+            parser = Parser(vars(self))
+            text = parser.parse(dictionary)
         except KeyError:
             return ""
 
@@ -139,7 +141,8 @@ class Etiology(GeneratedObject):
         dict_to_parse.update(vars(self.cardioembolism_dat))
 
         try:
-            text = parse(dictionary, vars(self))
+            parser = Parser(vars(self))
+            text = parser.parse(dictionary)
         except KeyError:
             return ""
 
