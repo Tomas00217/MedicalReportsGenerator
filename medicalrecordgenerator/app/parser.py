@@ -9,7 +9,9 @@ class Parser:
     def __init__(self, data: dict):
         self.data = data
 
-    def parse(self, dictionary: dict, text: str = "") -> str:
+    def parse(self, dictionary: dict) -> str:
+        text = ""
+
         try:
             variants = dictionary["variants"]
         except KeyError:
