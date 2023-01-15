@@ -4,7 +4,7 @@
       {
         "condition": {
           "type": "VALUE",
-          "scope": "stroke_type",
+          "scope": "diagnosis.stroke_type",
           "value": "ischemic"
         },
         "ischemicStroke": {
@@ -15,12 +15,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "occlusion_position",
+                    "scope": "diagnosis.occlusion_position",
                     "value": true
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "aspects_score",
+                    "scope": "diagnosis.aspects_score",
                     "value": true
                   }
                 ]
@@ -33,12 +33,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "occlusion_position",
+                    "scope": "diagnosis.occlusion_position",
                     "value": true
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "aspects_score",
+                    "scope": "diagnosis.aspects_score",
                     "value": false
                   }
                 ]
@@ -51,12 +51,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "occlusion_position",
+                    "scope": "diagnosis.occlusion_position",
                     "value": false
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "aspects_score",
+                    "scope": "diagnosis.aspects_score",
                     "value": false
                   }
                 ]
@@ -76,12 +76,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "onset_time",
+              "scope": "onset.onset_time",
               "value": true
             },
             {
               "type": "EXISTENCE",
-              "scope": "wake_up_stroke",
+              "scope": "onset.wake_up_stroke",
               "value": false
             }
           ]
@@ -94,12 +94,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "onset_time",
+              "scope": "onset.onset_time",
               "value": false
             },
             {
               "type": "EXISTENCE",
-              "scope": "wake_up_stroke",
+              "scope": "onset.wake_up_stroke",
               "value": true
             }
           ]
@@ -112,12 +112,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "onset_time",
+              "scope": "onset.onset_time",
               "value": false
             },
             {
               "type": "EXISTENCE",
-              "scope": "wake_up_stroke",
+              "scope": "onset.wake_up_stroke",
               "value": false
             }
           ]
@@ -134,12 +134,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "admission_nihss",
+              "scope": "admission.admission_nihss",
               "value": true
             },
             {
               "type": "EXISTENCE",
-              "scope": "admission_type",
+              "scope": "admission.admission_type",
               "value": true
             }
           ]
@@ -152,12 +152,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "admission_nihss",
+              "scope": "admission.admission_nihss",
               "value": false
             },
             {
               "type": "EXISTENCE",
-              "scope": "aspects_score",
+              "scope": "admission.aspects_score",
               "value": false
             }
           ]
@@ -170,12 +170,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "admission_nihss",
+              "scope": "admission.admission_nihss",
               "value": true
             },
             {
               "type": "EXISTENCE",
-              "scope": "admission_type",
+              "scope": "admission.admission_type",
               "value": false
             }
           ]
@@ -189,7 +189,7 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "thrombolysis_done",
+          "scope": "treatment.thrombolysis_done",
           "value": true
         },
         "thrombolysis": {
@@ -200,12 +200,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "ivt_dose",
+                    "scope": "treatment.ivt_dose",
                     "value": true
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "ivt_treatment",
+                    "scope": "treatment.ivt_treatment",
                     "value": true
                   }
                 ]
@@ -218,12 +218,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "ivt_dose",
+                    "scope": "treatment.ivt_dose",
                     "value": false
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "ivt_treatment",
+                    "scope": "treatment.ivt_treatment",
                     "value": true
                   }
                 ]
@@ -236,12 +236,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "ivt_dose",
+                    "scope": "treatment.ivt_dose",
                     "value": true
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "ivt_treatment",
+                    "scope": "treatment.ivt_treatment",
                     "value": false
                   }
                 ]
@@ -254,12 +254,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "ivt_dose",
+                    "scope": "treatment.ivt_dose",
                     "value": false
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "ivt_treatment",
+                    "scope": "treatment.ivt_treatment",
                     "value": false
                   }
                 ]
@@ -272,7 +272,7 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "thrombolysis_done",
+          "scope": "treatment.thrombolysis_done",
           "value": false
         },
         "thrombolysis_done": {
@@ -286,7 +286,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "thrombolysis_reasons",
+                        "scope": "treatment.thrombolysis_reasons",
                         "value": "other"
                       }
                     ]
@@ -296,7 +296,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "thrombolysis_reasons",
+                        "scope": "treatment.thrombolysis_reasons",
                         "value": "time window"
                       }
                     ]
@@ -306,7 +306,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "thrombolysis_reasons",
+                        "scope": "treatment.thrombolysis_reasons",
                         "value": "not available"
                       }
                     ]
@@ -316,7 +316,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "thrombolysis_reasons",
+                        "scope": "treatment.thrombolysis_reasons",
                         "value": "done elsewhere"
                       }
                     ]
@@ -328,7 +328,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "thrombolysis_reasons",
+                "scope": "treatment.thrombolysis_reasons",
                 "value": "other"
               },
               "text": "Thrombolysis not given because for not specified reason. "
@@ -336,7 +336,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "thrombolysis_reasons",
+                "scope": "treatment.thrombolysis_reasons",
                 "value": "time window"
               },
               "text": "Thrombolysis not given because of outside time window. "
@@ -344,7 +344,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "thrombolysis_reasons",
+                "scope": "treatment.thrombolysis_reasons",
                 "value": "not available"
               },
               "text": "Thrombolysis not given because not available. "
@@ -352,7 +352,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "thrombolysis_reasons",
+                "scope": "treatment.thrombolysis_reasons",
                 "value": "done elsewhere"
               },
               "text": "Thrombolysis done in the other hospital before admission. "
@@ -363,7 +363,7 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "thrombectomy_done",
+          "scope": "treatment.thrombectomy_done",
           "value": true
         },
         "thrombectomy": {
@@ -371,7 +371,7 @@
             {
               "condition": {
                 "type": "EXISTENCE",
-                "scope": "tici_score",
+                "scope": "treatment.tici_score",
                 "value": true
               },
               "text": "Mechanical thrombectomy performed $dtg minutes after arrival, achieved TICI $tici_score $tici_score_meaning. "
@@ -379,7 +379,7 @@
             {
               "condition": {
                 "type": "EXISTENCE",
-                "scope": "tici_score",
+                "scope": "treatment.tici_score",
                 "value": false
               },
               "text": "Mechanical thrombectomy performed $dtg after arrival. "
@@ -390,7 +390,7 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "thrombectomy_done",
+          "scope": "treatment.thrombectomy_done",
           "value": false
         },
         "thrombectomy_done": {
@@ -404,7 +404,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "thrombectomy_reasons",
+                        "scope": "treatment.thrombectomy_reasons",
                         "value": "other"
                       }
                     ]
@@ -414,7 +414,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "thrombectomy_reasons",
+                        "scope": "treatment.thrombectomy_reasons",
                         "value": "time window"
                       }
                     ]
@@ -424,7 +424,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "thrombectomy_reasons",
+                        "scope": "treatment.thrombectomy_reasons",
                         "value": "not available"
                       }
                     ]
@@ -434,7 +434,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "thrombectomy_reasons",
+                        "scope": "treatment.thrombectomy_reasons",
                         "value": "done elsewhere"
                       }
                     ]
@@ -446,7 +446,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "thrombectomy_reasons",
+                "scope": "treatment.thrombectomy_reasons",
                 "value": "other"
               },
               "text": "Thrombectomy not given because for not specified reason. "
@@ -454,7 +454,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "thrombectomy_reasons",
+                "scope": "treatment.thrombectomy_reasons",
                 "value": "time window"
               },
               "text": "Thrombectomy not given because of outside time window. "
@@ -462,7 +462,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "thrombectomy_reasons",
+                "scope": "treatment.thrombectomy_reasons",
                 "value": "not available"
               },
               "text": "Thrombectomy not given because not available. "
@@ -470,7 +470,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "thrombectomy_reasons",
+                "scope": "treatment.thrombectomy_reasons",
                 "value": "done elsewhere"
               },
               "text": "Thrombectomy done in the other hospital before admission. "
@@ -481,7 +481,7 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "thrombectomy_transport",
+          "scope": "treatment.thrombectomy_transport",
           "value": true
         },
         "text": "Patient transported to interventional center for mechanical thrombectomy after $dio minutes from the arrival. "
@@ -493,7 +493,7 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "findings",
+          "scope": "follow_up_imaging.findings",
           "value": true
         },
         "text": "$findings on follow up $imaging_type. "
@@ -504,12 +504,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "imaging_type",
+              "scope": "follow_up_imaging.imaging_type",
               "value": false
             },
             {
               "type": "VALUE",
-              "scope": "imaging_type",
+              "scope": "follow_up_imaging.imaging_type",
               "value": "no"
             }
           ]
@@ -523,7 +523,7 @@
       {
         "condition": {
           "type": "VALUE",
-          "scope": "dysphagia_screening",
+          "scope": "post_acute_care.dysphagia_screening",
           "value": "no"
         },
         "text": "Patient screened for dysphagia but dysphagia not present. "
@@ -531,7 +531,7 @@
       {
         "condition": {
           "type": "VALUE",
-          "scope": "dysphagia_screening",
+          "scope": "post_acute_care.dysphagia_screening",
           "value": "yes"
         },
         "text": "Patient diagnosed with dysphagia. "
@@ -542,12 +542,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "dysphagia_screening",
+              "scope": "post_acute_care.dysphagia_screening",
               "value": false
             },
             {
               "type": "VALUE",
-              "scope": "dysphagia_screening",
+              "scope": "post_acute_care.dysphagia_screening",
               "value": "not applicable"
             }
           ]
@@ -560,17 +560,17 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "physiotherapy",
+              "scope": "post_acute_care.physiotherapy",
               "value": true
             },
             {
               "type": "EXISTENCE",
-              "scope": "ergotherapy",
+              "scope": "post_acute_care.ergotherapy",
               "value": true
             },
             {
               "type": "EXISTENCE",
-              "scope": "speechtherapy",
+              "scope": "post_acute_care.speechtherapy",
               "value": true
             }
           ]
@@ -584,7 +584,7 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "complications",
+          "scope": "post_stroke_complications.complications",
           "value": true
         },
         "text": "Post stroke complications $complications. "
@@ -596,7 +596,7 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "large_artery",
+          "scope": "etiology.large_artery",
           "value": true
         },
         "large_artery_atherosclerosis": {
@@ -607,12 +607,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "carotid_stenosis",
+                    "scope": "etiology.carotid_stenosis",
                     "value": true
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "carotid_stenosis_followup",
+                    "scope": "etiology.carotid_stenosis_followup",
                     "value": true
                   }
                 ]
@@ -625,12 +625,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "carotid_stenosis",
+                    "scope": "etiology.carotid_stenosis",
                     "value": true
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "carotid_stenosis_followup",
+                    "scope": "etiology.carotid_stenosis_followup",
                     "value": false
                   }
                 ]
@@ -643,12 +643,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "carotid_stenosis",
+                    "scope": "etiology.carotid_stenosis",
                     "value": false
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "carotid_stenosis_followup",
+                    "scope": "etiology.carotid_stenosis_followup",
                     "value": false
                   }
                 ]
@@ -661,7 +661,7 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "cardioembolism",
+          "scope": "etiology.cardioembolism",
           "value": true
         },
         "cardioembolism": {
@@ -669,7 +669,7 @@
             {
               "condition": {
                 "type": "EXISTENCE",
-                "scope": "afib_flutter",
+                "scope": "etiology.afib_flutter",
                 "value": true
               },
               "text": "Cardioembolic etiology due to $reasons. "
@@ -677,7 +677,7 @@
             {
               "condition": {
                 "type": "EXISTENCE",
-                "scope": "afib_flutter",
+                "scope": "etiology.afib_flutter",
                 "value": false
               },
               "text": ""
@@ -699,7 +699,7 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "discharge_destination",
+                    "scope": "discharge.discharge_destination",
                     "value": true
                   },
                   {
@@ -707,7 +707,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "discharge_destination",
+                        "scope": "discharge.discharge_destination",
                         "value": "dead"
                       }
                     ]
@@ -722,12 +722,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "discharge_destination",
+                    "scope": "discharge.discharge_destination",
                     "value": true
                   },
                   {
                     "type": "VALUE",
-                    "scope": "discharge_destination",
+                    "scope": "discharge.discharge_destination",
                     "value": "dead"
                   }
                 ]
@@ -737,7 +737,7 @@
             {
               "condition": {
                 "type": "EXISTENCE",
-                "scope": "discharge_destination",
+                "scope": "discharge.discharge_destination",
                 "value": false
               },
               "text": "Patient discharged on $discharge_date. "
@@ -755,12 +755,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "nihss",
+                    "scope": "discharge.nihss",
                     "value": true
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "mrs",
+                    "scope": "discharge.mrs",
                     "value": true
                   }
                 ]
@@ -773,12 +773,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "nihss",
+                    "scope": "discharge.nihss",
                     "value": true
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "mrs",
+                    "scope": "discharge.mrs",
                     "value": false
                   }
                 ]
@@ -791,12 +791,12 @@
                 "conditions": [
                   {
                     "type": "EXISTENCE",
-                    "scope": "nihss",
+                    "scope": "discharge.nihss",
                     "value": false
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "mrs",
+                    "scope": "discharge.mrs",
                     "value": true
                   }
                 ]
@@ -812,7 +812,7 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "discharge_medication",
+              "scope": "discharge.discharge_medication",
               "value": true
             },
             {
@@ -820,7 +820,7 @@
               "conditions": [
                 {
                   "type": "VALUE",
-                  "scope": "discharge_destination",
+                  "scope": "discharge.discharge_destination",
                   "value": "dead"
                 }
               ]
@@ -835,7 +835,7 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "contact_date",
+              "scope": "discharge.contact_date",
               "value": true
             },
             {
@@ -843,7 +843,7 @@
               "conditions": [
                 {
                   "type": "VALUE",
-                  "scope": "discharge_destination",
+                  "scope": "discharge.discharge_destination",
                   "value": "dead"
                 }
               ]

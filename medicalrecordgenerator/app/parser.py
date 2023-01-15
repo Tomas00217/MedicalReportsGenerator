@@ -54,8 +54,8 @@ class Parser:
 
     def parse_value(self, condition: dict) -> bool:
         try:
-            scope = condition["scope"]
-        except KeyError:
+            scope, variable = condition["scope"].split(".")
+        except (KeyError, ValueError):
             logging.error("Invalid 'scope' key for condition")
             raise
 
@@ -65,12 +65,12 @@ class Parser:
             logging.error("Invalid 'value' key for condition")
             raise
 
-        return self.data[scope] == value
+        return self.data[scope][variable] == value
 
     def parse_existence(self, condition: dict) -> bool:
         try:
-            scope = condition["scope"]
-        except KeyError:
+            scope, variable = condition["scope"].split(".")
+        except (KeyError, ValueError):
             logging.error("Invalid 'scope' key for condition")
             raise
 
@@ -80,7 +80,7 @@ class Parser:
             logging.error("Invalid 'value' key for condition")
             raise
 
-        variable = self.data[scope]
+        variable = self.data[scope][variable]
 
         if variable:
             if (type(variable) is int) or (type(variable) is float):
@@ -138,13 +138,13 @@ class Parser:
 
         return is_true
 
-    def parse_data(self, dictionary: dict) -> str:
+    def parse_data(self, dictionary: dict, data) -> str:
         result = ""
 
-        if type(self.data) is not dict:
-            diagnosis_dict = vars(self.data)
+        if type(data) is not dict:
+            diagnosis_dict = vars(data)
         else:
-            diagnosis_dict = self.data
+            diagnosis_dict = data
 
         for key, value in diagnosis_dict.items():
             if value:
