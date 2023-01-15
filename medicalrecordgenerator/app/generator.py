@@ -1,3 +1,5 @@
+import logging
+
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from medicalrecordgenerator.app.parser import Parser
 from medicalrecordgenerator.data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
@@ -85,7 +87,12 @@ class MedicalRecordsGenerator:
 
     def create_onset(self):
         onset_data = OnsetData.from_dict(self.data)
-        settings = self.dictionary["settings"]
+
+        try:
+            settings = self.dictionary["settings"]
+        except KeyError:
+            logging.error("Dictionary is missing key 'settings'")
+            return
 
         onset = Onset(onset_data.onset_timestamp,
                       onset_data.wake_up_stroke,
@@ -190,8 +197,17 @@ class MedicalRecordsGenerator:
         discharge_data = DischargeData.from_dict(self.data)
         medication_data = MedicationData.from_dict(self.data)
 
-        variables = self.dictionary["variables"]
-        settings = self.dictionary["settings"]
+        try:
+            variables = self.dictionary["variables"]
+        except KeyError:
+            logging.error("Dictionary is missing key 'variables'")
+            return
+
+        try:
+            settings = self.dictionary["settings"]
+        except KeyError:
+            logging.error("Dictionary is missing key 'settings'")
+            return
 
         discharge = Discharge(discharge_data.discharge_date,
                               self.parser.translate_data(variables["discharge_destination"],
