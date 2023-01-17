@@ -4,6 +4,9 @@ from typing import Optional
 
 from medicalrecordgenerator.app.parser import Parser
 
+DEFAULT_DATE_FORMAT = "%b %d %Y"
+DEFAULT_TIME_FORMAT = "%H:%M"
+
 
 class GeneratedObject:
 
@@ -33,9 +36,9 @@ class Diagnosis(GeneratedObject):
 
 class Onset(GeneratedObject):
     def __init__(self, onset_timestamp: datetime, wake_up_stroke: Optional[bool],
-                 date_format: str):
-        self.onset_date = onset_timestamp.date().strftime(date_format)
-        self.onset_time = onset_timestamp.time()
+                 date_format: str, time_format: str):
+        self.onset_date = onset_timestamp.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
+        self.onset_time = onset_timestamp.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)
         self.wake_up_stroke = wake_up_stroke if wake_up_stroke is not None else False
 
 
@@ -127,11 +130,12 @@ class Discharge(GeneratedObject):
     def __init__(self, discharge_date: datetime, discharge_destination: Optional[str], nihss: Optional[int],
                  mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
                  discharge_medication: str, date_format: str):
-        self.discharge_date = discharge_date.date().strftime(date_format)
+        self.discharge_date = discharge_date.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
         self.discharge_destination = discharge_destination
         self.nihss = int(nihss) if nihss else None
         self.mrs = mrs,
-        self.contact_date = contact_date.strftime(date_format) if contact_date else None
+        self.contact_date = contact_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT) \
+            if contact_date else None
         self.mode_contact = mode_contact
         self.discharge_medication = discharge_medication
 

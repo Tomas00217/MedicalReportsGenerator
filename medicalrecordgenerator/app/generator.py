@@ -16,6 +16,18 @@ class MedicalRecordsGenerator:
         self.data = data
         self.transported = False
         self.parser = Parser({})
+        try:
+            self.variables = dictionary["variables"]
+        except KeyError:
+            logging.error("Dictionary is missing key 'variables'")
+            self.variables = {}
+
+        try:
+            self.settings = dictionary["settings"]
+        except KeyError:
+            logging.error("Dictionary is missing key 'settings'")
+            self.settings = {}
+
         self.medical_record = self.create_medical_record()
 
     def generate_medical_record(self):
@@ -76,54 +88,51 @@ class MedicalRecordsGenerator:
     def create_diagnosis(self):
         diagnosis_data = DiagnosisData.from_dict(self.data)
         diagnosis_occlusions = DiagnosisOcclusionsData.from_dict(self.data)
-        variables = self.dictionary["variables"]
 
         diagnosis = Diagnosis(diagnosis_data.stroke_type,
                               diagnosis_data.aspects_score,
-                              self.parser.translate_data(variables["imaging_type"], diagnosis_data.imaging_type),
-                              self.parser.parse_data(variables["occlusion_position"], diagnosis_occlusions))
+                              self.parser.translate_data(self.get_variable("imaging_type"),
+                                                         diagnosis_data.imaging_type),
+                              self.parser.parse_data(self.get_variable("occlusion_position"),
+                                                     diagnosis_occlusions))
 
         return diagnosis
 
     def create_onset(self):
         onset_data = OnsetData.from_dict(self.data)
 
-        try:
-            settings = self.dictionary["settings"]
-        except KeyError:
-            logging.error("Dictionary is missing key 'settings'")
-            return
-
         onset = Onset(onset_data.onset_timestamp,
                       onset_data.wake_up_stroke,
-                      settings["date_format"])
+                      self.get_setting("date_format"),
+                      self.get_setting("time_format"))
 
         return onset
 
     def create_admission(self):
         admission_data = AdmissionData.from_dict(self.data)
-        variables = self.dictionary["variables"]
         admission = Admission(admission_data.nihss_score, admission_data.aspects_score,
-                              self.parser.translate_data(variables["hospitalized_in"], admission_data.hospitalized_in))
+                              self.parser.translate_data(self.get_variable("hospitalized_in"),
+                                                         admission_data.hospitalized_in))
 
         return admission
 
     def create_treatment(self):
         treatment_data = TreatmentData.from_dict(self.data)
-        variables = self.dictionary["variables"]
-        thrombolysis = Thrombolysis(treatment_data.dtn, self.parser.translate_data(variables["ivt_treatment"],
-                                                                                   treatment_data.ivt_treatment),
+        thrombolysis = Thrombolysis(treatment_data.dtn,
+                                    self.parser.translate_data(self.get_variable("ivt_treatment"),
+                                                               treatment_data.ivt_treatment),
                                     treatment_data.ivt_dose)
+
         thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio,
-                                    self.parser.get_tici_meaning(variables["tici_score_meaning"],
+                                    self.parser.get_tici_meaning(self.get_variable("tici_score_meaning"),
                                                                  treatment_data.tici_score))
 
         self.transported = thrombectomy.thrombectomy_transport
 
         treatment = Treatment(treatment_data.thrombolysis, treatment_data.thrombectomy,
-                              self.parser.translate_data(variables["no_thrombolysis_reason"],
+                              self.parser.translate_data(self.get_variable("no_thrombolysis_reason"),
                                                          treatment_data.no_thrombolysis_reason),
-                              self.parser.translate_data(variables["no_thrombolysis_reason"],
+                              self.parser.translate_data(self.get_variable("no_thrombectomy_reason"),
                                                          treatment_data.no_thrombectomy_reason),
                               thrombolysis, thrombectomy)
 
@@ -136,9 +145,7 @@ class MedicalRecordsGenerator:
         imaging_data = ImagingData.from_dict(self.data)
         imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
 
-        variables = self.dictionary["variables"]["post_treatment_findings"]
-
-        imaging = FollowUpImaging(self.parser.parse_data(variables, imaging_treatment_data),
+        imaging = FollowUpImaging(self.parser.parse_data(self.get_variable("post_treatment_findings"), imaging_treatment_data),
                                   imaging_data.imaging_type)
 
         return imaging
@@ -148,7 +155,6 @@ class MedicalRecordsGenerator:
             return None
 
         post_acute_care_data = PostAcuteCareData.from_dict(self.data)
-        variables = self.dictionary["variables"]["therapies"]
 
         post_acute_care = PostAcuteCare(post_acute_care_data.dysphagia_screening,
                                         post_acute_care_data.physiotherapy_received,
@@ -160,16 +166,15 @@ class MedicalRecordsGenerator:
                                      "ergotherapy": post_acute_care.ergotherapy,
                                      "speechtherapy": post_acute_care.speechtherapy}
 
-        post_acute_care.therapies = self.parser.parse_data(variables, post_acute_care_therapies)
+        post_acute_care.therapies = self.parser.parse_data(self.get_variable("therapies"), post_acute_care_therapies)
 
         return post_acute_care
 
     def create_post_stroke_complications(self):
         post_stroke_complications_data = PostStrokeComplicationsData.from_dict(self.data)
-        variables = self.dictionary["variables"]["post_stroke_complications"]
 
-        post_stroke_complications = PostStrokeComplications(self.parser.parse_data(variables,
-                                                                                   post_stroke_complications_data))
+        post_stroke_complications = PostStrokeComplications(self.parser.parse_data(
+            self.get_variable("post_stroke_complications"), post_stroke_complications_data))
 
         return post_stroke_complications
 
@@ -197,24 +202,30 @@ class MedicalRecordsGenerator:
         discharge_data = DischargeData.from_dict(self.data)
         medication_data = MedicationData.from_dict(self.data)
 
-        try:
-            variables = self.dictionary["variables"]
-        except KeyError:
-            logging.error("Dictionary is missing key 'variables'")
-            return
-
-        try:
-            settings = self.dictionary["settings"]
-        except KeyError:
-            logging.error("Dictionary is missing key 'settings'")
-            return
-
         discharge = Discharge(discharge_data.discharge_date,
-                              self.parser.translate_data(variables["discharge_destination"],
+                              self.parser.translate_data(self.get_variable("discharge_destination"),
                                                          discharge_data.discharge_destination),
                               discharge_data.nihss, discharge_data.mrs, discharge_data.contact_date,
-                              discharge_data.mode_contact, self.parser.parse_data(variables["medications"],
+                              discharge_data.mode_contact, self.parser.parse_data(self.get_variable("medications"),
                                                                                   medication_data),
-                              settings["date_format"])
+                              self.get_setting("date_format"))
 
         return discharge
+
+    def get_variable(self, key: str):
+        try:
+            variable = self.variables[key]
+        except KeyError:
+            logging.error("Variables are missing key %s", key)
+            return
+
+        return variable
+
+    def get_setting(self, key: str):
+        try:
+            setting = self.settings[key]
+        except KeyError:
+            logging.error("Settings are missing key %s", key)
+            return
+
+        return setting

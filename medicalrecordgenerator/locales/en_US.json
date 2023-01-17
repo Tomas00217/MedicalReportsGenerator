@@ -855,7 +855,6 @@
     ]
   },
   "settings": {
-    "date_time_format": "%b %d %Y at %H:%M",
     "date_format": "%b %d %Y",
     "time_format": "%H:%M"
   },
