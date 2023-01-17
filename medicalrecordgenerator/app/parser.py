@@ -54,8 +54,8 @@ class Parser:
 
     def parse_value(self, condition: dict) -> bool:
         try:
-            scope = condition["scope"]
-        except KeyError:
+            scope, variable = condition["scope"].split(".")
+        except (KeyError, ValueError):
             logging.error("Invalid 'scope' key for condition")
             raise
 
@@ -65,12 +65,12 @@ class Parser:
             logging.error("Invalid 'value' key for condition")
             raise
 
-        return self.data[scope] == value
+        return self.data[scope][variable] == value
 
     def parse_existence(self, condition: dict) -> bool:
         try:
-            scope = condition["scope"]
-        except KeyError:
+            scope, variable = condition["scope"].split(".")
+        except (KeyError, ValueError):
             logging.error("Invalid 'scope' key for condition")
             raise
 
@@ -80,7 +80,7 @@ class Parser:
             logging.error("Invalid 'value' key for condition")
             raise
 
-        variable = self.data[scope]
+        variable = self.data[scope][variable]
 
         if variable:
             if (type(variable) is int) or (type(variable) is float):
@@ -138,17 +138,21 @@ class Parser:
 
         return is_true
 
-    def parse_data(self, dictionary: dict) -> str:
+    def parse_data(self, dictionary: dict, data) -> str:
         result = ""
+        if dictionary is None:
+            return result
 
-        if type(self.data) is not dict:
-            diagnosis_dict = vars(self.data)
+        if type(data) is not dict:
+            diagnosis_dict = vars(data)
         else:
-            diagnosis_dict = self.data
+            diagnosis_dict = data
 
         for key, value in diagnosis_dict.items():
             if value:
-                result += dictionary[key] if result == "" else f", {dictionary[key]}"
+                variable = self.get_variable(dictionary, key)
+
+                result += variable if result == "" else f", {variable}"
 
         result = self.replace_last(result, ",", " and")
 
@@ -156,6 +160,9 @@ class Parser:
 
     @staticmethod
     def get_tici_meaning(dictionary: dict, tici_score: str) -> str:
+        if dictionary is None:
+            return ""
+
         if tici_score is not None and tici_score != "occlusion not confirmed":
             tici_score = int(tici_score)
             return dictionary[f"tici_score_{tici_score}"]
@@ -164,7 +171,19 @@ class Parser:
     def replace_last(string: str, old: str, new: str) -> str:
         return new.join(string.rsplit(old, 1))
 
-    @staticmethod
-    def translate_data(dictionary: dict, key: dict):
+    def translate_data(self, dictionary: dict, key: str) -> str:
+        if dictionary is None:
+            return ""
+
         if key:
-            return dictionary[key]
+            return self.get_variable(dictionary, key)
+
+    @staticmethod
+    def get_variable(dictionary: dict, key: str) -> str:
+        try:
+            variable = dictionary[key]
+        except KeyError:
+            logging.error("Invalid key %s", key)
+            variable = ""
+
+        return variable

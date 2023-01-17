@@ -4,19 +4,22 @@ from typing import Optional
 
 from medicalrecordgenerator.app.parser import Parser
 
+DEFAULT_DATE_FORMAT = "%b %d %Y"
+DEFAULT_TIME_FORMAT = "%H:%M"
+
 
 class GeneratedObject:
 
-    def generate(self, dictionary: dict) -> str:
-        text = self.get_text(dictionary)
+    def generate(self, dictionary: dict, parser: Parser) -> str:
+        text = self.get_text(dictionary, parser)
 
         return Template(text).safe_substitute(vars(self))
 
-    def get_text(self, dictionary: dict) -> str:
+    @staticmethod
+    def get_text(dictionary: dict, parser: Parser) -> str:
         try:
-            parser = Parser(vars(self))
             text = parser.parse(dictionary)
-        except KeyError:
+        except (KeyError, ValueError):
             return ""
 
         return text
@@ -33,9 +36,9 @@ class Diagnosis(GeneratedObject):
 
 class Onset(GeneratedObject):
     def __init__(self, onset_timestamp: datetime, wake_up_stroke: Optional[bool],
-                 date_format: str):
-        self.onset_date = onset_timestamp.date().strftime(date_format)
-        self.onset_time = onset_timestamp.time()
+                 date_format: str, time_format: str):
+        self.onset_date = onset_timestamp.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
+        self.onset_time = onset_timestamp.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)
         self.wake_up_stroke = wake_up_stroke if wake_up_stroke is not None else False
 
 
@@ -73,19 +76,6 @@ class Treatment(GeneratedObject):
         self.thrombectomy_reasons = thrombectomy_reasons
         self.thrombolysis = thrombolysis
         self.thrombectomy = thrombectomy
-
-    def get_text(self, dictionary: dict) -> str:
-        dict_to_parse = vars(self)
-        dict_to_parse.update(vars(self.thrombolysis))
-        dict_to_parse.update(vars(self.thrombectomy))
-
-        try:
-            parser = Parser(vars(self))
-            text = parser.parse(dictionary)
-        except KeyError:
-            return ""
-
-        return text
 
 
 class FollowUpImaging(GeneratedObject):
@@ -135,28 +125,53 @@ class Etiology(GeneratedObject):
         self.large_artery_atherosclerosis_dat = large_artery_atherosclerosis_dat
         self.cardioembolism_dat = cardioembolism_dat
 
-    def get_text(self, dictionary: dict) -> str:
-        dict_to_parse = vars(self)
-        dict_to_parse.update(vars(self.large_artery_atherosclerosis_dat))
-        dict_to_parse.update(vars(self.cardioembolism_dat))
-
-        try:
-            parser = Parser(vars(self))
-            text = parser.parse(dictionary)
-        except KeyError:
-            return ""
-
-        return text
-
 
 class Discharge(GeneratedObject):
     def __init__(self, discharge_date: datetime, discharge_destination: Optional[str], nihss: Optional[int],
                  mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
                  discharge_medication: str, date_format: str):
-        self.discharge_date = discharge_date.date().strftime(date_format)
+        self.discharge_date = discharge_date.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
         self.discharge_destination = discharge_destination
         self.nihss = int(nihss) if nihss else None
         self.mrs = mrs,
-        self.contact_date = contact_date.strftime(date_format) if contact_date else None
+        self.contact_date = contact_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT) \
+            if contact_date else None
         self.mode_contact = mode_contact
         self.discharge_medication = discharge_medication
+
+
+class MedicalRecord:
+    def __init__(self, diagnosis: Diagnosis, onset: Onset, admission: Admission, treatment: Treatment,
+                 follow_up_imaging: FollowUpImaging, post_acute_care: PostAcuteCare,
+                 post_stroke_complications: PostStrokeComplications, etiology: Etiology, discharge: Discharge):
+        self.diagnosis = diagnosis
+        self.onset = onset
+        self.admission = admission
+        self.treatment = treatment
+        self.follow_up_imaging = follow_up_imaging
+        self.post_acute_care = post_acute_care
+        self.post_stroke_complications = post_stroke_complications
+        self.etiology = etiology
+        self.discharge = discharge
+
+    def to_dict(self):
+        data = {
+            "diagnosis": vars(self.diagnosis) if self.diagnosis else {},
+            "onset": vars(self.onset) if self.onset else {},
+            "admission": vars(self.admission) if self.admission else {},
+            "treatment": vars(self.treatment) if self.treatment else {},
+            "follow_up_imaging": vars(self.follow_up_imaging) if self.follow_up_imaging else {},
+            "post_acute_care": vars(self.post_acute_care) if self.post_acute_care else {},
+            "post_stroke_complications": vars(self.post_stroke_complications) if self.post_stroke_complications else {},
+            "etiology": vars(self.etiology) if self.etiology else {},
+            "discharge": vars(self.discharge) if self.discharge else {},
+        }
+
+        if self.treatment:
+            data["treatment"].update(vars(self.treatment.thrombolysis))
+            data["treatment"].update(vars(self.treatment.thrombectomy))
+        if self.etiology:
+            data["etiology"].update(vars(self.etiology.large_artery_atherosclerosis_dat))
+            data["etiology"].update(vars(self.etiology.cardioembolism_dat))
+
+        return data
