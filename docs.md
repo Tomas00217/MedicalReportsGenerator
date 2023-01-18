@@ -1,34 +1,41 @@
-# Medical Records Generator <!-- omit in toc -->
+# **Medical Records Generator** <!-- omit in toc -->
 
-## Contents <!-- omit in toc -->
-- [About](#about)
-- [Creating dictionary](#creating-dictionary)
-  - [Setup](#setup)
-  - [Default structure](#default-structure)
-    - [Settings](#settings)
-    - [Variables](#variables)
-  - [Conditions](#conditions)
-  - [Examples](#examples)
-    - [Date format example](#date-format-example)
-    - [Time format example](#time-format-example)
+## **Contents** <!-- omit in toc -->
+- [**About**](#about)
+- [**Creating dictionary**](#creating-dictionary)
+  - [**Setup**](#setup)
+  - [**Default structure**](#default-structure)
+    - [**Settings**](#settings)
+    - [**Variables**](#variables)
+  - [**Variants**](#variants)
+    - [**Structure**](#structure)
+  - [**Conditions**](#conditions)
+    - [**Structure**](#structure-1)
+    - [**Type**](#type)
+    - [**Scope**](#scope)
+    - [**Value**](#value)
+  - [**Examples**](#examples)
+    - [**Date format example**](#date-format-example)
+    - [**Time format example**](#time-format-example)
+    - [**Variable examples**](#variable-examples)
 
 
-## About
+## **About**
 
-TBD
+The following document serves as a documentation of how to write a dictionary for the Medical Records Generator application.
 
-## Creating dictionary
+## **Creating dictionary**
 
-### Setup
+### **Setup**
 
-**Format**
-The medical records generator works only with dictionaries written using **json**
+**Format**\
+The medical records generator works only with dictionaries written using the **json** format. 
 
-**Name**
+**Name**\
 The file name should correspond to the language code of the language the dictionary is written for. Language codes can be found at: https://www.fincher.org/Utilities/CountryLanguageList.shtml
 
 
-### Default structure
+### **Default structure**
 
 The following is the default structure that every dictionary, that is to be used by this application, should follow. *Disclaimer: For the generator to work correctly do not remove any of the parts of the following json file.*
 ```json
@@ -203,14 +210,14 @@ The following is the default structure that every dictionary, that is to be used
   }
 }
 ```
-#### Settings
+#### **Settings**
 
 **date_format**: A global setting that sets all the dates in the generated record based on the format. Leaving the setting empty will use the default date format. 
-Default date format is ```%b %d %Y```.
+Default date format is ```%b %d %Y```.\
 [Examples](#date-format-example)
 
 **time_format**: A global setting that sets all the times in the generated record based on the format. Leaving the setting empty will use the default time format. 
-Default time format is ```"%H:%M"```.
+Default time format is ```"%H:%M"```.\
 [Examples](#time-format-example)
 
 Format is specified using a combination of directives. The available directives can be seen in the table below. To see examples of the formats follow the [link](#examples).
@@ -246,36 +253,89 @@ Format is specified using a combination of directives. The available directives 
 | %U        | Week number of the year (Sunday as the first day of the week). All days in a new year preceding the first Sunday are considered to be in week 0. | 00, 01, …, 53        |
 | %W        | Week number of the year (Monday as the first day of the week). All days in a new year preceding the first Monday are considered to be in week 0. | 00, 01, …, 53        |
 
-#### Variables
+#### **Variables**
 
+The "variables" part of the dictionary specifies custom translations for the given data. It is recommended not to delete any variable from the default structure as it may lead to unwanted logging errors. To ignore a variable, its translation should be left empty.
+[Examples](#variable-examples)
 
-### Conditions
+### **Variants**
 
-### Examples
+#### **Structure**
 
-#### Date format example
+TODO
+
+### **Conditions**
+
+#### **Structure**
+
+TODO
+
+#### **Type**
+
+TODO
+
+#### **Scope**
+
+TODO
+
+#### **Value**
+
+TODO
+
+### **Examples**
+
+#### **Date format example**
 The following examples will work with this date ```"2023-01-17 18:48:49.503070"```
 
 Default date format of the medical records generator is ```"%b %d %Y"```.
 
-- Example 1: ```"date_format": ""```
+- Example 1: ```"date_format": ""```\
+Formated date: Jan 17 2023\
 Leaving the setting empty will use the default date format.
-Formated date: Jan 17 2023
-- Example 2: ```"date_format": "%a-%m-%y"```
+- Example 2: ```"date_format": "%a-%m-%y"```\
 Formated date: Tue-01-23
-- Example 3: ```"date_format": "%d. %B %Y"```
+- Example 3: ```"date_format": "%d. %B %Y"```\
 Formated date: 17. January 2023
 
-#### Time format example
+#### **Time format example**
 
 The following examples will work with this date ```"2023-01-17 18:48:49.503070"```
 
 Default time format of the medical records generator is ```"%H:%M"```.
 
-- Example 1: ```"time_format": ""```
+- Example 1: ```"time_format": ""```\
+Formated time: 18:48\
 Leaving the setting empty will use the default time format.
-Formated time: 18:48
-- Example 2: ```"time_format": "%I %p %S"```
+- Example 2: ```"time_format": "%I %p %S"```\
 Formated time: 06 PM 49
-- Example 3: ```"time_format": "Seconds: %S, Minutes: %M, Hour: %H"```
+- Example 3: ```"time_format": "Seconds: %S, Minutes: %M, Hour: %H"```\
 Formated time: Seconds: 49, Minutes: 48, Hour: 18
+
+#### **Variable examples**
+
+- Example 1: 
+  ```json
+  "therapies": {
+    "physiotherapy": "physiotherapy",
+    "ergotherapy": "ergo-therapy",
+    "speechtherapy": ""
+  },
+  ```
+  This will make it so that if the patient was given physiotherapy, ergotherapy and speechtherapy, the generated report will translate the values as follows:
+  - physiotherapy -> ```physiotherapy``` 
+  - ergotherapy -> ```ergo-therapy```
+  - speechtherapy -> ``` ```
+  \
+  The speechtherapy translation is left empty and therefore even if the data is pressent, no text will be generated.
+
+- Example 2:
+  ```json
+  "hospitalized_in": {
+    "ICU/stroke unit": "ICU/stroke unit",
+    "monitored bed": "monitored bed in hospital"  
+  },
+  ```
+  Notice that in this example, we are missing the field ```"standard bed": ""``` from the default structure. Although this will still generate the record properly, there will be logging error present about a missing variable. The generated report will translate the values as follows:
+  - ICU/stroke unit -> ```ICU/stroke unit```
+  - monitored bed -> ```monitored bed in hospital```
+  - standard bed -> Logging error about a missing variable key
