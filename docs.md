@@ -5,19 +5,26 @@
 - [**Creating dictionary**](#creating-dictionary)
   - [**Setup**](#setup)
   - [**Default structure**](#default-structure)
+    - [**Blocks**](#blocks)
     - [**Settings**](#settings)
     - [**Variables**](#variables)
   - [**Variants**](#variants)
     - [**Structure**](#structure)
+      - [**Simple**](#simple)
+      - [**Complex**](#complex)
   - [**Conditions**](#conditions)
     - [**Structure**](#structure-1)
     - [**Type**](#type)
     - [**Scope**](#scope)
     - [**Value**](#value)
   - [**Examples**](#examples)
-    - [**Date format example**](#date-format-example)
-    - [**Time format example**](#time-format-example)
+    - [**Date format examples**](#date-format-examples)
+    - [**Time format examples**](#time-format-examples)
     - [**Variable examples**](#variable-examples)
+    - [**Variants examples**](#variants-examples)
+      - [**Simple variants**](#simple-variants)
+      - [**Complex variants**](#complex-variants)
+    - [**Conditions examples**](#conditions-examples)
 
 
 ## **About**
@@ -210,15 +217,21 @@ The following is the default structure that every dictionary, that is to be used
   }
 }
 ```
+
+#### **Blocks**
+
+The whole generated report is divided into nine separate blocks. These blocks are: ```diagnosis, onset, admission, treatment, follow_up_imaging, post_acute_care, post_stroke_complications, etiology and discharge```. Every dictionary should contain all of the blocks even if left empty. \
+Every block can contain multiple [variants](#variants) which specify the generated sentences.
+
 #### **Settings**
 
 **date_format**: A global setting that sets all the dates in the generated record based on the format. Leaving the setting empty will use the default date format. 
 Default date format is ```%b %d %Y```.\
-[Examples](#date-format-example)
+[Examples](#date-format-examples)
 
 **time_format**: A global setting that sets all the times in the generated record based on the format. Leaving the setting empty will use the default time format. 
 Default time format is ```"%H:%M"```.\
-[Examples](#time-format-example)
+[Examples](#time-format-examples)
 
 Format is specified using a combination of directives. The available directives can be seen in the table below. To see examples of the formats follow the [link](#examples).
 
@@ -260,9 +273,44 @@ The "variables" part of the dictionary specifies custom translations for the giv
 
 ### **Variants**
 
+As specified in the [blocks](#blocks) section, each block can contain multiple variants of generated senteces.
+
 #### **Structure**
 
-TODO
+Each variant is written inside it's own pair of curly brackets ```{}```.\
+Those are all a part of the ```"variants": []``` bracket inside the given block.\
+There are two types of structures for variants:
+- [Simple](#simple)
+- [Complex](#complex)
+
+##### **Simple**
+
+The simple variant is composed of a ```condition``` and ```text```.\
+If the ```condition``` is met, the corresponding ```text``` will be generated, otherwise it will be skipped.\
+The simple structure looks as follows: 
+```json
+  {
+    "condition": {},
+    "text": "Text to generate if the condition is met."
+  }
+```
+To see more specific uses, refer to [examples](#variants-examples).
+
+##### **Complex**
+
+The complex variant is composed of a ```condition``` and a ```custom named block```.
+If the ```condition``` is met, the corresponding ```custom named block``` will be executed, otherwise it will be skipped.\
+A ```custom named block``` also contains the ```variants``` part. This makes it possible to nest multiple variants/custom named blocks. The name of the custom named block does not matter and is on the author of the dictionary to choose.\
+The complex structure looks as follows:
+```json
+  {
+    "condition": {},
+    "blockForShowcase": {
+      "variants": []
+    }
+  }
+```
+To see more specific uses, refer to [examples](#variants-examples).
 
 ### **Conditions**
 
@@ -276,7 +324,7 @@ TODO
 
 #### **Scope**
 
-TODO
+TODO - here specify all the scopes of the dictionary and all the data that can be used
 
 #### **Value**
 
@@ -284,7 +332,7 @@ TODO
 
 ### **Examples**
 
-#### **Date format example**
+#### **Date format examples**
 The following examples will work with this date ```"2023-01-17 18:48:49.503070"```
 
 Default date format of the medical records generator is ```"%b %d %Y"```.
@@ -297,7 +345,7 @@ Formated date: Tue-01-23
 - Example 3: ```"date_format": "%d. %B %Y"```\
 Formated date: 17. January 2023
 
-#### **Time format example**
+#### **Time format examples**
 
 The following examples will work with this date ```"2023-01-17 18:48:49.503070"```
 
@@ -339,3 +387,104 @@ Formated time: Seconds: 49, Minutes: 48, Hour: 18
   - ICU/stroke unit -> ```ICU/stroke unit```
   - monitored bed -> ```monitored bed in hospital```
   - standard bed -> Logging error about a missing variable key
+
+#### **Variants examples**
+
+These examples are working with conditions, if you haven't already studied the [conditions](#conditions) section, these examples might be hard to understand.
+
+##### **Simple variants**
+
+- Example 1
+  ```json
+  {
+    "post_acute_care": {
+      "variants": [
+        {
+          "condition": {
+            "type": "VALUE",
+            "scope": "post_acute_care.dysphagia_screening",
+            "value": "no"
+          },
+          "text": "Patient screened for dysphagia but dysphagia not present. "
+        },
+        {
+          "condition": {
+            "type": "VALUE",
+            "scope": "post_acute_care.dysphagia_screening",
+            "value": "yes"
+          },
+          "text": "Patient diagnosed with dysphagia. "
+        }
+      ]
+    }
+  }
+  ```
+  In this example, there are two variants specified in the ```post_acute_care``` block. The first which checks for the value of ```dysphagia_screening``` to be equal to ```no```. If the condition would be met, the text would be generated.\
+   After that the second variant is evaluated. Here the second variant checks for the value of ```dysphagia_screening``` to be equal to ```yes```. If this condition would be met, the text would be generated.\
+  \
+  As we can see though, these conditions contradict each other and thus, only one of the variant text would be generated.
+  - If the value of ```dysphagia_screening``` is ```yes```.\
+    Generated text is: ```Patient diagnosed with dysphagia. ```
+  - If the value of ```dysphagia_screening``` is ```no```.\
+    Generated text is: ```Patient screened for dysphagia but dysphagia not present. ```
+  - If the value of ```dysphagia_screening``` is other than ```yes``` or ```no```.\
+    No text is generated.
+
+- Example 2
+  ```json
+  {
+    "admission": {
+      "variants": [
+        {
+          "condition": {
+            "type": "AND",
+            "conditions": [
+              {
+                "type": "EXISTENCE",
+                "scope": "admission.admission_nihss",
+                "value": false
+              },
+              {
+                "type": "EXISTENCE",
+                "scope": "admission.aspects_score",
+                "value": false
+              }
+            ]
+          },
+          "text": "NIHSS and ASPECT not performed. "
+        },
+        {
+          "condition": {
+            "type": "AND",
+            "conditions": [
+              {
+                "type": "EXISTENCE",
+                "scope": "admission.admission_nihss",
+                "value": true
+              },
+              {
+                "type": "EXISTENCE",
+                "scope": "admission.admission_type",
+                "value": false
+              }
+            ]
+          },
+          "text": "Baseline NIHSS $admission_nihss. "
+        }
+      ]
+    }
+  }
+  ```
+  In this example, there are two variants specified in the ```admission``` block. Both variant conditions check the existence of ```admission_nihss``` and ```aspects_score``` at the same time. Notice that the conditions specify wether we check that the existence is true or the existence is false.
+  - If both ```admission_nihss``` and ```aspects_score``` values are **not** existent.\
+    Generated text is: ```NIHSS and ASPECT not performed. ```
+  - If the ```admission_nihss``` value is existent and its value is ```3```, and ```aspects_score``` value is **not** existent.\
+    Generated text is: ```Baseline NIHSS 3. ```. Here the ```$admission_nihss``` is replaced with the value.
+
+##### **Complex variants**
+
+TODO
+
+#### **Conditions examples**
+
+TODO

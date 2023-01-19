@@ -95,7 +95,7 @@
             {
               "type": "EXISTENCE",
               "scope": "onset.onset_time",
-              "value": false
+              "value": true
             },
             {
               "type": "EXISTENCE",
