@@ -15,8 +15,12 @@
   - [**Conditions**](#conditions)
     - [**Structure**](#structure-1)
     - [**Type**](#type)
+      - [**EXISTENCE**](#existence)
+      - [**VALUE**](#value)
+      - [**AND**](#and)
+      - [**OR**](#or)
+      - [**NOT**](#not)
     - [**Scope**](#scope)
-    - [**Value**](#value)
   - [**Examples**](#examples)
     - [**Date format examples**](#date-format-examples)
     - [**Time format examples**](#time-format-examples)
@@ -24,7 +28,13 @@
     - [**Variants examples**](#variants-examples)
       - [**Simple variants**](#simple-variants)
       - [**Complex variants**](#complex-variants)
+      - [**Combination of variants**](#combination-of-variants)
     - [**Conditions examples**](#conditions-examples)
+      - [**EXISTENCE examples**](#existence-examples)
+      - [**VALUE examples**](#value-examples)
+      - [**AND examples**](#and-examples)
+      - [**OR examples**](#or-examples)
+      - [**NOT examples**](#not-examples)
 
 
 ## **About**
@@ -277,11 +287,13 @@ As specified in the [blocks](#blocks) section, each block can contain multiple v
 
 #### **Structure**
 
-Each variant is written inside it's own pair of curly brackets ```{}```.\
+Each variant is written inside its own pair of curly brackets ```{}```.\
 Those are all a part of the ```"variants": []``` bracket inside the given block.\
 There are two types of structures for variants:
 - [Simple](#simple)
 - [Complex](#complex)
+
+Variants can be combined.
 
 ##### **Simple**
 
@@ -314,21 +326,121 @@ To see more specific uses, refer to [examples](#variants-examples).
 
 ### **Conditions**
 
+Conditions are a part of every variant. They are used to decide which text to generate based on the context.
+
 #### **Structure**
 
-TODO
+There are two kinds of structures of a condition. The structure is based on the ```type``` of a condition.
+- First kind: 
+  ```json
+  {
+    "condition": {
+      "type": "",
+      "scope": "",
+      "value": ""
+    }
+  }
+  ```
+- Second kind:
+  ```json
+  {
+    "condition": {
+      "type": "",
+      "conditions": []
+    }
+  }
+  ```
+To find out which kind to use refer to [types of conditions](#type).
 
 #### **Type**
 
-TODO
+There are five types of conditions. These are:
+- **EXISTENCE** (uses the **first** kind of structure of condition)
+- **VALUE** (uses the **first** kind of structure of condition)
+- **AND** (uses the **second** kind of structure of condition)
+- **OR** (uses the **second** kind of structure of condition)
+- **NOT** (uses the **second** kind of structure of condition)
+
+##### **EXISTENCE**
+
+```json
+{
+  "condition": {
+    "type": "EXISTENCE",
+    "scope": "scopeOfVariable",
+    "value": true
+  }
+}
+```
+The **EXISTENCE** type of conditions checks wether the variable is existent or not. It contains ```scope``` and ```value``` fields.\
+The ```scope``` defines the variable that the condition is about to check.\
+The ```value``` can be either ```true``` or ```false```.
+- Specifying the value to be ```true``` we are checking wether the variable specified in ```scope``` **does exist**.
+- Specifying the value to be ```false``` we are checking wether the variable specified in ```scope``` **does not exist**.
+  
+[Examples](#existence-examples)
+
+##### **VALUE**
+
+```json
+{
+  "condition": {
+    "type": "VALUE",
+    "scope": "scopeOfVariable",
+    "value": "test"
+  }
+}
+```
+The **VALUE** type of conditions checks wether the variable is equal to the ```value``` field. It contains ```scope``` and ```value``` fields.\
+The ```scope``` defines the variable that the condition is about to check.\
+The ```value``` field can be a number, text, boolean or any other type of value.\
+[Examples](#value-examples)
+
+##### **AND**
+
+```json
+{
+  "condition": {
+    "type": "AND",
+    "conditions": []
+  }
+},
+```
+The **AND** condition check wether **all** of the conditions specified in the ```conditions``` field are satisfied. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
+The ```conditions``` field is an array of conditions.\
+[Examples](#and-examples)
+
+##### **OR**
+
+```json
+{
+  "condition": {
+    "type": "OR",
+    "conditions": []
+  }
+},
+```
+The **OR** condition check wether **atleast one** of the conditions specified in the ```conditions``` field is satisfied. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
+The ```conditions``` field is an array of conditions.\
+[Examples](#or-examples)
+
+##### **NOT**
+
+```json
+{
+  "condition": {
+    "type": "NOT",
+    "conditions": []
+  }
+},
+```
+The **NOT** condition negates and checks the conditions specified in the ```conditions``` field. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
+The ```conditions``` field is an array of conditions.\
+[Examples](#not-examples)
 
 #### **Scope**
 
 TODO - here specify all the scopes of the dictionary and all the data that can be used
-
-#### **Value**
-
-TODO
 
 ### **Examples**
 
@@ -394,7 +506,7 @@ These examples are working with conditions, if you haven't already studied the [
 
 ##### **Simple variants**
 
-- Example 1
+- Example 1:
   ```json
   {
     "post_acute_care": {
@@ -430,7 +542,7 @@ These examples are working with conditions, if you haven't already studied the [
   - If the value of ```dysphagia_screening``` is other than ```yes``` or ```no```.\
     No text is generated.
 
-- Example 2
+- Example 2:
   ```json
   {
     "admission": {
@@ -480,11 +592,146 @@ These examples are working with conditions, if you haven't already studied the [
     Generated text is: ```NIHSS and ASPECT not performed. ```
   - If the ```admission_nihss``` value is existent and its value is ```3```, and ```aspects_score``` value is **not** existent.\
     Generated text is: ```Baseline NIHSS 3. ```. Here the ```$admission_nihss``` is replaced with the value.
+  - Otherwise no text is generated.
 
 ##### **Complex variants**
 
-TODO
+- Example 1:
+  ```json
+  {
+    "treatment": {
+      "variants": [
+        {
+          "condition": {
+            "type": "EXISTENCE",
+            "scope": "treatment.thrombolysis_done",
+            "value": true
+          },
+          "thrombolysis": {
+            "variants": [
+              {
+                "condition": {
+                  "type": "EXISTENCE",
+                  "scope": "treatment.ivt_dose",
+                  "value": true
+                },
+                "text": "First variant thrombolysis. "
+              },
+              {
+                "condition": {
+                  "type": "EXISTENCE",
+                  "scope": "treatment.ivt_dose",
+                  "value": false
+                },
+                "text": "Second variant thrombolysis. "
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "type": "EXISTENCE",
+            "scope": "treatment.thrombectomy_done",
+            "value": true
+          },
+          "thrombectomy": {
+            "variants": [
+              {
+                "condition": {
+                  "type": "EXISTENCE",
+                  "scope": "treatment.tici_score",
+                  "value": true
+                },
+                "text": "First variant thrombectomy. "
+              },
+              {
+                "condition": {
+                  "type": "EXISTENCE",
+                  "scope": "treatment.tici_score",
+                  "value": false
+                },
+                "text": "Second variant thrombectomy. "
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+  ```
+  In this example, there are two variants specified in the ```treatment``` block. Each variant specifies its ```condition``` and a ```custom named block``` after that condition. If the condition is met, the following ```custom named block``` will be executed, otherwise its skipped. Those blocks being ```thrombolysis``` and ```thrombectomy```. Both of these blocks also specify two ```simple``` variants.
+  - If ```thrombolysis_done``` is existent and ```ivt_dose``` is **not** existent, and also ```thrombectomy_done``` is existent and ```tici_score``` is existent.\
+  Generated text is: ```Second variant thrombolysis. First variant thrombectomy. ```
+  - If ```thrombolysis_done``` is existent and ```ivt_dose``` is existent, and also ```thrombectomy_done``` is **not** existent.\
+  Generated text is: ```First variant thrombolysis. ```\
+  Notice that the existence of ```ivt_dose``` in this case does not matter since the ```thrombectomy``` block will not be executed.
+ 
+##### **Combination of variants**
+
+- Example 1:
+  ```json
+  {
+    "treatment": {
+      "variants": [
+        {
+          "condition": {
+            "type": "EXISTENCE",
+            "scope": "treatment.thrombolysis_done",
+            "value": true
+          },
+          "thrombolysis": {
+            "variants": [
+              {
+                "condition": {
+                  "type": "EXISTENCE",
+                  "scope": "treatment.ivt_dose",
+                  "value": true
+                },
+                "text": "First variant inside custom named block thrombolysis. "
+              },
+              {
+                "condition": {
+                  "type": "EXISTENCE",
+                  "scope": "treatment.ivt_dose",
+                  "value": false
+                },
+                "text": "Second variant inside custom named block thrombolysis. "
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "type": "VALUE",
+            "scope": "treatment.thrombolysis_reasons",
+            "value": "time window"
+          },
+          "text": "Simple variant inside block treatment."
+        }
+      ]
+    }
+  }
+  ```
+  In this example, there are two variants specified in the ```treatment``` block. The first variant is a ```complex``` variant, while the second is a ```simple``` variant. The complex one specifies ```condition``` and ```custom named block```. The simple variant specifies ```condition``` and ```text```.
 
 #### **Conditions examples**
+
+##### **EXISTENCE examples**
+
+TODO
+
+##### **VALUE examples**
+
+TODO
+
+##### **AND examples**
+
+TODO
+
+##### **OR examples**
+
+TODO
+
+##### **NOT examples**
 
 TODO
