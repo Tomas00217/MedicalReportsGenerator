@@ -20,6 +20,7 @@
       - [**AND**](#and)
       - [**OR**](#or)
       - [**NOT**](#not)
+      - [**Combinations**](#combinations)
     - [**Scope**](#scope)
   - [**Examples**](#examples)
     - [**Date format examples**](#date-format-examples)
@@ -35,6 +36,7 @@
       - [**AND examples**](#and-examples)
       - [**OR examples**](#or-examples)
       - [**NOT examples**](#not-examples)
+      - [**Combinations examples**](#combinations-examples)
 
 
 ## **About**
@@ -438,6 +440,11 @@ The **NOT** condition negates and checks the conditions specified in the ```cond
 The ```conditions``` field is an array of conditions.\
 [Examples](#not-examples)
 
+##### **Combinations**
+
+All of the conditions above can be combined and nested into the conditions which support nesting.\
+[Examples](#combinations-examples)
+
 #### **Scope**
 
 TODO - here specify all the scopes of the dictionary and all the data that can be used
@@ -452,8 +459,10 @@ Default date format of the medical records generator is ```"%b %d %Y"```.
 - Example 1: ```"date_format": ""```\
 Formated date: Jan 17 2023\
 Leaving the setting empty will use the default date format.
+
 - Example 2: ```"date_format": "%a-%m-%y"```\
 Formated date: Tue-01-23
+
 - Example 3: ```"date_format": "%d. %B %Y"```\
 Formated date: 17. January 2023
 
@@ -466,8 +475,10 @@ Default time format of the medical records generator is ```"%H:%M"```.
 - Example 1: ```"time_format": ""```\
 Formated time: 18:48\
 Leaving the setting empty will use the default time format.
+
 - Example 2: ```"time_format": "%I %p %S"```\
 Formated time: 06 PM 49
+
 - Example 3: ```"time_format": "Seconds: %S, Minutes: %M, Hour: %H"```\
 Formated time: Seconds: 49, Minutes: 48, Hour: 18
 
@@ -718,20 +729,294 @@ These examples are working with conditions, if you haven't already studied the [
 
 ##### **EXISTENCE examples**
 
-TODO
+- Example 1:
+  ```json
+  {
+    "condition": {
+      "type": "EXISTENCE",
+      "scope": "scopeOfVariable",
+      "value": true
+    },
+    "text": "Defined scope exists."
+  }
+  ```
+  Our scope for this example is ```scopeOfVariable``` and the value is ```true```. Since the value is ```true``` we check wether our scope **exists**.
+  - If ```scopeOfVariable``` is defined and has a non-empty value, the condition is met and we generate the specified ```text```.
+  - If ```scopeOfVariable``` is not defined or has a empty value, the condition is not met and we skip the generation of ```text```.
+
+- Example 2:
+  ```json
+  {
+    "condition": {
+      "type": "EXISTENCE",
+      "scope": "scopeOfVariable",
+      "value": false
+    },
+    "text": "Defined scope does not exist."
+  }
+  ```
+  Our scope for this example is ```scopeOfVariable``` and the value is ```false```. Since the value is ```false``` we check wether our scope **does not exist**.
+  - If ```scopeOfVariable``` is defined and has a non-empty value, the condition is not met and we skip the generation of ```text```.
+  - If ```scopeOfVariable``` is not defined or has a empty value, the condition is met and we generate the specified ```text```.
+
+- Example 3:
+  ```json
+  {
+    "condition": {
+      "type": "EXISTENCE",
+      "scope": "scopeOfVariable",
+      "value": true
+    },
+    "customNamedBlock": {
+      "variants": []
+    }
+  }
+  ```
+  Our scope for this example is ```scopeOfVariable``` and the value is ```true```. Since the value is ```true``` we check wether our scope **exists**.
+  - If ```scopeOfVariable``` is defined and has a non-empty value, the condition is met and we continue with executing the following ```customNamedBlock```.
+  - If ```scopeOfVariable``` is not defined or has a empty value, the condition is not met and we skip the execution of the following ```customNamedBlock```.
 
 ##### **VALUE examples**
 
-TODO
+- Example 1:
+  ```json
+  {
+    "condition": {
+      "type": "VALUE",
+      "scope": "stringExample",
+      "value": "example"
+    },
+    "text": "Defined scope has the value 'example'."
+  }
+  ```
+  Our scope for this example is ```stringExample``` and the value is ```example```. 
+  - If ```stringExample``` matches the value specified, in our case ```example```, the condition is met and we generate specified ```text```.
+  - If ```stringExample``` does not matche the value specified, in our case ```example```, the condition is not met and we skip the generation of ```text```.
+
+- Example 2:
+  ```json
+  {
+    "condition": {
+      "type": "VALUE",
+      "scope": "intExample",
+      "value": 3
+    },
+    "text": "Defined scope has the value '3'."
+  }
+  ```
+  Our scope for this example is ```intExample``` and the value is ```3```. 
+  - If ```intExample``` matches the value specified, in our case ```3```, the condition is met and we generate specified ```text```.
+  - If ```intExample``` does not matche the value specified, in our case ```3```, the condition is not met and we skip the generation of ```text```.
+
+- Example 3:
+  ```json
+  {
+    "condition": {
+      "type": "VALUE",
+      "scope": "stringExample",
+      "value": "executeCustomNamedBlock"
+    },
+    "customNamedBlock": {
+      "variants": []
+    }
+  }
+  ```
+  Our scope for this example is ```stringExample``` and the value is ```executeCustomNamedBlock```.
+  - If ```stringExample``` matches the value specified, in our case ```executeCustomNamedBlock```, the condition is met and we continue with executing the following ```customNamedBlock```.
+  - If ```stringExample``` does not match the value specified, in our case ```executeCustomNamedBlock```, the condition is not met and we skip the execution of the following ```customNamedBlock```.
 
 ##### **AND examples**
 
-TODO
+- Example 1:
+  ```json
+  {
+    "condition": {
+      "type": "AND",
+      "conditions": [
+        {
+          "type": "EXISTENCE",
+          "scope": "first",
+          "value": true
+        },
+        {
+          "type": "EXISTENCE",
+          "scope": "second",
+          "value": false
+        }
+      ]
+    },
+    "text": "Both conditions were satisfied. "
+  }
+  ```
+  In this example there are two conditions that both **have** to be met to generate the specified ```text```.
+  - If the first condition is met and the second condition is also met, we continue with generating the specified ```text```.
+  - If any of the conditions is not met, we skip generating the specified ```text```.
+  - Example: The scope ```first``` does exists therefore the first condition is met and the scope ```second``` does not exist, which means that the second condition is also met. (*Notice that we specified the value as ```false``` therefore we look for the scope to not exist.*). We generate the specified ```text```.
+
+- Example 2:
+  ```json
+  {
+    "condition": {
+      "type": "AND",
+      "conditions": [
+        {
+          "type": "EXISTENCE",
+          "scope": "first",
+          "value": true
+        },
+        {
+          "type": "EXISTENCE",
+          "scope": "second",
+          "value": true
+        },
+        {
+          "type": "VALUE",
+          "scope": "third",
+          "value": "Hello"
+        }
+      ]
+    },
+    "text": "All three conditions were satisfied. "
+  }
+  ```
+  In this example there are three conditions and all three **have** to be met to generate the specified ```text```.
+  - If all three conditions are met, we continue with generating the specified ```text```.
+  - If any of the conditions is not met, we skip generating the specified ```text```.
+  - Example: The scope ```first``` does exists therefore the first condition is met and the scope ```second``` does not exist, which means that the second condition is not met. Since one of the conditions were not met, we end the execution of our **AND** condition, and skip generating the text.
 
 ##### **OR examples**
 
-TODO
+- Example 1:
+  ```json
+  {
+    "condition": {
+      "type": "OR",
+      "conditions": [
+        {
+          "type": "EXISTENCE",
+          "scope": "first",
+          "value": true
+        },
+        {
+          "type": "EXISTENCE",
+          "scope": "second",
+          "value": false
+        }
+      ]
+    },
+    "text": "Atleast one condition was satisfied. "
+  }
+  ```
+  In this example there are two conditions and **atleast one has** to be met to generate the specified ```text```.
+  - If atleast one condition is met, we continue with generating the specified ```text```.
+  - If none of the conditions is met, we skip generating the specified ```text```.
+  - Example: The scope ```first``` does not exist, which means that the first condition is not met. Therefore we continue to the next condition. The scope ```second``` does not exist, which means that the second conditon is met. We generate the specified ```text```.
+  
+- Example 2:
+  ```json
+  {
+    "condition": {
+      "type": "OR",
+      "conditions": [
+        {
+          "type": "EXISTENCE",
+          "scope": "first",
+          "value": true
+        },
+        {
+          "type": "EXISTENCE",
+          "scope": "second",
+          "value": true
+        },
+        {
+          "type": "VALUE",
+          "scope": "third",
+          "value": "Hello"
+        }
+      ]
+    },
+    "text": "Atleast one condition was satisfied. "
+  }
+  ```
+  In this example there are three conditions and **atleast one has** to be met to generate the specified ```text```.
+  - If atleast one condition is met, we continue with generating the specified ```text```.
+  - If none of the conditions is met, we skip generating the specified ```text```.
+  - Example: The scope ```first``` does exist, which means that the first condition is met. Since atleast one of the conditions were met, we end the execution of our **OR** condition, and we generate the specified ```text```.
 
 ##### **NOT examples**
 
-TODO
+- Example 1:
+  ```json
+  {
+    "condition": {
+      "type": "NOT",
+      "conditions": [
+        {
+          "type": "VALUE",
+          "scope": "example",
+          "value": "other"
+        }
+      ]
+    },
+    "text": "The value of 'example' is not 'other'."
+  }
+  ```
+  In this example we are negating one **VALUE** condition.
+  - If the scope ```example``` matches the value ```other```, the inner condition is met which means that our **NOT** condition **is not** met. We skip the generation of specified ```text```.
+  - If the scope ```example``` does not match the value ```other```, the inner condition is not met which means that our **NOT** condition **is** met. We generate the specified ```text```.
+
+##### **Combinations examples**
+
+- Example 1:
+  ```json
+  {
+    "condition": {
+      "type": "AND",
+      "conditions": [
+        {
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "FirstExistence",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "SecondExistence",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "ThirdExistence",
+              "value": true
+            }
+          ]
+        },
+        {
+          "type": "NOT",
+          "conditions": [
+            {
+              "type": "VALUE",
+              "scope": "ValueScope",
+              "value": 7
+            }
+          ]
+        }
+      ]
+    },
+    "text": "The combined condition was met."
+  }
+  ```
+  In this example we have a total of 7 conditions.
+  - One **AND** condition
+  - One **OR** condition
+  - Three **EXISTENCE** conditions
+  - One **NOT** condition
+  - One **VALUE** condition
+  
+  For this example to generate the ```text``` our toplevel **AND** condition has to be met. Therefore the **OR** condition has to be met as well as the **NOT** condition.\
+  For the **OR** condition to be met, atleast one of the **EXISTENCE** conditions has to be met.\
+  For the **NOT** condition to be met, the **VALUE** condition must **not** be met.\
+  - If ```FirstExistence``` or ```SecondExistence``` or ```ThirdExistence``` exist, and the value of ```ValueScope``` is **not** 7. We generate the specified ```text```.
+  - Otherwise we skip the generation of specified ```text```.
