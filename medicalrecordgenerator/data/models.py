@@ -1,5 +1,4 @@
-from datetime import datetime
-from string import Template
+from datetime import datetime, date
 from typing import Optional
 
 from medicalrecordgenerator.app.parser import Parser
@@ -29,7 +28,7 @@ class Diagnosis(GeneratedObject):
     def __init__(self, stroke_type: Optional[str], aspects_score: Optional[int],
                  imaging_type: Optional[str], occlusion_position: Optional[str]):
         self.stroke_type = stroke_type
-        self.aspects_score = int(aspects_score) if aspects_score else None
+        self.aspects_score = aspects_score if aspects_score else None
         self.imaging_type = imaging_type
         self.occlusion_position = occlusion_position
 
@@ -44,14 +43,14 @@ class Onset(GeneratedObject):
 
 class Admission(GeneratedObject):
     def __init__(self, admission_nihss: Optional[int], aspects_score: Optional[int], admission_type: Optional[str]):
-        self.admission_nihss = int(admission_nihss) if admission_nihss else None
-        self.aspects_score = int(aspects_score) if aspects_score else None
+        self.admission_nihss = admission_nihss
+        self.aspects_score = aspects_score
         self.admission_type = admission_type
 
 
 class Thrombolysis:
     def __init__(self, dtn: Optional[int], ivt_treatment: Optional[str], ivt_dose: Optional[float]):
-        self.dtn = int(dtn) if dtn else None
+        self.dtn = dtn
         self.ivt_treatment = ivt_treatment
         self.ivt_dose = ivt_dose
 
@@ -59,9 +58,9 @@ class Thrombolysis:
 class Thrombectomy:
     def __init__(self, dtg: Optional[int], tici_score: Optional[str], dio: Optional[int],
                  tici_score_meaning: Optional[str]):
-        self.dtg = int(dtg) if dtg else None
+        self.dtg = dtg
         self.tici_score = tici_score
-        self.dio = int(dio) if dio else None
+        self.dio = dio
         self.thrombectomy_transport = dio is not None
         self.tici_score_meaning = tici_score_meaning
 
@@ -127,12 +126,12 @@ class Etiology(GeneratedObject):
 
 
 class Discharge(GeneratedObject):
-    def __init__(self, discharge_date: datetime, discharge_destination: Optional[str], nihss: Optional[int],
+    def __init__(self, discharge_date: date, discharge_destination: Optional[str], nihss: Optional[int],
                  mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
                  discharge_medication: str, date_format: str):
-        self.discharge_date = discharge_date.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
+        self.discharge_date = discharge_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
         self.discharge_destination = discharge_destination
-        self.nihss = int(nihss) if nihss else None
+        self.nihss = nihss
         self.mrs = mrs,
         self.contact_date = contact_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT) \
             if contact_date else None

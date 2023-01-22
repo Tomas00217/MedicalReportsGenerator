@@ -1,5 +1,6 @@
 import logging
 from string import Template
+from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from medicalrecordgenerator.app.parser import Parser
@@ -16,7 +17,7 @@ class MyTemplate(Template):
 
 
 class MedicalRecordsGenerator:
-    def __init__(self, dictionary: dict, data: dict):
+    def __init__(self, dictionary: dict, data: Any):
         self.dictionary = dictionary
         self.data = data
         self.transported = False

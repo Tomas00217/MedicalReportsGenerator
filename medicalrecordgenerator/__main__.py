@@ -1,44 +1,89 @@
 import locale
+import logging
 import sys
 import getopt
+from typing import Optional
+
+import psycopg2
+import psycopg2.extras
+import psycopg2.extensions
 
 from app.generator import MedicalRecordsGenerator
+from medicalrecordgenerator.config import config
 from utils import load_utils
 
-OPTIONS = "l:"
-LONG_OPTIONS = ["language="]
+OPTIONS = "l:i:"
+LONG_OPTIONS = ["language=", "subject_id="]
 
 
 def main(argv=None):
     app_language = 'en_US'
+    subject_id = None
 
     try:
         opts, args = getopt.getopt(argv, OPTIONS, LONG_OPTIONS)
         for opt, arg in opts:
             if opt in "-l, --language":
                 app_language = arg
+            if opt in "-i, --subject_id":
+                subject_id = arg
     except getopt.GetoptError as err:
-        print(err)
+        logging.error(err)
 
-    generate(app_language)
+    generate(app_language, subject_id)
 
 
-def generate(app_language: str) -> None:
+def generate(app_language: str, subject_id: Optional[int] = None) -> None:
     locale.setlocale(locale.LC_ALL, app_language)
 
     language = load_utils.load_language(app_language)
 
-    data = load_utils.load_csv("data/anonymized_data.csv")
+    """ Connect to the PostgreSQL database server """
+    conn = None
 
-    for idx, row in enumerate(data):
+    try:
+        # read connection parameters
+        params = config()
 
-        generator = MedicalRecordsGenerator(language, row)
-        report = generator.generate_medical_record()
-        print(report)
-        """
-        with open(f"med_record{idx+1}.txt", "w") as file:
-            file.write(report + "\n")
-        """
+        # connect to the PostgreSQL server
+        logging.info('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(**params)
+
+        # create a cursor that loads data as dictionary
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Register a customized adapter for PostgreSQL to load decimal as floats
+        DEC2FLOAT = psycopg2.extensions.new_type(
+            psycopg2.extensions.DECIMAL.values,
+            'DEC2FLOAT',
+            lambda value, curs: float(value) if value is not None else None)
+        psycopg2.extensions.register_type(DEC2FLOAT)
+
+        # fetch data from database
+        if subject_id:
+            cur.execute("SELECT * FROM datamix WHERE subject_id=%s", subject_id)
+        else:
+            cur.execute("SELECT * FROM datamix")
+        data = cur.fetchall()
+
+        # generate records
+        for idx, row in enumerate(data):
+            generator = MedicalRecordsGenerator(language, row)
+            report = generator.generate_medical_record()
+            print(report)
+            """
+            with open(f"med_record{idx+1}.txt", "w") as file:
+                file.write(report + "\n")
+            """
+
+        # close the communication with the PostgreSQL
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        logging.error(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            logging.info('Database connection closed.')
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
 from dataclasses import dataclass
 from typing import Optional
@@ -27,7 +27,7 @@ class ConditionType(Enum):
 @dataclass()
 class DiagnosisData(DataclassFromDict):
     stroke_type: Optional[str] = field_from_dict(default=None)
-    aspects_score: Optional[float] = field_from_dict(default=None)
+    aspects_score: Optional[int] = field_from_dict(default=None)
     imaging_type: Optional[str] = field_from_dict(default=None)
 
 
@@ -62,22 +62,22 @@ class OnsetData(DataclassFromDict):
 @dataclass()
 class AdmissionData(DataclassFromDict):
     hospitalized_in: Optional[str] = field_from_dict(default=None)
-    nihss_score: Optional[float] = field_from_dict(default=None)
-    aspects_score: Optional[float] = field_from_dict(default=None)
+    nihss_score: Optional[int] = field_from_dict(default=None)
+    aspects_score: Optional[int] = field_from_dict(default=None)
 
 
 @dataclass()
 class TreatmentData(DataclassFromDict):
     thrombolysis: Optional[bool] = field_from_dict(default=None)
-    dtn: Optional[float] = field_from_dict("door_to_needle", default=None)
+    dtn: Optional[int] = field_from_dict("door_to_needle", default=None)
     ivt_treatment: Optional[str] = field_from_dict(default=None)
     ivt_dose: Optional[float] = field_from_dict(default=None)
     no_thrombolysis_reason: Optional[str] = field_from_dict(default=None)
     thrombectomy: Optional[bool] = field_from_dict(default=None)
-    dtg: Optional[float] = field_from_dict("door_to_groin", default=None)
-    tici_score: Optional[float] = field_from_dict(default=None)
+    dtg: Optional[int] = field_from_dict("door_to_groin", default=None)
+    tici_score: Optional[str] = field_from_dict(default=None)
     no_thrombectomy_reason: Optional[str] = field_from_dict(default=None)
-    dio: Optional[float] = field_from_dict("door_to_door", default=None)
+    dio: Optional[int] = field_from_dict("door_to_door", default=None)
     thrombectomy_transport: bool = False
 
 
@@ -133,11 +133,11 @@ class EtiologyData(DataclassFromDict):
 
 @dataclass()
 class DischargeData(DataclassFromDict):
-    discharge_date: datetime = field_from_dict()
+    discharge_date: date = field_from_dict()
     discharge_destination: Optional[str] = field_from_dict(default=None)
-    nihss: Optional[float] = field_from_dict("discharge_nihss_score", default=None)
-    mrs: Optional[float] = field_from_dict("discharge_mrs", default=None)
-    contact_date: Optional[datetime] = field_from_dict(default=None)
+    nihss: Optional[int] = field_from_dict("discharge_nihss_score", default=None)
+    mrs: Optional[int] = field_from_dict("discharge_mrs", default=None)
+    contact_date: Optional[date] = field_from_dict(default=None)
     mode_contact: Optional[str] = field_from_dict(default=None)
 
 
