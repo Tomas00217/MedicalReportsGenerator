@@ -21,7 +21,7 @@
       - [**OR**](#or)
       - [**NOT**](#not)
       - [**Combinations**](#combinations)
-    - [**Scope**](#scope)
+  - [**Scope**](#scope)
   - [**Examples**](#examples)
     - [**Date format examples**](#date-format-examples)
     - [**Time format examples**](#time-format-examples)
@@ -310,6 +310,12 @@ The simple structure looks as follows:
 ```
 To see more specific uses, refer to [examples](#variants-examples).
 
+```Text``` field can also use variables specified in the [scope](#scope) section. These variables are in the generation process replaced with their current values. For these variables to work properly, they have to be written inside ```${}```.
+Example:
+```json
+"text": "Onset on ${onset.onset_date} at ${onset.onset_time}."
+```
+
 ##### **Complex**
 
 The complex variant is composed of a ```condition``` and a ```custom named block```.
@@ -445,9 +451,43 @@ The ```conditions``` field is an array of conditions.\
 All of the conditions above can be combined and nested into the conditions which support nesting.\
 [Examples](#combinations-examples)
 
-#### **Scope**
+### **Scope**
 
-TODO - here specify all the scopes of the dictionary and all the data that can be used
+Scope of the variables in this application is global. These variables are used in ```conditions``` and ```text```.
+
+List of all scopes: 
+| Variable                                | Possible values                                                                                                                                                              |
+|-----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| diagnosis.stroke_type                   | ['ischemic', 'intracerebral hemorrhage', 'transient ischemic', 'subarachnoid hemorrhage', 'cerebral venous thrombosis', 'stroke mimics', 'undetermined']                     |
+| diagnosis.aspects_score                 | int                                                                                                                                                                          |
+| diagnosis.imaging_type                  | ['CT', 'CT CTA', 'CT CTA perfusion', 'MR DWI/FLAIR', 'MR DWI/FLAIR MRA', 'MR DWI/FLAIR MRA perfusion', 'done elsewhere', 'not done']                                         |
+| diagnosis.occlusion_position            | string                                                                                                                                                                       |
+| onset.onset_date                        | date                                                                                                                                                                         |
+| onset.onset_time                        | time                                                                                                                                                                         |
+| onset.wake_up_stroke                    | [True, False]                                                                                                                                                                |
+| admission.admission_nihss               | integer                                                                                                                                                                      |
+| admission.aspects_score                 | integer                                                                                                                                                                      |
+| admission.admission_type                | ['ICU/stroke unit', 'monitored bed', 'standard bed']                                                                                                                         |
+| treatment.thrombolysis_done             | [True, False]                                                                                                                                                                |
+| treatment.thrombectomy_done             | [True, False]                                                                                                                                                                |
+| treatment.thrombolysis_reasons          | ['done elsewhere', 'time window', 'mild deficit', 'consent', 'cost of treatment', 'transferred elsewhere', 'only MT', 'not available', 'other']                              |
+| treatment.thrombectomy_reasons          | ['done elsewhere', 'time window', 'mild deficit', 'large vessel occlusion', 'disability', 'consent', 'cost of treatment', 'transferred elsewhere', 'not available', 'other'] |
+| treatment.dtn                           | integer                                                                                                                                                                      |
+| treatment.ivt_treatment                 | ['alteplase', 'tenecteplase', 'streptokinase', 'staphylokinase']                                                                                                             |
+| treatment.ivt_dose                      | number                                                                                                                                                                       |
+| treatment.dtg                           | integer                                                                                                                                                                      |
+| treatment.tici_score                    | ['0', '1', '2A', '2B', '2C', '3', 'occlusion not confirmed']                                                                                                                 |
+| treatment.dio                           | integer                                                                                                                                                                      |
+| treatment.thrombectomy_transport        | [True, False]                                                                                                                                                                |
+| treatment.tici_score_meaning            | Values from variables part of dictionary                                                                                                                                     |
+| post_stroke_complications.complications | string                                                                                                                                                                       |
+| discharge.discharge_date                | date                                                                                                                                                                         |
+| discharge.discharge_destination         | ['home', 'same hospital', 'another hospital', 'social care', 'dead']                                                                                                         |
+| discharge.nihss                         | integer                                                                                                                                                                      |
+| discharge.mrs                           | integer                                                                                                                                                                      |
+| discharge.contact_date                  | date                                                                                                                                                                         |
+| discharge.mode_contact                  | ['telemedicine', 'visiting the clinic', 'mobile app', 'web app', 'no response', 'not contacted', Null]]                                                                      |
+| discharge.discharge_medication          | string                                                                                                                                                                       |
 
 ### **Examples**
 
@@ -596,7 +636,7 @@ These examples are working with conditions, if you haven't already studied the [
               }
             ]
           },
-          "text": "Baseline NIHSS $admission_nihss. "
+          "text": "Baseline NIHSS ${admission.admission_nihss}. "
         }
       ]
     }
@@ -606,7 +646,7 @@ These examples are working with conditions, if you haven't already studied the [
   - If both ```admission_nihss``` and ```aspects_score``` values are **not** existent.\
     Generated text is: ```NIHSS and ASPECT not performed. ```
   - If the ```admission_nihss``` value is existent and its value is ```3```, and ```aspects_score``` value is **not** existent.\
-    Generated text is: ```Baseline NIHSS 3. ```. Here the ```$admission_nihss``` is replaced with the value.
+    Generated text is: ```Baseline NIHSS 3. ```. Here the ```${admission.admission_nihss}``` is replaced with the value.
   - Otherwise no text is generated.
 
 ##### **Complex variants**
