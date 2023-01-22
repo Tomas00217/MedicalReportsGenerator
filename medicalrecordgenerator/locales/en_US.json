@@ -992,7 +992,7 @@
       "tici_score_2A": "partial filling <2/3 territory",
       "tici_score_2B": "partial filling >2/3 territory",
       "tici_score_2C": "near complete reperfusion",
-      "tici_score_3": "complete reperfusion"
+      "tici_score_3.0": "complete reperfusion"
     }
   }
 }

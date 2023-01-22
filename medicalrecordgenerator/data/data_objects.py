@@ -27,7 +27,7 @@ class ConditionType(Enum):
 @dataclass()
 class DiagnosisData(DataclassFromDict):
     stroke_type: Optional[str] = field_from_dict(default=None)
-    aspects_score: Optional[float] = field_from_dict(default=None)
+    aspects_score: Optional[int] = field_from_dict(default=None)
     imaging_type: Optional[str] = field_from_dict(default=None)
 
 
@@ -137,7 +137,7 @@ class DischargeData(DataclassFromDict):
     discharge_destination: Optional[str] = field_from_dict(default=None)
     nihss: Optional[int] = field_from_dict("discharge_nihss_score", default=None)
     mrs: Optional[int] = field_from_dict("discharge_mrs", default=None)
-    contact_date: Optional[datetime] = field_from_dict(default=None)
+    contact_date: Optional[date] = field_from_dict(default=None)
     mode_contact: Optional[str] = field_from_dict(default=None)
 
 

@@ -164,7 +164,7 @@ class Parser:
             return ""
 
         if tici_score is not None and tici_score != "occlusion not confirmed":
-            tici_score = int(tici_score)
+            tici_score = tici_score
             return dictionary[f"tici_score_{tici_score}"]
 
     @staticmethod
