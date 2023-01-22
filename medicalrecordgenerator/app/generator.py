@@ -1,4 +1,5 @@
 import logging
+from string import Template
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from medicalrecordgenerator.app.parser import Parser
@@ -8,6 +9,10 @@ from medicalrecordgenerator.data.data_objects import DiagnosisData, OnsetData, A
 from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
     FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
     Discharge, MedicalRecord
+
+
+class MyTemplate(Template):
+    idpattern = r'(?-i:[._a-zA-Z][._a-zA-Z0-9]*)'
 
 
 class MedicalRecordsGenerator:
@@ -39,37 +44,44 @@ class MedicalRecordsGenerator:
         return template.render(record=record)
 
     def generate_structure(self):
-        self.parser.data = self.medical_record.to_dict()
+        variables = self.medical_record.to_dict()
+        self.parser.data = variables
+
+        scoped_values = self.prepare_scoped_values(variables)
+
         record = {
-            "diagnosis": self.medical_record.diagnosis.generate(self.dictionary["diagnosis"], self.parser)
-            if self.medical_record.diagnosis else "",
+            "diagnosis": MyTemplate(self.medical_record.diagnosis.get_text(self.dictionary["diagnosis"], self.parser)
+                                    if self.medical_record.diagnosis else "").safe_substitute(scoped_values),
 
-            "onset":  self.medical_record.onset.generate(self.dictionary["onset"], self.parser)
-            if self.medical_record.onset else "",
+            "onset": MyTemplate(self.medical_record.onset.get_text(self.dictionary["onset"], self.parser)
+                                if self.medical_record.onset else "").safe_substitute(scoped_values),
 
-            "admission": self.medical_record.admission.generate(self.dictionary["admission"], self.parser)
-            if self.medical_record.admission else "",
+            "admission": MyTemplate(self.medical_record.admission.generate(self.dictionary["admission"], self.parser)
+                                    if self.medical_record.admission else "").safe_substitute(scoped_values),
 
-            "treatment": self.medical_record.treatment.generate(self.dictionary["treatment"], self.parser)
-            if self.medical_record.treatment else "",
+            "treatment": MyTemplate(self.medical_record.treatment.generate(self.dictionary["treatment"], self.parser)
+                                    if self.medical_record.treatment else "").safe_substitute(scoped_values),
 
-            "follow_up_imaging": self.medical_record.follow_up_imaging.generate(self.dictionary["follow_up_imaging"],
-                                                                                self.parser)
-            if self.medical_record.follow_up_imaging else "",
+            "follow_up_imaging": MyTemplate(
+                self.medical_record.follow_up_imaging.generate(self.dictionary["follow_up_imaging"],
+                                                               self.parser)
+                if self.medical_record.follow_up_imaging else "").safe_substitute(scoped_values),
 
-            "post_acute_care": self.medical_record.post_acute_care.generate(self.dictionary["post_acute_care"],
-                                                                            self.parser)
-            if self.medical_record.post_acute_care else "",
+            "post_acute_care": MyTemplate(
+                self.medical_record.post_acute_care.generate(self.dictionary["post_acute_care"],
+                                                             self.parser)
+                if self.medical_record.post_acute_care else "").safe_substitute(scoped_values),
 
-            "post_stroke_complications": self.medical_record.post_stroke_complications
-            .generate(self.dictionary["post_stroke_complications"], self.parser)
-            if self.medical_record.post_stroke_complications else "",
+            "post_stroke_complications": MyTemplate(self.medical_record.post_stroke_complications
+                                                    .generate(self.dictionary["post_stroke_complications"], self.parser)
+                                                    if self.medical_record.post_stroke_complications else "")
+            .safe_substitute(scoped_values),
 
-            "etiology": self.medical_record.etiology.generate(self.dictionary["etiology"], self.parser)
-            if self.medical_record.etiology else "",
+            "etiology": MyTemplate(self.medical_record.etiology.generate(self.dictionary["etiology"], self.parser)
+                                   if self.medical_record.etiology else "").safe_substitute(scoped_values),
 
-            "discharge": self.medical_record.discharge.generate(self.dictionary["discharge"], self.parser)
-            if self.medical_record.discharge else ""
+            "discharge": MyTemplate(self.medical_record.discharge.generate(self.dictionary["discharge"], self.parser)
+                                    if self.medical_record.discharge else "").safe_substitute(scoped_values),
         }
 
         return record
@@ -145,7 +157,8 @@ class MedicalRecordsGenerator:
         imaging_data = ImagingData.from_dict(self.data)
         imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
 
-        imaging = FollowUpImaging(self.parser.parse_data(self.get_variable("post_treatment_findings"), imaging_treatment_data),
+        imaging = FollowUpImaging(self.parser.parse_data(self.get_variable("post_treatment_findings"),
+                                                         imaging_treatment_data),
                                   imaging_data.imaging_type)
 
         return imaging
@@ -229,3 +242,14 @@ class MedicalRecordsGenerator:
             return
 
         return setting
+
+    @staticmethod
+    def prepare_scoped_values(values):
+        scoped_values = {}
+
+        for key, vals in values.items():
+            for val_key, val_value in vals.items():
+                scoped_key = f"{key}.{val_key}"
+                scoped_values[scoped_key] = val_value
+
+        return scoped_values

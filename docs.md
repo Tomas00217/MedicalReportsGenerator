@@ -406,7 +406,7 @@ The ```value``` field can be a number, text, boolean or any other type of value.
     "type": "AND",
     "conditions": []
   }
-},
+}
 ```
 The **AND** condition check wether **all** of the conditions specified in the ```conditions``` field are satisfied. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
 The ```conditions``` field is an array of conditions.\
@@ -420,7 +420,7 @@ The ```conditions``` field is an array of conditions.\
     "type": "OR",
     "conditions": []
   }
-},
+}
 ```
 The **OR** condition check wether **atleast one** of the conditions specified in the ```conditions``` field is satisfied. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
 The ```conditions``` field is an array of conditions.\
@@ -434,7 +434,7 @@ The ```conditions``` field is an array of conditions.\
     "type": "NOT",
     "conditions": []
   }
-},
+}
 ```
 The **NOT** condition negates and checks the conditions specified in the ```conditions``` field. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
 The ```conditions``` field is an array of conditions.\
@@ -486,11 +486,13 @@ Formated time: Seconds: 49, Minutes: 48, Hour: 18
 
 - Example 1: 
   ```json
-  "therapies": {
+  {
+    "therapies": {
     "physiotherapy": "physiotherapy",
     "ergotherapy": "ergo-therapy",
     "speechtherapy": ""
-  },
+    }
+  }
   ```
   This will make it so that if the patient was given physiotherapy, ergotherapy and speechtherapy, the generated report will translate the values as follows:
   - physiotherapy -> ```physiotherapy``` 
@@ -501,10 +503,12 @@ Formated time: Seconds: 49, Minutes: 48, Hour: 18
 
 - Example 2:
   ```json
-  "hospitalized_in": {
+  {
+    "hospitalized_in": {
     "ICU/stroke unit": "ICU/stroke unit",
     "monitored bed": "monitored bed in hospital"  
-  },
+    }
+  }
   ```
   Notice that in this example, we are missing the field ```"standard bed": ""``` from the default structure. Although this will still generate the record properly, there will be logging error present about a missing variable. The generated report will translate the values as follows:
   - ICU/stroke unit -> ```ICU/stroke unit```
