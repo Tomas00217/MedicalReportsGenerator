@@ -1,5 +1,4 @@
-from datetime import datetime
-from string import Template
+from datetime import datetime, date
 from typing import Optional
 
 from medicalrecordgenerator.app.parser import Parser
@@ -127,10 +126,10 @@ class Etiology(GeneratedObject):
 
 
 class Discharge(GeneratedObject):
-    def __init__(self, discharge_date: datetime, discharge_destination: Optional[str], nihss: Optional[int],
+    def __init__(self, discharge_date: date, discharge_destination: Optional[str], nihss: Optional[int],
                  mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
                  discharge_medication: str, date_format: str):
-        self.discharge_date = discharge_date.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
+        self.discharge_date = discharge_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
         self.discharge_destination = discharge_destination
         self.nihss = int(nihss) if nihss else None
         self.mrs = mrs,

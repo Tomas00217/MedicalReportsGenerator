@@ -1,8 +1,13 @@
 import locale
+import logging
 import sys
 import getopt
 
+import psycopg2
+import psycopg2.extras
+
 from app.generator import MedicalRecordsGenerator
+from medicalrecordgenerator.config import config
 from utils import load_utils
 
 OPTIONS = "l:"
@@ -28,17 +33,41 @@ def generate(app_language: str) -> None:
 
     language = load_utils.load_language(app_language)
 
-    data = load_utils.load_csv("data/anonymized_data.csv")
+    """ Connect to the PostgreSQL database server """
+    conn = None
+    try:
+        # read connection parameters
+        params = config()
 
-    for idx, row in enumerate(data):
+        # connect to the PostgreSQL server
+        logging.info('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(**params)
 
-        generator = MedicalRecordsGenerator(language, row)
-        report = generator.generate_medical_record()
-        print(report)
-        """
-        with open(f"med_record{idx+1}.txt", "w") as file:
-            file.write(report + "\n")
-        """
+        # create a cursor
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # fetch data from database
+        cur.execute("SELECT * FROM datamix")
+        data = cur.fetchall()
+
+        # generate records
+        for idx, row in enumerate(data):
+            generator = MedicalRecordsGenerator(language, row)
+            report = generator.generate_medical_record()
+            print(report)
+            """
+            with open(f"med_record{idx+1}.txt", "w") as file:
+                file.write(report + "\n")
+            """
+
+        # close the communication with the PostgreSQL
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        logging.error(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            logging.info('Database connection closed.')
 
 
 if __name__ == '__main__':
