@@ -25,7 +25,7 @@
                   }
                 ]
               },
-              "text": "Cerebral ischemic stroke due to occlusion of $occlusion_position, ASPECT score $aspects_score. "
+              "text": "Cerebral ischemic stroke due to occlusion of ${diagnosis.occlusion_position}, ASPECT score ${diagnosis.aspects_score}. "
             },
             {
               "condition": {
@@ -43,7 +43,7 @@
                   }
                 ]
               },
-              "text": "Cerebral ischemic stroke due to occlusion of $occlusion_position. "
+              "text": "Cerebral ischemic stroke due to occlusion of ${diagnosis.occlusion_position}. "
             },
             {
               "condition": {
@@ -61,7 +61,7 @@
                   }
                 ]
               },
-              "text": "Cerebral ischemic stroke with no occlusion on $imaging_type angiogram. "
+              "text": "Cerebral ischemic stroke with no occlusion on ${diagnosis.imaging_type} angiogram. "
             }
           ]
         }
@@ -86,7 +86,7 @@
             }
           ]
         },
-        "text": "Onset on $onset_date at $onset_time. "
+        "text": "Onset on ${onset.onset_date} at ${onset.onset_time}. "
       },
       {
         "condition": {
@@ -104,7 +104,7 @@
             }
           ]
         },
-        "text": "Onset on $onset_date, wake up stroke. "
+        "text": "Onset on ${onset.onset_date}, wake up stroke. "
       },
       {
         "condition": {
@@ -122,7 +122,7 @@
             }
           ]
         },
-        "text": "Onset on $onset_date at an unknown time. "
+        "text": "Onset on ${onset.onset_date} at an unknown time. "
         }
     ]
   },
@@ -144,7 +144,7 @@
             }
           ]
         },
-        "text": "Baseline NIHSS $admission_nihss. Admitted to $admission_type. "
+        "text": "Baseline NIHSS ${admission.admission_nihss}. Admitted to ${admission.admission_type}. "
       },
       {
         "condition": {
@@ -180,7 +180,7 @@
             }
           ]
         },
-        "text": "Baseline NIHSS $admission_nihss. "
+        "text": "Baseline NIHSS ${admission.admission_nihss}. "
       }
     ]
   },
@@ -210,7 +210,7 @@
                   }
                 ]
               },
-              "text": "Intravenous thrombolysis with $ivt_dose mg of $ivt_treatment given $dtn minutes after arrival to hospital. "
+              "text": "Intravenous thrombolysis with ${treatment.ivt_dose} mg of ${treatment.ivt_treatment} given ${treatment.dtn} minutes after arrival to hospital. "
             },
             {
               "condition": {
@@ -228,7 +228,7 @@
                   }
                 ]
               },
-              "text": "Intravenous thrombolysis with $ivt_treatment given $dtn minutes after arrival to hospital. "
+              "text": "Intravenous thrombolysis with ${treatment.ivt_treatment} given ${treatment.dtn} minutes after arrival to hospital. "
             },
             {
               "condition": {
@@ -246,7 +246,7 @@
                   }
                 ]
               },
-              "text": "Intravenous thrombolysis at $ivt_dose mg given $dtn minutes after arrival to hospital. "
+              "text": "Intravenous thrombolysis at ${treatment.ivt_dose} mg given ${treatment.dtn} minutes after arrival to hospital. "
             },
             {
               "condition": {
@@ -264,7 +264,7 @@
                   }
                 ]
               },
-              "text": "Intravenous thrombolysis given $dtn minutes after arrival to hospital. "
+              "text": "Intravenous thrombolysis given ${treatment.dtn} minutes after arrival to hospital. "
             }
           ]
         }
@@ -323,7 +323,7 @@
                   }
                 ]
               },
-              "text": "Thrombolysis not given because of $thrombolysis_reasons. "
+              "text": "Thrombolysis not given because of ${treatment.thrombolysis_reasons}. "
             },
             {
               "condition": {
@@ -374,7 +374,7 @@
                 "scope": "treatment.tici_score",
                 "value": true
               },
-              "text": "Mechanical thrombectomy performed $dtg minutes after arrival, achieved TICI $tici_score $tici_score_meaning. "
+              "text": "Mechanical thrombectomy performed ${treatment.dtg} minutes after arrival, achieved TICI ${treatment.tici_score} ${treatment.tici_score_meaning}. "
             },
             {
               "condition": {
@@ -382,7 +382,7 @@
                 "scope": "treatment.tici_score",
                 "value": false
               },
-              "text": "Mechanical thrombectomy performed $dtg after arrival. "
+              "text": "Mechanical thrombectomy performed ${treatment.dtg} after arrival. "
             }
           ]
         }
@@ -441,7 +441,7 @@
                   }
                 ]
               },
-              "text": "Thrombectomy not given because of $thrombectomy_reasons. "
+              "text": "Thrombectomy not given because of ${treatment.thrombectomy_reasons}. "
             },
             {
               "condition": {
@@ -484,7 +484,7 @@
           "scope": "treatment.thrombectomy_transport",
           "value": true
         },
-        "text": "Patient transported to interventional center for mechanical thrombectomy after $dio minutes from the arrival. "
+        "text": "Patient transported to interventional center for mechanical thrombectomy after ${treatment.dio} minutes from the arrival. "
       }
     ]
   },
@@ -496,7 +496,7 @@
           "scope": "follow_up_imaging.findings",
           "value": true
         },
-        "text": "$findings on follow up $imaging_type. "
+        "text": "${follow_up_imaging.findings} on follow up ${follow_up_imaging.imaging_type}. "
       },
       {
         "condition": {
@@ -575,7 +575,7 @@
             }
           ]
         },
-        "text": "Patient received $therapies. "
+        "text": "Patient received ${post_acute_care.therapies}. "
       }
     ]
   },
@@ -587,7 +587,7 @@
           "scope": "post_stroke_complications.complications",
           "value": true
         },
-        "text": "Post stroke complications $complications. "
+        "text": "Post stroke complications ${post_stroke_complications.complications}. "
       }
     ]
   },
@@ -672,7 +672,7 @@
                 "scope": "etiology.afib_flutter",
                 "value": true
               },
-              "text": "Cardioembolic etiology due to $reasons. "
+              "text": "Cardioembolic etiology due to ${etiology.reasons}. "
             },
             {
               "condition": {
@@ -714,7 +714,7 @@
                   }
                 ]
               },
-              "text": "Patient discharged on $discharge_date to $discharge_destination. "
+              "text": "Patient discharged on ${discharge.discharge_date} to ${discharge.discharge_destination}. "
             },
             {
               "condition": {
@@ -732,7 +732,7 @@
                   }
                 ]
               },
-              "text": "Patient died on $discharge_date. "
+              "text": "Patient died on ${discharge.discharge_date}. "
             },
             {
               "condition": {
@@ -740,7 +740,7 @@
                 "scope": "discharge.discharge_destination",
                 "value": false
               },
-              "text": "Patient discharged on $discharge_date. "
+              "text": "Patient discharged on ${discharge.discharge_date}. "
             }
           ]
         }
@@ -765,7 +765,7 @@
                   }
                 ]
               },
-              "text": "NIHSS at discharge $nihss, mRS at discharge $mrs. "
+              "text": "NIHSS at discharge ${discharge.nihss}, mRS at discharge ${discharge.mrs}. "
             },
             {
               "condition": {
@@ -783,7 +783,7 @@
                   }
                 ]
               },
-              "text": "Discharge NIHSS $nihss. "
+              "text": "Discharge NIHSS ${discharge.nihss}. "
             },
             {
               "condition": {
@@ -801,7 +801,7 @@
                   }
                 ]
               },
-              "text": "mRS at discharge $mrs. "
+              "text": "mRS at discharge ${discharge.mrs}. "
             }
           ]
         }
@@ -827,7 +827,7 @@
             }
           ]
         },
-        "text": "Medication: $discharge_medication. "
+        "text": "Medication: ${discharge.discharge_medication}. "
       },
       {
         "condition": {
@@ -850,7 +850,7 @@
             }
           ]
         },
-        "text": "Next appointment scheduled to $contact_date. "
+        "text": "Next appointment scheduled to ${discharge.contact_date}. "
       }
     ]
   },

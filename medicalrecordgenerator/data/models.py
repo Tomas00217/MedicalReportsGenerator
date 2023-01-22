@@ -13,7 +13,7 @@ class GeneratedObject:
     def generate(self, dictionary: dict, parser: Parser) -> str:
         text = self.get_text(dictionary, parser)
 
-        return Template(text).safe_substitute(vars(self))
+        return text
 
     @staticmethod
     def get_text(dictionary: dict, parser: Parser) -> str:
