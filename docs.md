@@ -280,7 +280,7 @@ Format is specified using a combination of directives. The available directives 
 
 #### **Variables**
 
-The "variables" part of the dictionary specifies custom translations for the given data. It is recommended not to delete any variable from the default structure as it may lead to unwanted logging errors. To ignore a variable, its translation should be left empty.
+The "variables" part of the dictionary specifies custom translations for the given data. It is recommended not to delete any variable from the default structure as it may lead to unwanted logging errors. To ignore a variable, its translation should be left empty.\
 [Examples](#variable-examples)
 
 ### **Variants**
@@ -310,12 +310,12 @@ The simple structure looks as follows:
 ```
 To see more specific uses, refer to [examples](#variants-examples).
 
-```Text``` field can also use variables specified in the [scope](#scope) section. These variables are in the generation process replaced with their current values. For these variables to work properly, they have to be written inside ```${}```.
+```Text``` field can also use variables specified in the [scope](#scope) section. These variables are in the generation process replaced with their current values. For these variables to work properly, they have to be written inside ```${}```.\
 Example:
 ```json
-"text": "Onset on ${onset.onset_date} at ${onset.onset_time}."
+"text": "Onset on ${onset.onset_date} at ${onset.onset_time}. "
 ```
-
+Here, the ```date_format``` and ```time_format``` settings will be used. With default settings the generated text might look like this: ```Onset on Oct 06 2022 at 00:36. ```
 ##### **Complex**
 
 The complex variant is composed of a ```condition``` and a ```custom named block```.
