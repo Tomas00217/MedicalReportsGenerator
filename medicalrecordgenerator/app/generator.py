@@ -3,11 +3,11 @@ from string import Template
 from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from medicalrecordgenerator.app.parser import Parser
-from medicalrecordgenerator.data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
+from .parser import Parser
+from data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
     ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData
-from medicalrecordgenerator.data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
+from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
     FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
     Discharge, MedicalRecord
 

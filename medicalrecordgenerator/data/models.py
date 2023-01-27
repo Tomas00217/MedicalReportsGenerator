@@ -1,7 +1,7 @@
 from datetime import datetime, date
 from typing import Optional
 
-from medicalrecordgenerator.app.parser import Parser
+from app.parser import Parser
 
 DEFAULT_DATE_FORMAT = "%b %d %Y"
 DEFAULT_TIME_FORMAT = "%H:%M"

@@ -2,7 +2,7 @@ import logging
 
 from datetime import time
 
-from medicalrecordgenerator.data.data_objects import ConditionType
+from data.data_objects import ConditionType
 
 
 class Parser:

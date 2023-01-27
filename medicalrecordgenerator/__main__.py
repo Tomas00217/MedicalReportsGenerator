@@ -1,5 +1,6 @@
 import locale
 import logging
+import os
 import sys
 import getopt
 from typing import Optional
@@ -9,7 +10,6 @@ import psycopg2.extras
 import psycopg2.extensions
 
 from app.generator import MedicalRecordsGenerator
-from medicalrecordgenerator.config import config
 from utils import load_utils
 
 OPTIONS = "l:i:"
@@ -42,12 +42,15 @@ def generate(app_language: str, subject_id: Optional[int] = None) -> None:
     conn = None
 
     try:
-        # read connection parameters
-        params = config()
 
         # connect to the PostgreSQL server
         logging.info('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect(**params)
+        conn = psycopg2.connect(
+            user=os.getenv("EMS_DB_USER"),
+            password=os.getenv("EMS_DB_PASSWORD"),
+            host=os.getenv("EMS_DB_HOST"),
+            database=os.getenv("EMS_DB_NAME")
+        )
 
         # create a cursor that loads data as dictionary
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
