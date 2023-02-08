@@ -8,14 +8,35 @@ DEFAULT_TIME_FORMAT = "%H:%M"
 
 
 class GeneratedObject:
+    """
+    A class that represents an object that is going to be generated.
 
-    def generate(self, dictionary: dict, parser: Parser) -> str:
-        text = self.get_text(dictionary, parser)
-
-        return text
+    """
 
     @staticmethod
     def get_text(dictionary: dict, parser: Parser) -> str:
+        """Returns the text from the dictionary with the usage of parser
+
+        Parameters
+        ----------
+        dictionary : dict
+            Dictionary from which we pull the value
+        parser : Parser
+            Instance of parser
+
+        Returns
+        -------
+        str
+            Text from dictionary
+
+        Raises
+        ------
+        KeyError
+            If any given key is not present in the dictionary
+        ValueError
+            If any of the scopes has incorrect format and cannot be split
+        """
+
         try:
             text = parser.parse(dictionary)
         except (KeyError, ValueError):
@@ -25,6 +46,11 @@ class GeneratedObject:
 
 
 class Diagnosis(GeneratedObject):
+    """
+    A class representing diagnosis. Is part of MedicalRecord.
+
+    """
+
     def __init__(self, stroke_type: Optional[str], aspects_score: Optional[int],
                  imaging_type: Optional[str], occlusion_position: Optional[str]):
         self.stroke_type = stroke_type
@@ -34,6 +60,11 @@ class Diagnosis(GeneratedObject):
 
 
 class Onset(GeneratedObject):
+    """
+    A class representing onset. Is part of MedicalRecord.
+
+    """
+
     def __init__(self, onset_timestamp: datetime, wake_up_stroke: Optional[bool],
                  date_format: str, time_format: str):
         self.onset_date = onset_timestamp.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
@@ -42,6 +73,11 @@ class Onset(GeneratedObject):
 
 
 class Admission(GeneratedObject):
+    """
+    A class representing admission. Is part of MedicalRecord.
+
+    """
+
     def __init__(self, admission_nihss: Optional[int], aspects_score: Optional[int], admission_type: Optional[str]):
         self.admission_nihss = admission_nihss
         self.aspects_score = aspects_score
@@ -49,6 +85,11 @@ class Admission(GeneratedObject):
 
 
 class Thrombolysis:
+    """
+    A class representing thrombolysis. Is part of Treatment.
+
+    """
+
     def __init__(self, dtn: Optional[int], ivt_treatment: Optional[str], ivt_dose: Optional[float]):
         self.dtn = dtn
         self.ivt_treatment = ivt_treatment
@@ -56,6 +97,11 @@ class Thrombolysis:
 
 
 class Thrombectomy:
+    """
+    A class representing thrombectomy. Is part of Treatment.
+
+    """
+
     def __init__(self, dtg: Optional[int], tici_score: Optional[str], dio: Optional[int],
                  tici_score_meaning: Optional[str]):
         self.dtg = dtg
@@ -66,6 +112,11 @@ class Thrombectomy:
 
 
 class Treatment(GeneratedObject):
+    """
+    A class representing treatment. Is part of MedicalRecord.
+
+    """
+
     def __init__(self, thrombolysis_done: Optional[bool], thrombectomy_done: Optional[bool],
                  thrombolysis_reasons: Optional[str], thrombectomy_reasons: Optional[str],
                  thrombolysis: Thrombolysis, thrombectomy: Thrombectomy):
@@ -78,12 +129,22 @@ class Treatment(GeneratedObject):
 
 
 class FollowUpImaging(GeneratedObject):
+    """
+    A class representing follow-up imaging. Is part of MedicalRecord.
+
+    """
+
     def __init__(self, findings: Optional[str], imaging_type: Optional[str]):
         self.findings = findings
         self.imaging_type = imaging_type
 
 
 class PostAcuteCare(GeneratedObject):
+    """
+    A class representing post acute care. Is part of MedicalRecord.
+
+    """
+
     def __init__(self, dysphagia_screening: Optional[str], physiotherapy_received: Optional[str],
                  ergotherapy_received: Optional[str], speechtherapy_received: Optional[str], therapies: Optional[str]):
         self.dysphagia_screening = dysphagia_screening
@@ -94,11 +155,21 @@ class PostAcuteCare(GeneratedObject):
 
 
 class PostStrokeComplications(GeneratedObject):
+    """
+    A class representing post stroke complications. Is part of MedicalRecord.
+
+    """
+
     def __init__(self, complications: Optional[str]):
         self.complications = complications if complications != "" else None
 
 
 class LargeArteryAtherosclerosis:
+    """
+    A class representing large artery atherosclerosis. Is part of Etiology.
+
+    """
+
     def __init__(self, carotid_stenosis: Optional[bool], carotid_stenosis_level: Optional[str],
                  carotid_stenosis_followup: Optional[str]):
         self.carotid_stenosis = carotid_stenosis
@@ -107,12 +178,22 @@ class LargeArteryAtherosclerosis:
 
 
 class Cardioembolism:
+    """
+    A class representing cardioembolism. Is part of Etiology.
+
+    """
+
     def __init__(self, afib_flutter: Optional[str], reasons: Optional[str]):
         self.afib_flutter = afib_flutter
         self.reasons = reasons
 
 
 class Etiology(GeneratedObject):
+    """
+    A class representing etiology. Is part of MedicalRecord.
+
+    """
+
     def __init__(self, large_artery: Optional[bool], cardioembolism: Optional[bool], other: Optional[bool],
                  cryptogenic_stroke: Optional[bool], small_vessel: Optional[bool],
                  large_artery_atherosclerosis_dat: LargeArteryAtherosclerosis, cardioembolism_dat: Cardioembolism):
@@ -126,6 +207,11 @@ class Etiology(GeneratedObject):
 
 
 class Discharge(GeneratedObject):
+    """
+    A class representing discharge. Is part of MedicalRecord.
+
+    """
+
     def __init__(self, discharge_date: date, discharge_destination: Optional[str], nihss: Optional[int],
                  mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
                  discharge_medication: str, date_format: str):
@@ -140,6 +226,11 @@ class Discharge(GeneratedObject):
 
 
 class MedicalRecord:
+    """
+    A class representing the final Medical record composed of smaller parts.
+
+    """
+
     def __init__(self, diagnosis: Diagnosis, onset: Onset, admission: Admission, treatment: Treatment,
                  follow_up_imaging: FollowUpImaging, post_acute_care: PostAcuteCare,
                  post_stroke_complications: PostStrokeComplications, etiology: Etiology, discharge: Discharge):
@@ -154,6 +245,13 @@ class MedicalRecord:
         self.discharge = discharge
 
     def to_dict(self):
+        """Creates a dictionary from the attributes
+
+        Returns
+        -------
+        dict
+            Dictionary of all attributes from child classes
+        """
         data = {
             "diagnosis": vars(self.diagnosis) if self.diagnosis else {},
             "onset": vars(self.onset) if self.onset else {},

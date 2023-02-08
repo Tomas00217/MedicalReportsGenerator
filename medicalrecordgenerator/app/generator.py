@@ -57,31 +57,31 @@ class MedicalRecordsGenerator:
             "onset": MyTemplate(self.medical_record.onset.get_text(self.dictionary["onset"], self.parser)
                                 if self.medical_record.onset else "").safe_substitute(scoped_values),
 
-            "admission": MyTemplate(self.medical_record.admission.generate(self.dictionary["admission"], self.parser)
+            "admission": MyTemplate(self.medical_record.admission.get_text(self.dictionary["admission"], self.parser)
                                     if self.medical_record.admission else "").safe_substitute(scoped_values),
 
-            "treatment": MyTemplate(self.medical_record.treatment.generate(self.dictionary["treatment"], self.parser)
+            "treatment": MyTemplate(self.medical_record.treatment.get_text(self.dictionary["treatment"], self.parser)
                                     if self.medical_record.treatment else "").safe_substitute(scoped_values),
 
             "follow_up_imaging": MyTemplate(
-                self.medical_record.follow_up_imaging.generate(self.dictionary["follow_up_imaging"],
+                self.medical_record.follow_up_imaging.get_text(self.dictionary["follow_up_imaging"],
                                                                self.parser)
                 if self.medical_record.follow_up_imaging else "").safe_substitute(scoped_values),
 
             "post_acute_care": MyTemplate(
-                self.medical_record.post_acute_care.generate(self.dictionary["post_acute_care"],
+                self.medical_record.post_acute_care.get_text(self.dictionary["post_acute_care"],
                                                              self.parser)
                 if self.medical_record.post_acute_care else "").safe_substitute(scoped_values),
 
             "post_stroke_complications": MyTemplate(self.medical_record.post_stroke_complications
-                                                    .generate(self.dictionary["post_stroke_complications"], self.parser)
+                                                    .get_text(self.dictionary["post_stroke_complications"], self.parser)
                                                     if self.medical_record.post_stroke_complications else "")
             .safe_substitute(scoped_values),
 
-            "etiology": MyTemplate(self.medical_record.etiology.generate(self.dictionary["etiology"], self.parser)
+            "etiology": MyTemplate(self.medical_record.etiology.get_text(self.dictionary["etiology"], self.parser)
                                    if self.medical_record.etiology else "").safe_substitute(scoped_values),
 
-            "discharge": MyTemplate(self.medical_record.discharge.generate(self.dictionary["discharge"], self.parser)
+            "discharge": MyTemplate(self.medical_record.discharge.get_text(self.dictionary["discharge"], self.parser)
                                     if self.medical_record.discharge else "").safe_substitute(scoped_values),
         }
 
@@ -107,7 +107,7 @@ class MedicalRecordsGenerator:
                               self.parser.translate_data(self.get_variable("imaging_type"),
                                                          diagnosis_data.imaging_type),
                               self.parser.parse_data(self.get_variable("occlusion_position"),
-                                                     diagnosis_occlusions))
+                                                     vars(diagnosis_occlusions)))
 
         return diagnosis
 
@@ -159,7 +159,7 @@ class MedicalRecordsGenerator:
         imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
 
         imaging = FollowUpImaging(self.parser.parse_data(self.get_variable("post_treatment_findings"),
-                                                         imaging_treatment_data),
+                                                         vars(imaging_treatment_data)),
                                   imaging_data.imaging_type)
 
         return imaging
@@ -188,7 +188,7 @@ class MedicalRecordsGenerator:
         post_stroke_complications_data = PostStrokeComplicationsData.from_dict(self.data)
 
         post_stroke_complications = PostStrokeComplications(self.parser.parse_data(
-            self.get_variable("post_stroke_complications"), post_stroke_complications_data))
+            self.get_variable("post_stroke_complications"), vars(post_stroke_complications_data)))
 
         return post_stroke_complications
 
@@ -221,7 +221,7 @@ class MedicalRecordsGenerator:
                                                          discharge_data.discharge_destination),
                               discharge_data.nihss, discharge_data.mrs, discharge_data.contact_date,
                               discharge_data.mode_contact, self.parser.parse_data(self.get_variable("medications"),
-                                                                                  medication_data),
+                                                                                  vars(medication_data)),
                               self.get_setting("date_format"))
 
         return discharge
