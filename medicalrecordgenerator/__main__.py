@@ -34,6 +34,22 @@ def main(argv=None):
 
 
 def generate(app_language: str, subject_id: Optional[int] = None) -> None:
+    """Generates all medical records for each row in the postgres database if the subject_id is None.
+    Otherwise, generates only one medical record for the specified subject.
+
+    Parameters
+    ----------
+    app_language : str
+        The language of the medical record to be generated in
+    subject_id : Optional[int]
+        The id of subject for which the medical record should be generated.
+
+    Returns
+    -------
+    None
+        Doesn't return nothing yet, just prints the result
+    """
+
     locale.setlocale(locale.LC_ALL, app_language)
 
     language = load_utils.load_language(app_language)

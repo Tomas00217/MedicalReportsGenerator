@@ -232,8 +232,9 @@ class MedicalRecord:
     """
 
     def __init__(self, diagnosis: Diagnosis, onset: Onset, admission: Admission, treatment: Treatment,
-                 follow_up_imaging: FollowUpImaging, post_acute_care: PostAcuteCare,
-                 post_stroke_complications: PostStrokeComplications, etiology: Etiology, discharge: Discharge):
+                 follow_up_imaging: Optional[FollowUpImaging], post_acute_care: Optional[PostAcuteCare],
+                 post_stroke_complications: PostStrokeComplications, etiology: Optional[Etiology],
+                 discharge: Discharge):
         self.diagnosis = diagnosis
         self.onset = onset
         self.admission = admission

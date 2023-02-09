@@ -45,6 +45,7 @@ class Parser:
         data : dict
             All the data used for parsing.
         """
+
         self.data = data
 
     def parse(self, dictionary: dict) -> str:

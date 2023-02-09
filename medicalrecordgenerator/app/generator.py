@@ -1,6 +1,6 @@
 import logging
 from string import Template
-from typing import Any
+from typing import Any, Optional
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from .parser import Parser
@@ -13,11 +13,71 @@ from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy,
 
 
 class MyTemplate(Template):
+    """
+    Class representing a Template with custom pattern
+
+    """
     idpattern = r'(?-i:[._a-zA-Z][._a-zA-Z0-9]*)'
 
 
 class MedicalRecordsGenerator:
+    """
+    A class representing the medical record generator.
+
+    Serves to generate the medical record piece by piece.
+
+    Methods
+    -------
+    generate_medical_record()
+        Loads the jinja2 template and renders the template with generated structure
+    generate_structure()
+        Generates the whole structure of a medical record
+    create_structure()
+        Creates the whole MedicalRecord from all of its parts
+    create_diagnosis()
+        Creates the Diagnosis part of MedicalRecord
+    create_onset()
+        Creates the Onset part of MedicalRecord
+    create_admission()
+        Creates the Admission part of MedicalRecord
+    create_treatment()
+        Creates the Treatment part of MedicalRecord
+    create_follow_up_imaging()
+        Creates the FollowUpImaging part of MedicalRecord
+    create_post_acute_care()
+        Creates the PostAcuteCare part of MedicalRecord
+    create_post_stroke_complications()
+        Creates the PostStrokeComplications part of MedicalRecord
+    create_etiology()
+        Creates the Etiology part of MedicalRecord
+    create_discharge()
+        Creates the Discharge part of MedicalRecord
+    create_diagnosis()
+        Creates the Diagnosis part of MedicalRecord
+    create_diagnosis()
+        Creates the Diagnosis part of MedicalRecord
+    create_diagnosis()
+        Creates the Diagnosis part of MedicalRecord
+    get_variables()
+        Gets the 'variables' sub dictionary from the dictionary
+    get_setting()
+        Gets the specified setting from the dictionary
+    prepare_scoped_values()
+        Prepares the values as scoped values for substitution
+
+    """
+
     def __init__(self, dictionary: dict, data: Any):
+        """
+
+        Parameters
+        ----------
+        dictionary : dict
+            Loaded language variant of the dictionary
+        data : Any
+            Data from the database
+        """
+
         self.dictionary = dictionary
         self.data = data
         self.transported = False
@@ -36,7 +96,15 @@ class MedicalRecordsGenerator:
 
         self.medical_record = self.create_medical_record()
 
-    def generate_medical_record(self):
+    def generate_medical_record(self) -> str:
+        """Loads the jinja2 template and renders the template with generated structure
+
+        Returns
+        -------
+        str
+            Generated medical record with all the values substituted
+        """
+
         env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
         template = env.get_template("main.txt")
 
@@ -44,7 +112,15 @@ class MedicalRecordsGenerator:
 
         return template.render(record=record)
 
-    def generate_structure(self):
+    def generate_structure(self) -> dict:
+        """Generates the whole structure of a medical record with replaced string template values
+
+        Returns
+        -------
+        dict
+            Medical record as a dict to be used for jinja2 template
+        """
+
         variables = self.medical_record.to_dict()
         self.parser.data = variables
 
@@ -87,7 +163,15 @@ class MedicalRecordsGenerator:
 
         return record
 
-    def create_medical_record(self):
+    def create_medical_record(self) -> MedicalRecord:
+        """Creates the whole MedicalRecord from all of its parts
+
+        Returns
+        -------
+        MedicalRecord
+            The whole medical record with all the template values yet to be replaced
+        """
+
         return MedicalRecord(self.create_diagnosis(),
                              self.create_onset(),
                              self.create_admission(),
@@ -98,20 +182,36 @@ class MedicalRecordsGenerator:
                              self.create_etiology(),
                              self.create_discharge())
 
-    def create_diagnosis(self):
+    def create_diagnosis(self) -> Diagnosis:
+        """Creates the Diagnosis part of MedicalRecord
+
+        Returns
+        -------
+        Diagnosis
+            The diagnosis part medical record with all the template values yet to be replaced
+        """
+
         diagnosis_data = DiagnosisData.from_dict(self.data)
         diagnosis_occlusions = DiagnosisOcclusionsData.from_dict(self.data)
 
         diagnosis = Diagnosis(diagnosis_data.stroke_type,
                               diagnosis_data.aspects_score,
-                              self.parser.translate_data(self.get_variable("imaging_type"),
+                              self.parser.translate_data(self.get_variables("imaging_type"),
                                                          diagnosis_data.imaging_type),
-                              self.parser.parse_data(self.get_variable("occlusion_position"),
+                              self.parser.parse_data(self.get_variables("occlusion_position"),
                                                      vars(diagnosis_occlusions)))
 
         return diagnosis
 
-    def create_onset(self):
+    def create_onset(self) -> Onset:
+        """Creates the Onset part of MedicalRecord
+
+        Returns
+        -------
+        Onset
+            The onset part medical record with all the template values yet to be replaced
+        """
+
         onset_data = OnsetData.from_dict(self.data)
 
         onset = Onset(onset_data.onset_timestamp,
@@ -121,50 +221,86 @@ class MedicalRecordsGenerator:
 
         return onset
 
-    def create_admission(self):
+    def create_admission(self) -> Admission:
+        """Creates the Admission part of MedicalRecord
+
+        Returns
+        -------
+        Admission
+            The admission part medical record with all the template values yet to be replaced
+        """
+
         admission_data = AdmissionData.from_dict(self.data)
         admission = Admission(admission_data.nihss_score, admission_data.aspects_score,
-                              self.parser.translate_data(self.get_variable("hospitalized_in"),
+                              self.parser.translate_data(self.get_variables("hospitalized_in"),
                                                          admission_data.hospitalized_in))
 
         return admission
 
-    def create_treatment(self):
+    def create_treatment(self) -> Treatment:
+        """Creates the Treatment part of MedicalRecord. Includes both Thrombolysis and Thrombectomy
+
+        Returns
+        -------
+        Treatment
+            The treatment part medical record with all the template values yet to be replaced
+        """
+
         treatment_data = TreatmentData.from_dict(self.data)
         thrombolysis = Thrombolysis(treatment_data.dtn,
-                                    self.parser.translate_data(self.get_variable("ivt_treatment"),
+                                    self.parser.translate_data(self.get_variables("ivt_treatment"),
                                                                treatment_data.ivt_treatment),
                                     treatment_data.ivt_dose)
 
         thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio,
-                                    self.parser.get_tici_meaning(self.get_variable("tici_score_meaning"),
+                                    self.parser.get_tici_meaning(self.get_variables("tici_score_meaning"),
                                                                  treatment_data.tici_score))
 
         self.transported = thrombectomy.thrombectomy_transport
 
         treatment = Treatment(treatment_data.thrombolysis, treatment_data.thrombectomy,
-                              self.parser.translate_data(self.get_variable("no_thrombolysis_reason"),
+                              self.parser.translate_data(self.get_variables("no_thrombolysis_reason"),
                                                          treatment_data.no_thrombolysis_reason),
-                              self.parser.translate_data(self.get_variable("no_thrombectomy_reason"),
+                              self.parser.translate_data(self.get_variables("no_thrombectomy_reason"),
                                                          treatment_data.no_thrombectomy_reason),
                               thrombolysis, thrombectomy)
 
         return treatment
 
-    def create_follow_up_imaging(self):
+    def create_follow_up_imaging(self) -> Optional[FollowUpImaging]:
+        """Creates the FollowUpImaging part of MedicalRecord
+
+        Returns
+        -------
+        FollowUpImaging
+            The follow-up imaging part medical record with all the template values yet to be replaced.
+            If the patient was transported and therefore no follow-up imaging could be performed
+
+        """
+
         if self.transported:
             return None
 
         imaging_data = ImagingData.from_dict(self.data)
         imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
 
-        imaging = FollowUpImaging(self.parser.parse_data(self.get_variable("post_treatment_findings"),
+        imaging = FollowUpImaging(self.parser.parse_data(self.get_variables("post_treatment_findings"),
                                                          vars(imaging_treatment_data)),
                                   imaging_data.imaging_type)
 
         return imaging
 
-    def create_post_acute_care(self):
+    def create_post_acute_care(self) -> Optional[PostAcuteCare]:
+        """Creates the PostAcuteCare part of MedicalRecord
+
+        Returns
+        -------
+        PostAcuteCare
+            The post acute care part medical record with all the template values yet to be replaced.
+            If the patient was transported and therefore no post acute care could be performed
+
+        """
+
         if self.transported:
             return None
 
@@ -180,19 +316,38 @@ class MedicalRecordsGenerator:
                                      "ergotherapy": post_acute_care.ergotherapy,
                                      "speechtherapy": post_acute_care.speechtherapy}
 
-        post_acute_care.therapies = self.parser.parse_data(self.get_variable("therapies"), post_acute_care_therapies)
+        post_acute_care.therapies = self.parser.parse_data(self.get_variables("therapies"), post_acute_care_therapies)
 
         return post_acute_care
 
-    def create_post_stroke_complications(self):
+    def create_post_stroke_complications(self) -> PostStrokeComplications:
+        """Creates the PostStrokeComplications part of MedicalRecord
+
+        Returns
+        -------
+        PostStrokeComplications
+            The post stroke complications part medical record with all the template values yet to be replaced
+
+        """
+
         post_stroke_complications_data = PostStrokeComplicationsData.from_dict(self.data)
 
         post_stroke_complications = PostStrokeComplications(self.parser.parse_data(
-            self.get_variable("post_stroke_complications"), vars(post_stroke_complications_data)))
+            self.get_variables("post_stroke_complications"), vars(post_stroke_complications_data)))
 
         return post_stroke_complications
 
-    def create_etiology(self):
+    def create_etiology(self) -> Optional[Etiology]:
+        """Creates the Etiology part of MedicalRecord. Includes LargeArteryAtherosclerosis and Cardioembolism
+
+        Returns
+        -------
+        Etiology
+            The etiology part medical record with all the template values yet to be replaced.
+            If the patient was transported and therefore no etiology could be performed
+
+        """
+
         if self.transported:
             return None
 
@@ -212,40 +367,100 @@ class MedicalRecordsGenerator:
 
         return etiology
 
-    def create_discharge(self):
+    def create_discharge(self) -> Discharge:
+        """Creates the Discharge part of MedicalRecord
+
+        Returns
+        -------
+        Discharge
+            The discharge part medical record with all the template values yet to be replaced.
+
+        """
         discharge_data = DischargeData.from_dict(self.data)
         medication_data = MedicationData.from_dict(self.data)
 
         discharge = Discharge(discharge_data.discharge_date,
-                              self.parser.translate_data(self.get_variable("discharge_destination"),
+                              self.parser.translate_data(self.get_variables("discharge_destination"),
                                                          discharge_data.discharge_destination),
                               discharge_data.nihss, discharge_data.mrs, discharge_data.contact_date,
-                              discharge_data.mode_contact, self.parser.parse_data(self.get_variable("medications"),
+                              discharge_data.mode_contact, self.parser.parse_data(self.get_variables("medications"),
                                                                                   vars(medication_data)),
                               self.get_setting("date_format"))
 
         return discharge
 
-    def get_variable(self, key: str):
+    def get_variables(self, key: str) -> Optional[dict]:
+        """Gets the 'variables' sub dictionary from the dictionary
+
+        Parameters
+        ----------
+        key : str
+            Key of the sub dictionary to be returned
+
+        Returns
+        -------
+        dict
+            The sub dictionary specified by the key. None if the key is incorrect
+
+        Raises
+        ------
+        KeyError
+            If the dictionary is missing given key
+
+        """
+
         try:
             variable = self.variables[key]
         except KeyError:
             logging.error("Variables are missing key %s", key)
-            return
+            return None
 
         return variable
 
-    def get_setting(self, key: str):
+    def get_setting(self, key: str) -> Optional[str]:
+        """Gets the specified setting from the dictionary
+
+        Parameters
+        ----------
+        key :
+            Key of the setting to be returned.
+
+        Returns
+        -------
+            The setting specified by the key. None if the key is incorrect
+
+        Raises
+        ------
+        KeyError
+            If the dictionary is missing given key
+
+        """
+
         try:
             setting = self.settings[key]
         except KeyError:
             logging.error("Settings are missing key %s", key)
-            return
+            return None
 
         return setting
 
     @staticmethod
-    def prepare_scoped_values(values):
+    def prepare_scoped_values(values: dict) -> dict:
+        """Prepares the values as scoped values for substitution. Concatenating the keys of parent dictionary with the
+        keys of the children dictionaries.
+
+        Parameters
+        ----------
+        values : dict
+            The parent dictionary with values to be concatenated
+
+        Returns
+        -------
+        dict
+            The concatenated values
+
+        """
+
         scoped_values = {}
 
         for key, vals in values.items():
