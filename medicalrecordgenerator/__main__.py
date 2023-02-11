@@ -10,6 +10,7 @@ import psycopg2.extras
 import psycopg2.extensions
 
 from app.generator import MedicalRecordsGenerator
+from app.language import Language
 from utils import load_utils
 
 OPTIONS = "l:i:"
@@ -52,7 +53,15 @@ def generate(app_language: str, subject_id: Optional[int] = None) -> None:
 
     locale.setlocale(locale.LC_ALL, app_language)
 
-    language = load_utils.load_language(app_language)
+    language_dict = load_utils.load_language(app_language)
+    if not language_dict:
+        return
+
+    try:
+        language = Language(**language_dict)
+    except (KeyError, TypeError, AttributeError) as e:
+        logging.error(repr(e))
+        return
 
     """ Connect to the PostgreSQL database server """
     conn = None

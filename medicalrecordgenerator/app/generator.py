@@ -3,7 +3,8 @@ from string import Template
 from typing import Any, Optional
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from .parser import Parser
+
+from app.language import Language
 from data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
     ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData
@@ -64,36 +65,31 @@ class MedicalRecordsGenerator:
         Gets the specified setting from the dictionary
     prepare_scoped_values()
         Prepares the values as scoped values for substitution
+    translate_data(dictionary, key)
+        Translates the data specified by key with the values from dictionary
+    parse_data(dictionary, data)
+        Parses the variables from dictionary specified by the data
+    replace_last(string, old, new)
+        Replaces the last substring with new substring of given string
+    get_tici_meaning(dictionary, tici_score)
+        Gets the tici meaning based on the tici score
 
     """
 
-    def __init__(self, dictionary: dict, data: Any):
+    def __init__(self, language: Language, data: Any):
         """
 
         Parameters
         ----------
-        dictionary : dict
+        language : Language
             Loaded language variant of the dictionary
         data : Any
             Data from the database
         """
 
-        self.dictionary = dictionary
+        self.language = language
         self.data = data
         self.transported = False
-        self.parser = Parser({})
-        try:
-            self.variables = dictionary["variables"]
-        except KeyError:
-            logging.error("Dictionary is missing key 'variables'")
-            self.variables = {}
-
-        try:
-            self.settings = dictionary["settings"]
-        except KeyError:
-            logging.error("Dictionary is missing key 'settings'")
-            self.settings = {}
-
         self.medical_record = self.create_medical_record()
 
     def generate_medical_record(self) -> str:
@@ -122,42 +118,38 @@ class MedicalRecordsGenerator:
         """
 
         variables = self.medical_record.to_dict()
-        self.parser.data = variables
 
         scoped_values = self.prepare_scoped_values(variables)
 
         record = {
-            "diagnosis": MyTemplate(self.medical_record.diagnosis.get_text(self.dictionary["diagnosis"], self.parser)
+            "diagnosis": MyTemplate(self.language.diagnosis.get_block_result(variables)
                                     if self.medical_record.diagnosis else "").safe_substitute(scoped_values),
 
-            "onset": MyTemplate(self.medical_record.onset.get_text(self.dictionary["onset"], self.parser)
+            "onset": MyTemplate(self.language.onset.get_block_result(variables)
                                 if self.medical_record.onset else "").safe_substitute(scoped_values),
 
-            "admission": MyTemplate(self.medical_record.admission.get_text(self.dictionary["admission"], self.parser)
+            "admission": MyTemplate(self.language.admission.get_block_result(variables)
                                     if self.medical_record.admission else "").safe_substitute(scoped_values),
 
-            "treatment": MyTemplate(self.medical_record.treatment.get_text(self.dictionary["treatment"], self.parser)
+            "treatment": MyTemplate(self.language.treatment.get_block_result(variables)
                                     if self.medical_record.treatment else "").safe_substitute(scoped_values),
 
-            "follow_up_imaging": MyTemplate(
-                self.medical_record.follow_up_imaging.get_text(self.dictionary["follow_up_imaging"],
-                                                               self.parser)
-                if self.medical_record.follow_up_imaging else "").safe_substitute(scoped_values),
+            "follow_up_imaging": MyTemplate(self.language.follow_up_imaging.get_block_result(variables)
+                                            if self.medical_record.follow_up_imaging else "")
+            .safe_substitute(scoped_values),
 
-            "post_acute_care": MyTemplate(
-                self.medical_record.post_acute_care.get_text(self.dictionary["post_acute_care"],
-                                                             self.parser)
-                if self.medical_record.post_acute_care else "").safe_substitute(scoped_values),
+            "post_acute_care": MyTemplate(self.language.post_acute_care.get_block_result(variables)
+                                          if self.medical_record.post_acute_care else "")
+            .safe_substitute(scoped_values),
 
-            "post_stroke_complications": MyTemplate(self.medical_record.post_stroke_complications
-                                                    .get_text(self.dictionary["post_stroke_complications"], self.parser)
+            "post_stroke_complications": MyTemplate(self.language.post_stroke_complications.get_block_result(variables)
                                                     if self.medical_record.post_stroke_complications else "")
             .safe_substitute(scoped_values),
 
-            "etiology": MyTemplate(self.medical_record.etiology.get_text(self.dictionary["etiology"], self.parser)
+            "etiology": MyTemplate(self.language.etiology.get_block_result(variables)
                                    if self.medical_record.etiology else "").safe_substitute(scoped_values),
 
-            "discharge": MyTemplate(self.medical_record.discharge.get_text(self.dictionary["discharge"], self.parser)
+            "discharge": MyTemplate(self.language.discharge.get_block_result(variables)
                                     if self.medical_record.discharge else "").safe_substitute(scoped_values),
         }
 
@@ -196,10 +188,8 @@ class MedicalRecordsGenerator:
 
         diagnosis = Diagnosis(diagnosis_data.stroke_type,
                               diagnosis_data.aspects_score,
-                              self.parser.translate_data(self.get_variables("imaging_type"),
-                                                         diagnosis_data.imaging_type),
-                              self.parser.parse_data(self.get_variables("occlusion_position"),
-                                                     vars(diagnosis_occlusions)))
+                              self.translate_data(self.get_variables("imaging_type"), diagnosis_data.imaging_type),
+                              self.parse_data(self.get_variables("occlusion_position"), vars(diagnosis_occlusions)))
 
         return diagnosis
 
@@ -232,8 +222,8 @@ class MedicalRecordsGenerator:
 
         admission_data = AdmissionData.from_dict(self.data)
         admission = Admission(admission_data.nihss_score, admission_data.aspects_score,
-                              self.parser.translate_data(self.get_variables("hospitalized_in"),
-                                                         admission_data.hospitalized_in))
+                              self.translate_data(self.get_variables("hospitalized_in"),
+                                                  admission_data.hospitalized_in))
 
         return admission
 
@@ -248,21 +238,21 @@ class MedicalRecordsGenerator:
 
         treatment_data = TreatmentData.from_dict(self.data)
         thrombolysis = Thrombolysis(treatment_data.dtn,
-                                    self.parser.translate_data(self.get_variables("ivt_treatment"),
-                                                               treatment_data.ivt_treatment),
+                                    self.translate_data(self.get_variables("ivt_treatment"),
+                                                        treatment_data.ivt_treatment),
                                     treatment_data.ivt_dose)
 
         thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio,
-                                    self.parser.get_tici_meaning(self.get_variables("tici_score_meaning"),
-                                                                 treatment_data.tici_score))
+                                    self.get_tici_meaning(self.get_variables("tici_score_meaning"),
+                                                          treatment_data.tici_score))
 
         self.transported = thrombectomy.thrombectomy_transport
 
         treatment = Treatment(treatment_data.thrombolysis, treatment_data.thrombectomy,
-                              self.parser.translate_data(self.get_variables("no_thrombolysis_reason"),
-                                                         treatment_data.no_thrombolysis_reason),
-                              self.parser.translate_data(self.get_variables("no_thrombectomy_reason"),
-                                                         treatment_data.no_thrombectomy_reason),
+                              self.translate_data(self.get_variables("no_thrombolysis_reason"),
+                                                  treatment_data.no_thrombolysis_reason),
+                              self.translate_data(self.get_variables("no_thrombectomy_reason"),
+                                                  treatment_data.no_thrombectomy_reason),
                               thrombolysis, thrombectomy)
 
         return treatment
@@ -284,9 +274,9 @@ class MedicalRecordsGenerator:
         imaging_data = ImagingData.from_dict(self.data)
         imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
 
-        imaging = FollowUpImaging(self.parser.parse_data(self.get_variables("post_treatment_findings"),
-                                                         vars(imaging_treatment_data)),
-                                  imaging_data.imaging_type)
+        imaging = FollowUpImaging(self.parse_data(
+            self.get_variables("post_treatment_findings"), vars(imaging_treatment_data)),
+            imaging_data.imaging_type)
 
         return imaging
 
@@ -316,7 +306,7 @@ class MedicalRecordsGenerator:
                                      "ergotherapy": post_acute_care.ergotherapy,
                                      "speechtherapy": post_acute_care.speechtherapy}
 
-        post_acute_care.therapies = self.parser.parse_data(self.get_variables("therapies"), post_acute_care_therapies)
+        post_acute_care.therapies = self.parse_data(self.get_variables("therapies"), post_acute_care_therapies)
 
         return post_acute_care
 
@@ -332,7 +322,7 @@ class MedicalRecordsGenerator:
 
         post_stroke_complications_data = PostStrokeComplicationsData.from_dict(self.data)
 
-        post_stroke_complications = PostStrokeComplications(self.parser.parse_data(
+        post_stroke_complications = PostStrokeComplications(self.parse_data(
             self.get_variables("post_stroke_complications"), vars(post_stroke_complications_data)))
 
         return post_stroke_complications
@@ -380,11 +370,11 @@ class MedicalRecordsGenerator:
         medication_data = MedicationData.from_dict(self.data)
 
         discharge = Discharge(discharge_data.discharge_date,
-                              self.parser.translate_data(self.get_variables("discharge_destination"),
-                                                         discharge_data.discharge_destination),
+                              self.translate_data(self.get_variables("discharge_destination"),
+                                                  discharge_data.discharge_destination),
                               discharge_data.nihss, discharge_data.mrs, discharge_data.contact_date,
-                              discharge_data.mode_contact, self.parser.parse_data(self.get_variables("medications"),
-                                                                                  vars(medication_data)),
+                              discharge_data.mode_contact, self.parse_data(self.get_variables("medications"),
+                                                                           vars(medication_data)),
                               self.get_setting("date_format"))
 
         return discharge
@@ -410,7 +400,7 @@ class MedicalRecordsGenerator:
         """
 
         try:
-            variable = self.variables[key]
+            variable = self.language.variables[key]
         except KeyError:
             logging.error("Variables are missing key %s", key)
             return None
@@ -437,7 +427,7 @@ class MedicalRecordsGenerator:
         """
 
         try:
-            setting = self.settings[key]
+            setting = self.language.settings[key]
         except KeyError:
             logging.error("Settings are missing key %s", key)
             return None
@@ -469,3 +459,115 @@ class MedicalRecordsGenerator:
                 scoped_values[scoped_key] = val_value
 
         return scoped_values
+
+    @staticmethod
+    def translate_data(dictionary: dict, key: str) -> str:
+        """Translates the data specified by key with the values from dictionary
+
+        Parameters
+        ----------
+        dictionary : dict
+            Dictionary used for the translation
+        key : str
+            The key for the value from data dictionary that is to be translated
+
+        Returns
+        -------
+        str
+            Translated value
+        """
+
+        if dictionary is None:
+            return ""
+
+        if key:
+            try:
+                variable = dictionary[key]
+            except KeyError:
+                logging.error("Invalid key %s", key)
+                variable = ""
+
+            return variable
+
+        return ""
+
+    def parse_data(self, dictionary: dict, data: dict) -> str:
+        """Parses the variables from dictionary specified by the data
+
+        Parameters
+        ----------
+        dictionary : dict
+            A dictionary from which the text versions are taken from
+        data : dict
+            A dictionary with the data to be parsed
+
+        Returns
+        -------
+        str
+            The resulting parsed text from json dictionary based on the data
+        """
+
+        result = ""
+        if dictionary is None:
+            return result
+
+        for key, value in data.items():
+            if value:
+                variable = ""
+
+                try:
+                    variable = dictionary[key]
+                except KeyError:
+                    logging.error("Invalid key %s", key)
+
+                result += variable if result == "" else f", {variable}"
+
+        result = self.replace_last(result, ",", " and")
+
+        return result
+
+    @staticmethod
+    def replace_last(string: str, old: str, new: str) -> str:
+        """Replaces the last substring with new substring of given string
+
+        Parameters
+        ----------
+        string : str
+            The string in which we are replacing substrings
+        old : str
+            The last occurrence of the string to be replaced
+        new : str
+            The replacement string
+
+        Returns
+        -------
+        str
+            The replaced string
+        """
+
+        return new.join(string.rsplit(old, 1))
+
+    @staticmethod
+    def get_tici_meaning(dictionary: dict, tici_score: str) -> str:
+        """Gets the tici meaning based on the tici score
+
+        Parameters
+        ----------
+        dictionary : dict
+            Dictionary from which the text is being taken
+        tici_score : str
+            Tici score of patient
+
+        Returns
+        -------
+        str
+            Parsed tici meaning based on the tici score
+
+        """
+
+        if dictionary is None:
+            return ""
+
+        if tici_score is not None and tici_score != "occlusion not confirmed":
+            tici_score = tici_score
+            return dictionary[f"tici_score_{tici_score}"]

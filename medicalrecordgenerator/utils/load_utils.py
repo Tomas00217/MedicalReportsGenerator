@@ -1,30 +1,29 @@
 import json
 import glob
+import logging
+
 import numpy as np
 import pandas as pd
 
 
 DEFAULT_LANGUAGE = 'locales\\en_US.json'
-PATH = 'locales\\*.json'
+PATH = '..\\locales\\*.json'
 
 
-def load_xlsx(file_path):
-    df = pd.read_excel(file_path)
-    df = df.replace({np.nan: None})
+def load_language(app_language: str) -> dict:
+    """Loads the language dictionary for given language
 
-    return df
+    Parameters
+    ----------
+    app_language : str
+        Language for which the dictionary should be loaded
 
+    Returns
+    -------
+    dict
+        Dictionary for the given language
 
-def load_csv(file_path):
-    df = pd.read_csv(file_path)
-    df = df.replace({np.nan: None})
-
-    data = df.to_dict("records")
-
-    return data
-
-
-def load_language(app_language):
+    """
     language_list = glob.glob(PATH)
 
     for lang in language_list:
@@ -37,8 +36,25 @@ def load_language(app_language):
     return load_language_file(DEFAULT_LANGUAGE)
 
 
-def load_language_file(file_name):
+def load_language_file(file_name: str) -> dict:
+    """Loads the json file
+
+    Parameters
+    ----------
+    file_name : str
+        Name of the json file to be loaded
+
+    Returns
+    -------
+    dict
+        Dictionary from the loaded json file
+
+    """
     with open(file_name, 'r', encoding='utf8') as file:
-        language = json.loads(file.read())
+        language = {}
+        try:
+            language = json.loads(file.read())
+        except json.decoder.JSONDecodeError as e:
+            logging.error(e)
 
         return language

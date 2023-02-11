@@ -1,51 +1,11 @@
 from datetime import datetime, date
 from typing import Optional
 
-from app.parser import Parser
-
 DEFAULT_DATE_FORMAT = "%b %d %Y"
 DEFAULT_TIME_FORMAT = "%H:%M"
 
 
-class GeneratedObject:
-    """
-    A class that represents an object that is going to be generated.
-
-    """
-
-    @staticmethod
-    def get_text(dictionary: dict, parser: Parser) -> str:
-        """Returns the text from the dictionary with the usage of parser
-
-        Parameters
-        ----------
-        dictionary : dict
-            Dictionary from which we pull the value
-        parser : Parser
-            Instance of parser
-
-        Returns
-        -------
-        str
-            Text from dictionary
-
-        Raises
-        ------
-        KeyError
-            If any given key is not present in the dictionary
-        ValueError
-            If any of the scopes has incorrect format and cannot be split
-        """
-
-        try:
-            text = parser.parse(dictionary)
-        except (KeyError, ValueError):
-            return ""
-
-        return text
-
-
-class Diagnosis(GeneratedObject):
+class Diagnosis:
     """
     A class representing diagnosis. Is part of MedicalRecord.
 
@@ -59,7 +19,7 @@ class Diagnosis(GeneratedObject):
         self.occlusion_position = occlusion_position
 
 
-class Onset(GeneratedObject):
+class Onset:
     """
     A class representing onset. Is part of MedicalRecord.
 
@@ -72,7 +32,7 @@ class Onset(GeneratedObject):
         self.wake_up_stroke = wake_up_stroke if wake_up_stroke is not None else False
 
 
-class Admission(GeneratedObject):
+class Admission:
     """
     A class representing admission. Is part of MedicalRecord.
 
@@ -111,7 +71,7 @@ class Thrombectomy:
         self.tici_score_meaning = tici_score_meaning
 
 
-class Treatment(GeneratedObject):
+class Treatment:
     """
     A class representing treatment. Is part of MedicalRecord.
 
@@ -128,7 +88,7 @@ class Treatment(GeneratedObject):
         self.thrombectomy = thrombectomy
 
 
-class FollowUpImaging(GeneratedObject):
+class FollowUpImaging:
     """
     A class representing follow-up imaging. Is part of MedicalRecord.
 
@@ -139,7 +99,7 @@ class FollowUpImaging(GeneratedObject):
         self.imaging_type = imaging_type
 
 
-class PostAcuteCare(GeneratedObject):
+class PostAcuteCare:
     """
     A class representing post acute care. Is part of MedicalRecord.
 
@@ -154,7 +114,7 @@ class PostAcuteCare(GeneratedObject):
         self.therapies = therapies
 
 
-class PostStrokeComplications(GeneratedObject):
+class PostStrokeComplications:
     """
     A class representing post stroke complications. Is part of MedicalRecord.
 
@@ -188,7 +148,7 @@ class Cardioembolism:
         self.reasons = reasons
 
 
-class Etiology(GeneratedObject):
+class Etiology:
     """
     A class representing etiology. Is part of MedicalRecord.
 
@@ -206,7 +166,7 @@ class Etiology(GeneratedObject):
         self.cardioembolism_dat = cardioembolism_dat
 
 
-class Discharge(GeneratedObject):
+class Discharge:
     """
     A class representing discharge. Is part of MedicalRecord.
 
