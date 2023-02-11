@@ -5,7 +5,7 @@ import pandas as pd
 
 
 DEFAULT_LANGUAGE = 'locales\\en_US.json'
-PATH = 'locales\\*.json'
+PATH = '..\\locales\\*.json'
 
 
 def load_xlsx(file_path):

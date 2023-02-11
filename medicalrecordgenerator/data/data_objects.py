@@ -161,4 +161,3 @@ class MedicationData(DataclassFromDict):
     discharge_heparin: Optional[bool] = field_from_dict(default=None)
     discharge_other: Optional[bool] = field_from_dict(default=None)
     discharge_anticoagulant_recommended: Optional[bool] = field_from_dict(default=None)
-
