@@ -4,8 +4,7 @@ from typing import Any, Optional
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from data.language import Language
-from .parser import Parser
+from app.language import Language
 from data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
     ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData
@@ -66,6 +65,14 @@ class MedicalRecordsGenerator:
         Gets the specified setting from the dictionary
     prepare_scoped_values()
         Prepares the values as scoped values for substitution
+    translate_data(dictionary, key)
+        Translates the data specified by key with the values from dictionary
+    parse_data(dictionary, data)
+        Parses the variables from dictionary specified by the data
+    replace_last(string, old, new)
+        Replaces the last substring with new substring of given string
+    get_tici_meaning(dictionary, tici_score)
+        Gets the tici meaning based on the tici score
 
     """
 
