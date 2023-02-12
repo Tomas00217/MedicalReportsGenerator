@@ -53,16 +53,6 @@ def generate(app_language: str, subject_id: Optional[int] = None) -> None:
 
     locale.setlocale(locale.LC_ALL, app_language)
 
-    language_dict = load_utils.load_language(app_language)
-    if not language_dict:
-        return
-
-    try:
-        language = Language(**language_dict)
-    except (KeyError, TypeError, AttributeError) as e:
-        logging.error(repr(e))
-        return
-
     """ Connect to the PostgreSQL database server """
     conn = None
 
@@ -94,15 +84,27 @@ def generate(app_language: str, subject_id: Optional[int] = None) -> None:
             cur.execute("SELECT * FROM datamix")
         data = cur.fetchall()
 
-        # generate records
-        for idx, row in enumerate(data):
-            generator = MedicalRecordsGenerator(language, row)
-            report = generator.generate_medical_record()
-            print(report)
-            """
-            with open(f"med_record{idx+1}.txt", "w") as file:
-                file.write(report + "\n")
-            """
+        if data:
+            # load language
+            language_dict = load_utils.load_language(app_language)
+            if not language_dict:
+                return
+
+            try:
+                language = Language(**language_dict)
+            except (KeyError, TypeError, AttributeError) as e:
+                logging.error(repr(e))
+                return
+
+            # generate records
+            for idx, row in enumerate(data):
+                generator = MedicalRecordsGenerator(language, row)
+                report = generator.generate_medical_record()
+                print(report)
+                """
+                with open(f"med_record{idx+1}.txt", "w") as file:
+                    file.write(report + "\n")
+                """
 
         # close the communication with the PostgreSQL
         cur.close()
