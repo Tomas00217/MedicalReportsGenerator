@@ -12,11 +12,14 @@ class Diagnosis:
     """
 
     def __init__(self, stroke_type: Optional[str], aspects_score: Optional[int],
-                 imaging_type: Optional[str], occlusion_position: Optional[str]):
+                 imaging_type: Optional[str], occlusion_position: Optional[str], age: Optional[int],
+                 gender: Optional[str]):
         self.stroke_type = stroke_type
         self.aspects_score = aspects_score if aspects_score else None
         self.imaging_type = imaging_type
         self.occlusion_position = occlusion_position
+        self.age = age
+        self.gender = gender
 
 
 class Onset:
@@ -38,10 +41,20 @@ class Admission:
 
     """
 
-    def __init__(self, admission_nihss: Optional[int], aspects_score: Optional[int], admission_type: Optional[str]):
+    def __init__(self, admission_nihss: Optional[int], aspects_score: Optional[int], admission_type: Optional[str],
+                 arrival_time: Optional[datetime], arrival_mode: Optional[str], admittance_department: Optional[str],
+                 sys_blood_pressure: Optional[int], dia_blood_pressure: Optional[int], risk_factors: Optional[str],
+                 prior_treatment: Optional[str]):
         self.admission_nihss = admission_nihss
         self.aspects_score = aspects_score
         self.admission_type = admission_type
+        self.arrival_time = arrival_time
+        self.arrival_mode = arrival_mode
+        self.admittance_department = admittance_department
+        self.sys_blood_pressure = sys_blood_pressure
+        self.dia_blood_pressure = dia_blood_pressure
+        self.risk_factors = risk_factors
+        self.prior_treatment = prior_treatment
 
 
 class Thrombolysis:

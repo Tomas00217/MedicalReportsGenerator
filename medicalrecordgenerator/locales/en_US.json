@@ -993,6 +993,48 @@
       "tici_score_2B": "partial filling >2/3 territory",
       "tici_score_2C": "near complete reperfusion",
       "tici_score_3.0": "complete reperfusion"
+    },
+    "prior_treatment": {
+      "before_onset_antidiabetics": "anti-diabetics",
+      "before_onset_antihypertensives": "anti-hypertensives",
+      "before_onset_asa": "aspirin",
+      "before_onset_cilostazol": "cilostazol",
+      "before_onset_clopidrogel": "clopidrogel",
+      "before_onset_ticagrelor": "ticagrelor",
+      "before_onset_ticlopidine": "ticlopidine",
+      "before_onset_prasugrel": "prasugrel",
+      "before_onset_dipyridamol": "dipyridamol",
+      "before_onset_warfarin": "warfarin",
+      "before_onset_dabigatran": "dabigatran",
+      "before_onset_rivaroxaban": "rivaroxaban",
+      "before_onset_apixaban": "apixaban",
+      "before_onset_edoxaban": "edoxaban",
+      "before_onset_statin": "statin",
+      "before_onset_heparin": "heparin",
+      "before_onset_other": "other",
+      "before_onset_anticoagulant_recommended": "anticoagulant recommended",
+      "before_onset_lmwh_prophylactic": "lmwh prophylactic",
+      "before_onset_lmwh_therapeutic": "lmwh therapeutic",
+      "before_onset_other_antiplatelet": "other antiplatelet",
+      "before_onset_other_anticoagulant": "other anticoagulant",
+      "before_onset_any_anticoagulant": "any anticoagulant",
+      "before_onset_any_antiplatelet": "any antiplatelet"
+    },
+    "risk_factors": {
+      "risk_hypertension": "" ,
+      "risk_diabetes": "" ,
+      "risk_hyperlipidemia": "" ,
+      "risk_atrial_fibrilation": "" ,
+      "risk_congestive_heart_failure": "" ,
+      "risk_smoker_last_10_years": "" ,
+      "risk_smoker": "" ,
+      "risk_previous_stroke": "" ,
+      "risk_previous_ischemic_stroke": "",
+      "risk_previous_hemorrhagic_stroke": "" ,
+      "risk_coronary_artery_disease_or_myocardial_infarction": "" ,
+      "risk_contraception": "",
+      "risk_hiv": "" ,
+      "risk_other": ""
     }
   }
 }

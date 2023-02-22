@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from app.language import Language
 from data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
     ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
-    DiagnosisOcclusionsData, ImagingTreatmentData
+    DiagnosisOcclusionsData, ImagingTreatmentData, RiskFactorsData, PriorTreatmentData
 from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
     FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
     Discharge, MedicalRecord
@@ -189,7 +189,9 @@ class MedicalRecordsGenerator:
         diagnosis = Diagnosis(diagnosis_data.stroke_type,
                               diagnosis_data.aspects_score,
                               self.translate_data(self.get_variables("imaging_type"), diagnosis_data.imaging_type),
-                              self.parse_data(self.get_variables("occlusion_position"), vars(diagnosis_occlusions)))
+                              self.parse_data(self.get_variables("occlusion_position"), vars(diagnosis_occlusions)),
+                              diagnosis_data.age,
+                              diagnosis_data.gender)
 
         return diagnosis
 
@@ -221,9 +223,20 @@ class MedicalRecordsGenerator:
         """
 
         admission_data = AdmissionData.from_dict(self.data)
+        risk_factors_data = RiskFactorsData.from_dict(self.data)
+        prior_treatment_data = PriorTreatmentData.from_dict(self.data)
+
         admission = Admission(admission_data.nihss_score, admission_data.aspects_score,
                               self.translate_data(self.get_variables("hospitalized_in"),
-                                                  admission_data.hospitalized_in))
+                                                  admission_data.hospitalized_in),
+                              admission_data.hospital_timestamp,
+                              admission_data.arrival_mode,
+                              admission_data.admittance_department,
+                              admission_data.sys_blood_pressure,
+                              admission_data.dia_blood_pressure,
+                              self.parse_data(self.get_variables("risk_factors"), vars(risk_factors_data)),
+                              self.parse_data(self.get_variables("prior_treatment"), vars(prior_treatment_data)),
+                              )
 
         return admission
 

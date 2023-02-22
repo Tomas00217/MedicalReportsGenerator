@@ -29,6 +29,8 @@ class DiagnosisData(DataclassFromDict):
     stroke_type: Optional[str] = field_from_dict(default=None)
     aspects_score: Optional[int] = field_from_dict(default=None)
     imaging_type: Optional[str] = field_from_dict(default=None)
+    age: Optional[int] = field_from_dict(default=None)
+    gender: Optional[str] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -64,6 +66,52 @@ class AdmissionData(DataclassFromDict):
     hospitalized_in: Optional[str] = field_from_dict(default=None)
     nihss_score: Optional[int] = field_from_dict(default=None)
     aspects_score: Optional[int] = field_from_dict(default=None)
+    hospital_timestamp: Optional[datetime] = field_from_dict(default=None)
+    arrival_mode: Optional[str] = field_from_dict(default=None)
+    admittance_department: Optional[str] = field_from_dict(default=None)
+    sys_blood_pressure: Optional[int] = field_from_dict(default=None)
+    dia_blood_pressure: Optional[int] = field_from_dict(default=None)
+
+
+@dataclass()
+class RiskFactorsData(DataclassFromDict):
+    risk_hypertension: Optional[bool] = field_from_dict(default=None)
+    risk_diabetes: Optional[bool] = field_from_dict(default=None)
+    risk_hyperlipidemia: Optional[bool] = field_from_dict(default=None)
+    risk_atrial_fibrilation: Optional[bool] = field_from_dict(default=None)
+    risk_congestive_heart_failure: Optional[bool] = field_from_dict(default=None)
+    risk_smoker_last_10_years: Optional[bool] = field_from_dict(default=None)
+    risk_smoker: Optional[bool] = field_from_dict(default=None)
+    risk_previous_stroke: Optional[bool] = field_from_dict(default=None)
+    risk_previous_ischemic_stroke: Optional[bool] = field_from_dict(default=None)
+    risk_previous_hemorrhagic_stroke: Optional[bool] = field_from_dict(default=None)
+    risk_coronary_artery_disease_or_myocardial_infarction: Optional[bool] = field_from_dict(default=None)
+    risk_contraception: Optional[bool] = field_from_dict(default=None)
+    risk_hiv: Optional[bool] = field_from_dict(default=None)
+    risk_other: Optional[bool] = field_from_dict(default=None)
+
+
+@dataclass()
+class PriorTreatmentData(DataclassFromDict):
+    before_onset_antidiabetics: Optional[bool] = field_from_dict(default=None)
+    before_onset_antihypertensives: Optional[bool] = field_from_dict(default=None)
+    before_onset_asa: Optional[bool] = field_from_dict(default=None)
+    before_onset_cilostazol: Optional[bool] = field_from_dict(default=None)
+    before_onset_clopidrogel: Optional[bool] = field_from_dict(default=None)
+    before_onset_ticagrelor: Optional[bool] = field_from_dict(default=None)
+    before_onset_ticlopidine: Optional[bool] = field_from_dict(default=None)
+    before_onset_prasugrel: Optional[bool] = field_from_dict(default=None)
+    before_onset_dipyridamol: Optional[bool] = field_from_dict(default=None)
+    before_onset_warfarin: Optional[bool] = field_from_dict(default=None)
+    before_onset_dabigatran: Optional[bool] = field_from_dict(default=None)
+    before_onset_rivaroxaban: Optional[bool] = field_from_dict(default=None)
+    before_onset_apixaban: Optional[bool] = field_from_dict(default=None)
+    before_onset_edoxaban: Optional[bool] = field_from_dict(default=None)
+    before_onset_statin: Optional[bool] = field_from_dict(default=None)
+    before_onset_heparin: Optional[bool] = field_from_dict(default=None)
+    before_onset_lmwh_prophylactic: Optional[bool] = field_from_dict(default=None)
+    before_onset_lmwh_therapeutic: Optional[bool] = field_from_dict(default=None)
+    before_onset_other: Optional[bool] = field_from_dict(default=None)
 
 
 @dataclass()
