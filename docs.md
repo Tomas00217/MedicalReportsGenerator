@@ -62,6 +62,9 @@ The following is the default structure that every dictionary, that is to be used
   "diagnosis": {
     "variants": []
   },
+  "patient": {
+    "variants": []
+  },
   "onset": {
     "variants": []
   },
@@ -225,6 +228,52 @@ The following is the default structure that every dictionary, that is to be used
       "tici_score_2B": "",
       "tici_score_2C": "",
       "tici_score_3": ""
+    },
+    "prior_treatment": {
+      "before_onset_antidiabetics": "",
+      "before_onset_antihypertensives": "",
+      "before_onset_asa": "",
+      "before_onset_cilostazol": "",
+      "before_onset_clopidrogel": "",
+      "before_onset_ticagrelor": "",
+      "before_onset_ticlopidine": "",
+      "before_onset_prasugrel": "",
+      "before_onset_dipyridamol": "",
+      "before_onset_warfarin": "",
+      "before_onset_dabigatran": "",
+      "before_onset_rivaroxaban": "",
+      "before_onset_apixaban": "",
+      "before_onset_edoxaban": "",
+      "before_onset_statin": "",
+      "before_onset_heparin": "",
+      "before_onset_other": "",
+      "before_onset_anticoagulant_recommended": "",
+      "before_onset_lmwh_prophylactic": "",
+      "before_onset_lmwh_therapeutic": "",
+      "before_onset_other_antiplatelet": "",
+      "before_onset_other_anticoagulant": "",
+      "before_onset_any_anticoagulant": "",
+      "before_onset_any_antiplatelet": ""
+    },
+    "risk_factors": {
+      "risk_hypertension": "" ,
+      "risk_diabetes": "" ,
+      "risk_hyperlipidemia": "" ,
+      "risk_atrial_fibrilation": "" ,
+      "risk_congestive_heart_failure": "" ,
+      "risk_smoker_last_10_years": "" ,
+      "risk_smoker": "" ,
+      "risk_previous_stroke": "" ,
+      "risk_previous_ischemic_stroke": "",
+      "risk_previous_hemorrhagic_stroke": "" ,
+      "risk_coronary_artery_disease_or_myocardial_infarction": "" ,
+      "risk_contraception": "",
+      "risk_hiv": "" ,
+      "risk_other": ""
+    },
+    "gender": {
+      "male": "",
+      "female": ""
     }
   }
 }
@@ -232,7 +281,7 @@ The following is the default structure that every dictionary, that is to be used
 
 #### **Blocks**
 
-The whole generated report is divided into nine separate blocks. These blocks are: ```diagnosis, onset, admission, treatment, follow_up_imaging, post_acute_care, post_stroke_complications, etiology and discharge```. Every dictionary should contain all of the blocks even if left empty. \
+The whole generated report is divided into ten separate blocks. These blocks are: ```diagnosis, patient, onset, admission, treatment, follow_up_imaging, post_acute_care, post_stroke_complications, etiology and discharge```. Every dictionary should contain all of the blocks even if left empty. \
 Every block can contain multiple [variants](#variants) which specify the generated sentences.
 
 #### **Settings**

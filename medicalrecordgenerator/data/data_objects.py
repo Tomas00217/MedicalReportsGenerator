@@ -29,8 +29,6 @@ class DiagnosisData(DataclassFromDict):
     stroke_type: Optional[str] = field_from_dict(default=None)
     aspects_score: Optional[int] = field_from_dict(default=None)
     imaging_type: Optional[str] = field_from_dict(default=None)
-    age: Optional[int] = field_from_dict(default=None)
-    gender: Optional[str] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -56,6 +54,16 @@ class DiagnosisOcclusionsData(DataclassFromDict):
 
 
 @dataclass()
+class PatientData(DataclassFromDict):
+    age: Optional[int] = field_from_dict(default=None)
+    gender: Optional[str] = field_from_dict(default=None)
+    hospital_timestamp: Optional[datetime] = field_from_dict(default=None)
+    arrival_mode: Optional[str] = field_from_dict(default=None)
+    admittance_department: Optional[str] = field_from_dict(default=None)
+    prenotification: Optional[bool] = field_from_dict(default=None)
+
+
+@dataclass()
 class OnsetData(DataclassFromDict):
     onset_timestamp: datetime = field_from_dict()
     wake_up_stroke: Optional[bool] = field_from_dict(default=None)
@@ -66,9 +74,6 @@ class AdmissionData(DataclassFromDict):
     hospitalized_in: Optional[str] = field_from_dict(default=None)
     nihss_score: Optional[int] = field_from_dict(default=None)
     aspects_score: Optional[int] = field_from_dict(default=None)
-    hospital_timestamp: Optional[datetime] = field_from_dict(default=None)
-    arrival_mode: Optional[str] = field_from_dict(default=None)
-    admittance_department: Optional[str] = field_from_dict(default=None)
     sys_blood_pressure: Optional[int] = field_from_dict(default=None)
     dia_blood_pressure: Optional[int] = field_from_dict(default=None)
 

@@ -12,14 +12,30 @@ class Diagnosis:
     """
 
     def __init__(self, stroke_type: Optional[str], aspects_score: Optional[int],
-                 imaging_type: Optional[str], occlusion_position: Optional[str], age: Optional[int],
-                 gender: Optional[str]):
+                 imaging_type: Optional[str], occlusion_position: Optional[str]):
         self.stroke_type = stroke_type
         self.aspects_score = aspects_score if aspects_score else None
         self.imaging_type = imaging_type
         self.occlusion_position = occlusion_position
+
+
+class Patient:
+    """
+    A class representing patient. Is part of MedicalRecord
+
+    """
+
+    def __init__(self, age: Optional[int], gender: Optional[str], arrival_time: Optional[datetime],
+                 arrival_mode: Optional[str], admittance_department: Optional[str], risk_factors: Optional[str],
+                 prior_treatment: Optional[str], prenotification: Optional[bool]):
         self.age = age
         self.gender = gender
+        self.arrival_time = arrival_time
+        self.arrival_mode = arrival_mode
+        self.admittance_department = admittance_department
+        self.risk_factors = risk_factors
+        self.prior_treatment = prior_treatment
+        self.prenotification = prenotification
 
 
 class Onset:
@@ -42,19 +58,12 @@ class Admission:
     """
 
     def __init__(self, admission_nihss: Optional[int], aspects_score: Optional[int], admission_type: Optional[str],
-                 arrival_time: Optional[datetime], arrival_mode: Optional[str], admittance_department: Optional[str],
-                 sys_blood_pressure: Optional[int], dia_blood_pressure: Optional[int], risk_factors: Optional[str],
-                 prior_treatment: Optional[str]):
+                 sys_blood_pressure: Optional[int], dia_blood_pressure: Optional[int]):
         self.admission_nihss = admission_nihss
         self.aspects_score = aspects_score
         self.admission_type = admission_type
-        self.arrival_time = arrival_time
-        self.arrival_mode = arrival_mode
-        self.admittance_department = admittance_department
         self.sys_blood_pressure = sys_blood_pressure
         self.dia_blood_pressure = dia_blood_pressure
-        self.risk_factors = risk_factors
-        self.prior_treatment = prior_treatment
 
 
 class Thrombolysis:
@@ -204,11 +213,12 @@ class MedicalRecord:
 
     """
 
-    def __init__(self, diagnosis: Diagnosis, onset: Onset, admission: Admission, treatment: Treatment,
+    def __init__(self, diagnosis: Diagnosis, patient: Patient, onset: Onset, admission: Admission, treatment: Treatment,
                  follow_up_imaging: Optional[FollowUpImaging], post_acute_care: Optional[PostAcuteCare],
                  post_stroke_complications: PostStrokeComplications, etiology: Optional[Etiology],
                  discharge: Discharge):
         self.diagnosis = diagnosis
+        self.patient = patient
         self.onset = onset
         self.admission = admission
         self.treatment = treatment
@@ -228,6 +238,7 @@ class MedicalRecord:
         """
         data = {
             "diagnosis": vars(self.diagnosis) if self.diagnosis else {},
+            "patient": vars(self.patient) if self.patient else {},
             "onset": vars(self.onset) if self.onset else {},
             "admission": vars(self.admission) if self.admission else {},
             "treatment": vars(self.treatment) if self.treatment else {},
