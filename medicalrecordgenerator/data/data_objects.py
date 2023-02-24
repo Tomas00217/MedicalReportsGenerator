@@ -124,7 +124,7 @@ class TreatmentData(DataclassFromDict):
     thrombolysis: Optional[bool] = field_from_dict(default=None)
     dtn: Optional[int] = field_from_dict("door_to_needle", default=None)
     ivt_treatment: Optional[str] = field_from_dict(default=None)
-    ivt_dose: Optional[float] = field_from_dict(default=None)
+    ivt_dose: Optional[int] = field_from_dict(default=None)
     no_thrombolysis_reason: Optional[str] = field_from_dict(default=None)
     thrombectomy: Optional[bool] = field_from_dict(default=None)
     dtg: Optional[int] = field_from_dict("door_to_groin", default=None)
@@ -180,7 +180,7 @@ class EtiologyData(DataclassFromDict):
     etiology_small_vessel: Optional[bool] = field_from_dict(default=None)
     carotid_stenosis: Optional[bool] = field_from_dict(default=None)
     carotid_stenosis_level: Optional[str] = field_from_dict(default=None)
-    carotid_stenosis_followup: Optional[str] = field_from_dict(default=None)
+    carotid_stenosis_followup: Optional[bool] = field_from_dict(default=None)
     afib_flutter: Optional[str] = field_from_dict(default=None)
 
 
