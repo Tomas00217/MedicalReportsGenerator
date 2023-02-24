@@ -554,15 +554,16 @@ class Language:
     A class representing the language loaded from the json file
     """
 
-    def __init__(self, diagnosis: dict, onset: dict, admission: dict, treatment: dict, follow_up_imaging: dict,
-                 post_acute_care: dict, post_stroke_complications: dict, etiology: dict, discharge: dict,
-                 settings: dict, variables: dict):
+    def __init__(self, diagnosis: dict, patient: dict, onset: dict, admission: dict, treatment: dict,
+                 post_acute_care: dict, post_stroke_complications: dict, etiology: dict,
+                 discharge: dict, settings: dict, variables: dict):
         try:
             self.diagnosis = MedicalRecordBlock("diagnosis", **diagnosis)
+            self.patient = MedicalRecordBlock("patient", **patient)
             self.onset = MedicalRecordBlock("onset", **onset)
             self.admission = MedicalRecordBlock("admission", **admission)
             self.treatment = MedicalRecordBlock("treatment", **treatment)
-            self.follow_up_imaging = MedicalRecordBlock("follow_up_imaging", **follow_up_imaging)
+            # self.follow_up_imaging = MedicalRecordBlock("follow_up_imaging", **follow_up_imaging)
             self.post_acute_care = MedicalRecordBlock("post_acute_care", **post_acute_care)
             self.post_stroke_complications = MedicalRecordBlock("post_stroke_complications",
                                                                 **post_stroke_complications)

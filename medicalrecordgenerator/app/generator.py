@@ -6,11 +6,11 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from app.language import Language
 from data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
-    ImagingData, PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
-    DiagnosisOcclusionsData, ImagingTreatmentData
+    PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
+    DiagnosisOcclusionsData, ImagingTreatmentData, RiskFactorsData, PriorTreatmentData, PatientData
 from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
-    FollowUpImaging, PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
-    Discharge, MedicalRecord
+    PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
+    Discharge, MedicalRecord, Patient
 
 
 class MyTemplate(Template):
@@ -125,6 +125,9 @@ class MedicalRecordsGenerator:
             "diagnosis": MyTemplate(self.language.diagnosis.get_block_result(variables)
                                     if self.medical_record.diagnosis else "").safe_substitute(scoped_values),
 
+            "patient": MyTemplate(self.language.patient.get_block_result(variables)
+                                  if self.medical_record.patient else "").safe_substitute(scoped_values),
+
             "onset": MyTemplate(self.language.onset.get_block_result(variables)
                                 if self.medical_record.onset else "").safe_substitute(scoped_values),
 
@@ -134,9 +137,9 @@ class MedicalRecordsGenerator:
             "treatment": MyTemplate(self.language.treatment.get_block_result(variables)
                                     if self.medical_record.treatment else "").safe_substitute(scoped_values),
 
-            "follow_up_imaging": MyTemplate(self.language.follow_up_imaging.get_block_result(variables)
-                                            if self.medical_record.follow_up_imaging else "")
-            .safe_substitute(scoped_values),
+            # "follow_up_imaging": MyTemplate(self.language.follow_up_imaging.get_block_result(variables)
+            #                                 if self.medical_record.follow_up_imaging else "")
+            # .safe_substitute(scoped_values),
 
             "post_acute_care": MyTemplate(self.language.post_acute_care.get_block_result(variables)
                                           if self.medical_record.post_acute_care else "")
@@ -165,10 +168,11 @@ class MedicalRecordsGenerator:
         """
 
         return MedicalRecord(self.create_diagnosis(),
+                             self.create_patient(),
                              self.create_onset(),
                              self.create_admission(),
                              self.create_treatment(),
-                             self.create_follow_up_imaging(),
+                             # self.create_follow_up_imaging(),
                              self.create_post_acute_care(),
                              self.create_post_stroke_complications(),
                              self.create_etiology(),
@@ -192,6 +196,31 @@ class MedicalRecordsGenerator:
                               self.parse_data(self.get_variables("occlusion_position"), vars(diagnosis_occlusions)))
 
         return diagnosis
+
+    def create_patient(self) -> Patient:
+        """Creates the Patient part of MedicalRecord
+
+        Returns
+        -------
+        Patient
+            The patient part medical record with all the template values yet to be replaced
+        """
+
+        patient_data = PatientData.from_dict(self.data)
+        risk_factors_data = RiskFactorsData.from_dict(self.data)
+        prior_treatment_data = PriorTreatmentData.from_dict(self.data)
+
+        patient = Patient(patient_data.age,
+                          self.translate_data(self.get_variables("sex"), patient_data.sex),
+                          patient_data.hospital_timestamp,
+                          self.translate_data(self.get_variables("arrival_mode"), patient_data.arrival_mode),
+                          self.translate_data(self.get_variables("admittance_department"),
+                                              patient_data.admittance_department),
+                          self.parse_data(self.get_variables("risk_factors"), vars(risk_factors_data)),
+                          self.parse_data(self.get_variables("prior_treatment"), vars(prior_treatment_data)),
+                          patient_data.prenotification)
+
+        return patient
 
     def create_onset(self) -> Onset:
         """Creates the Onset part of MedicalRecord
@@ -221,9 +250,12 @@ class MedicalRecordsGenerator:
         """
 
         admission_data = AdmissionData.from_dict(self.data)
+
         admission = Admission(admission_data.nihss_score, admission_data.aspects_score,
                               self.translate_data(self.get_variables("hospitalized_in"),
-                                                  admission_data.hospitalized_in))
+                                                  admission_data.hospitalized_in),
+                              admission_data.sys_blood_pressure,
+                              admission_data.dia_blood_pressure)
 
         return admission
 
@@ -257,28 +289,28 @@ class MedicalRecordsGenerator:
 
         return treatment
 
-    def create_follow_up_imaging(self) -> Optional[FollowUpImaging]:
-        """Creates the FollowUpImaging part of MedicalRecord
-
-        Returns
-        -------
-        FollowUpImaging
-            The follow-up imaging part medical record with all the template values yet to be replaced.
-            If the patient was transported and therefore no follow-up imaging could be performed
-
-        """
-
-        if self.transported:
-            return None
-
-        imaging_data = ImagingData.from_dict(self.data)
-        imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
-
-        imaging = FollowUpImaging(self.parse_data(
-            self.get_variables("post_treatment_findings"), vars(imaging_treatment_data)),
-            imaging_data.imaging_type)
-
-        return imaging
+    # def create_follow_up_imaging(self) -> Optional[FollowUpImaging]:
+    #     """Creates the FollowUpImaging part of MedicalRecord
+    #
+    #     Returns
+    #     -------
+    #     FollowUpImaging
+    #         The follow-up imaging part medical record with all the template values yet to be replaced.
+    #         If the patient was transported and therefore no follow-up imaging could be performed
+    #
+    #     """
+    #
+    #     if self.transported:
+    #         return None
+    #
+    #     imaging_data = ImagingData.from_dict(self.data)
+    #     imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
+    #
+    #     imaging = FollowUpImaging(self.parse_data(
+    #         self.get_variables("post_treatment_findings"), vars(imaging_treatment_data)),
+    #         imaging_data.imaging_type)
+    #
+    #     return imaging
 
     def create_post_acute_care(self) -> Optional[PostAcuteCare]:
         """Creates the PostAcuteCare part of MedicalRecord
@@ -295,8 +327,13 @@ class MedicalRecordsGenerator:
             return None
 
         post_acute_care_data = PostAcuteCareData.from_dict(self.data)
+        imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
 
-        post_acute_care = PostAcuteCare(post_acute_care_data.dysphagia_screening,
+        post_acute_care = PostAcuteCare(post_acute_care_data.afib_flutter,
+                                        self.parse_data(self.get_variables("post_treatment_findings"),
+                                                        vars(imaging_treatment_data)),
+                                        post_acute_care_data.imaging_type,
+                                        post_acute_care_data.swallowing_screening,
                                         post_acute_care_data.physiotherapy_received,
                                         post_acute_care_data.occup_physiotherapy_received,
                                         post_acute_care_data.speech_therapy_received,

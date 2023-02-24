@@ -11,39 +11,11 @@
           "variants": [
             {
               "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "diagnosis.occlusion_position",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "diagnosis.aspects_score",
-                    "value": true
-                  }
-                ]
+                "type": "EXISTENCE",
+                "scope": "diagnosis.occlusion_position",
+                "value": true
               },
-              "text": "Cerebral ischemic stroke due to occlusion of ${diagnosis.occlusion_position}, ASPECT score ${diagnosis.aspects_score}. "
-            },
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "diagnosis.occlusion_position",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "diagnosis.aspects_score",
-                    "value": false
-                  }
-                ]
-              },
-              "text": "Cerebral ischemic stroke due to occlusion of ${diagnosis.occlusion_position}. "
+              "text": "Cerebral ischemic stroke due to occlusion of ${diagnosis.occlusion_position} on ${diagnosis.imaging_type}. "
             },
             {
               "condition": {
@@ -55,13 +27,140 @@
                     "value": false
                   },
                   {
+                    "type": "VALUE",
+                    "scope": "diagnosis.imaging_type",
+                    "value": "CT"
+                  }
+                ]
+              },
+              "text": "Cerebral ischemic stroke without occlusion on plain ${diagnosis.imaging_type}. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
                     "type": "EXISTENCE",
-                    "scope": "diagnosis.aspects_score",
+                    "scope": "diagnosis.occlusion_position",
+                    "value": false
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "diagnosis.imaging_type",
+                        "value": "CT"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "text": "Cerebral ischemic stroke without occlusion on ${diagnosis.imaging_type}. "
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "patient": {
+    "variants": [
+      {
+        "condition": {},
+        "chained_block": {
+          "variants": [
+            {
+              "condition": {},
+              "text": "${patient.sex}/${patient.age}"
+            },
+            {
+              "condition": {
+                "type": "EXISTENCE",
+                "scope": "patient.risk_factors",
+                "value": true
+              },
+              "text": ", with a history of ${patient.risk_factors}"
+            },
+            {
+              "condition": {
+                "type": "EXISTENCE",
+                "scope": "patient.risk_factors",
+                "value": false
+              },
+              "text": ", with no prior history"
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.arrival_mode",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.admittance_department",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.prenotification",
+                    "value": true
+                  }
+                ]
+              },
+              "text": ", arrived via ${patient.arrival_mode} to ${patient.admittance_department} with prenotification"
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.arrival_mode",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.admittance_department",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.prenotification",
                     "value": false
                   }
                 ]
               },
-              "text": "Cerebral ischemic stroke with no occlusion on ${diagnosis.imaging_type} angiogram. "
+              "text": ", arrived via ${patient.arrival_mode} to ${patient.admittance_department}"
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.arrival_mode",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.admittance_department",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.prenotification",
+                    "value": false
+                  }
+                ]
+              },
+              "text": ", arrived via ${patient.arrival_mode}"
+            },
+            {
+              "condition": {},
+              "text": ". "
             }
           ]
         }
@@ -130,6 +229,14 @@
     "variants": [
       {
         "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.aspects_score",
+          "value": true
+        },
+        "text": "ASPECT score ${admission.aspects_score}. "
+      },
+      {
+        "condition": {
           "type": "AND",
           "conditions": [
             {
@@ -181,6 +288,24 @@
           ]
         },
         "text": "Baseline NIHSS ${admission.admission_nihss}. "
+      },
+      {
+        "condition": {
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.sys_blood_pressure",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.dia_blood_pressure",
+              "value": true
+            }
+          ]
+        },
+        "text": "BP on admission - ${admission.sys_blood_pressure}/${admission.dia_blood_pressure}. "
       }
     ]
   },
@@ -210,7 +335,7 @@
                   }
                 ]
               },
-              "text": "Intravenous thrombolysis with ${treatment.ivt_dose} mg of ${treatment.ivt_treatment} given ${treatment.dtn} minutes after arrival to hospital. "
+              "text": "Intravenous thrombolysis given with ${treatment.ivt_dose} mg ${treatment.ivt_treatment} ${treatment.dtn} minutes after arrival to hospital. "
             },
             {
               "condition": {
@@ -228,7 +353,7 @@
                   }
                 ]
               },
-              "text": "Intravenous thrombolysis with ${treatment.ivt_treatment} given ${treatment.dtn} minutes after arrival to hospital. "
+              "text": "Intravenous thrombolysis given with ${treatment.ivt_treatment} ${treatment.dtn} minutes after arrival to hospital. "
             },
             {
               "condition": {
@@ -246,7 +371,7 @@
                   }
                 ]
               },
-              "text": "Intravenous thrombolysis at ${treatment.ivt_dose} mg given ${treatment.dtn} minutes after arrival to hospital. "
+              "text": "Intravenous thrombolysis given with ${treatment.ivt_dose} mg ${treatment.dtn} minutes after arrival to hospital. "
             },
             {
               "condition": {
@@ -331,7 +456,7 @@
                 "scope": "treatment.thrombolysis_reasons",
                 "value": "other"
               },
-              "text": "Thrombolysis not given because for not specified reason. "
+              "text": "Thrombolysis not given, no specific reason provided. "
             },
             {
               "condition": {
@@ -339,7 +464,7 @@
                 "scope": "treatment.thrombolysis_reasons",
                 "value": "time window"
               },
-              "text": "Thrombolysis not given because of outside time window. "
+              "text": "Thrombolysis not given because patient was out of time window. "
             },
             {
               "condition": {
@@ -347,7 +472,7 @@
                 "scope": "treatment.thrombolysis_reasons",
                 "value": "not available"
               },
-              "text": "Thrombolysis not given because not available. "
+              "text": "Thrombolysis not given as not available. "
             },
             {
               "condition": {
@@ -435,13 +560,13 @@
                       {
                         "type": "VALUE",
                         "scope": "treatment.thrombectomy_reasons",
-                        "value": "done elsewhere"
+                        "value": "transferred elsewhere"
                       }
                     ]
                   }
                 ]
               },
-              "text": "Thrombectomy not given because of ${treatment.thrombectomy_reasons}. "
+              "text": "Thrombectomy not performed because of ${treatment.thrombectomy_reasons}. "
             },
             {
               "condition": {
@@ -449,7 +574,7 @@
                 "scope": "treatment.thrombectomy_reasons",
                 "value": "other"
               },
-              "text": "Thrombectomy not given because for not specified reason. "
+              "text": "Thrombectomy not performed, no specific reason provided. "
             },
             {
               "condition": {
@@ -457,7 +582,7 @@
                 "scope": "treatment.thrombectomy_reasons",
                 "value": "time window"
               },
-              "text": "Thrombectomy not given because of outside time window. "
+              "text": "Thrombectomy not performed because patient was out of time window. "
             },
             {
               "condition": {
@@ -465,7 +590,7 @@
                 "scope": "treatment.thrombectomy_reasons",
                 "value": "not available"
               },
-              "text": "Thrombectomy not given because not available. "
+              "text": "Thrombectomy not performed as not available. "
             },
             {
               "condition": {
@@ -473,7 +598,7 @@
                 "scope": "treatment.thrombectomy_reasons",
                 "value": "done elsewhere"
               },
-              "text": "Thrombectomy done in the other hospital before admission. "
+              "text": "Thrombectomy performed in the other hospital before admission. "
             }
           ]
         }
@@ -484,37 +609,7 @@
           "scope": "treatment.thrombectomy_transport",
           "value": true
         },
-        "text": "Patient transported to interventional center for mechanical thrombectomy after ${treatment.dio} minutes from the arrival. "
-      }
-    ]
-  },
-  "follow_up_imaging": {
-    "variants": [
-      {
-        "condition": {
-          "type": "EXISTENCE",
-          "scope": "follow_up_imaging.findings",
-          "value": true
-        },
-        "text": "${follow_up_imaging.findings} on follow up ${follow_up_imaging.imaging_type}. "
-      },
-      {
-        "condition": {
-          "type": "OR",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "follow_up_imaging.imaging_type",
-              "value": false
-            },
-            {
-              "type": "VALUE",
-              "scope": "follow_up_imaging.imaging_type",
-              "value": "no"
-            }
-          ]
-        },
-        "text": "No follow up imaging performed. "
+        "text": "Thrombectomy not performed because of transferred elsewhere for MT after ${treatment.dio} minutes from the arrival. "
       }
     ]
   },
@@ -522,8 +617,55 @@
     "variants": [
       {
         "condition": {
+        },
+        "text": "Post acute care. "
+      },
+      {
+        "condition": {
           "type": "VALUE",
-          "scope": "post_acute_care.dysphagia_screening",
+          "scope": "post_acute_care.afib_flutter",
+          "value": "detected"
+        },
+        "text": "AF detected. "
+      },
+      {
+        "condition": {
+          "type": "VALUE",
+          "scope": "post_acute_care.afib_flutter",
+          "value": "no AF"
+        },
+        "text": "No AF detected. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "post_acute_care.findings",
+          "value": true
+        },
+        "text": "${post_acute_care.findings} on follow up ${post_acute_care.imaging_type}. "
+      },
+      {
+        "condition": {
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "post_acute_care.imaging_type",
+              "value": false
+            },
+            {
+              "type": "VALUE",
+              "scope": "post_acute_care.imaging_type",
+              "value": "no"
+            }
+          ]
+        },
+        "text": "No follow up imaging performed. "
+      },
+      {
+        "condition": {
+          "type": "VALUE",
+          "scope": "post_acute_care.swallowing_screening",
           "value": "no"
         },
         "text": "Patient screened for dysphagia but dysphagia not present. "
@@ -531,7 +673,7 @@
       {
         "condition": {
           "type": "VALUE",
-          "scope": "post_acute_care.dysphagia_screening",
+          "scope": "post_acute_care.swallowing_screening",
           "value": "yes"
         },
         "text": "Patient diagnosed with dysphagia. "
@@ -542,12 +684,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "post_acute_care.dysphagia_screening",
+              "scope": "post_acute_care.swallowing_screening",
               "value": false
             },
             {
               "type": "VALUE",
-              "scope": "post_acute_care.dysphagia_screening",
+              "scope": "post_acute_care.swallowing_screening",
               "value": "not applicable"
             }
           ]
@@ -575,7 +717,7 @@
             }
           ]
         },
-        "text": "Patient received ${post_acute_care.therapies}. "
+        "text": "Received ${post_acute_care.therapies}. "
       }
     ]
   },
@@ -587,7 +729,7 @@
           "scope": "post_stroke_complications.complications",
           "value": true
         },
-        "text": "Post stroke complications ${post_stroke_complications.complications}. "
+        "text": "Post stroke complications: ${post_stroke_complications.complications}. "
       }
     ]
   },
@@ -746,67 +888,6 @@
         }
       },
       {
-        "condition": {},
-        "scores": {
-          "variants": [
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "discharge.nihss",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "discharge.mrs",
-                    "value": true
-                  }
-                ]
-              },
-              "text": "NIHSS at discharge ${discharge.nihss}, mRS at discharge ${discharge.mrs}. "
-            },
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "discharge.nihss",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "discharge.mrs",
-                    "value": false
-                  }
-                ]
-              },
-              "text": "Discharge NIHSS ${discharge.nihss}. "
-            },
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "discharge.nihss",
-                    "value": false
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "discharge.mrs",
-                    "value": true
-                  }
-                ]
-              },
-              "text": "mRS at discharge ${discharge.mrs}. "
-            }
-          ]
-        }
-      },
-      {
         "condition": {
           "type": "AND",
           "conditions": [
@@ -828,6 +909,67 @@
           ]
         },
         "text": "Medication: ${discharge.discharge_medication}. "
+      },
+      {
+        "condition": {},
+        "scores": {
+          "variants": [
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.nihss",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.mrs",
+                    "value": true
+                  }
+                ]
+              },
+              "text": "NIHSS on discharge ${discharge.nihss}, mRS on discharge ${discharge.mrs}. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.nihss",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.mrs",
+                    "value": false
+                  }
+                ]
+              },
+              "text": "NIHSS on discharge ${discharge.nihss}, mRS on discharge not performed. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.nihss",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.mrs",
+                    "value": true
+                  }
+                ]
+              },
+              "text": "mRS on discharge ${discharge.mrs}. "
+            }
+          ]
+        }
       },
       {
         "condition": {
@@ -890,7 +1032,7 @@
       "occlusion_va": "VA"
     },
     "hospitalized_in": {
-      "ICU/stroke unit": "ICU/stroke unit",
+      "icu/stroke unit": "ICU/stroke unit",
       "monitored bed": "monitored bed",
       "standard bed": "standard bed"
     },
@@ -958,7 +1100,7 @@
     "discharge_destination": {
       "home": "home",
       "same hospital": "same hospital",
-      "another hospital": "another hospital",
+      "another hospital": "another centre",
       "social care": "social care",
       "dead": "dead"
     },
@@ -988,11 +1130,69 @@
     },
     "tici_score_meaning": {
       "tici_score_0": "no reperfusion",
-      "tici_score_1": "penetration with minimal reperfusion",
-      "tici_score_2A": "partial filling <2/3 territory",
-      "tici_score_2B": "partial filling >2/3 territory",
-      "tici_score_2C": "near complete reperfusion",
-      "tici_score_3.0": "complete reperfusion"
+      "tici_score_1": "minimal reperfusion",
+      "tici_score_2A": "partial reperfusion > 50 % territory",
+      "tici_score_2B": "partial reperfusion <= 50 % territory",
+      "tici_score_2C": "near to complete reperfusin except slow flow or few distal cortical emboli",
+      "tici_score_3": "complete reperfusion"
+    },
+    "prior_treatment": {
+      "before_onset_antidiabetics": "anti-diabetics",
+      "before_onset_antihypertensives": "anti-hypertensives",
+      "before_onset_asa": "aspirin",
+      "before_onset_cilostazol": "cilostazol",
+      "before_onset_clopidrogel": "clopidrogel",
+      "before_onset_ticagrelor": "ticagrelor",
+      "before_onset_ticlopidine": "ticlopidine",
+      "before_onset_prasugrel": "prasugrel",
+      "before_onset_dipyridamol": "dipyridamol",
+      "before_onset_warfarin": "warfarin",
+      "before_onset_dabigatran": "dabigatran",
+      "before_onset_rivaroxaban": "rivaroxaban",
+      "before_onset_apixaban": "apixaban",
+      "before_onset_edoxaban": "edoxaban",
+      "before_onset_statin": "statin",
+      "before_onset_heparin": "heparin",
+      "before_onset_other": "other",
+      "before_onset_anticoagulant_recommended": "anticoagulant recommended",
+      "before_onset_lmwh_prophylactic": "lmwh prophylactic",
+      "before_onset_lmwh_therapeutic": "lmwh therapeutic",
+      "before_onset_other_antiplatelet": "other antiplatelet",
+      "before_onset_other_anticoagulant": "other anticoagulant",
+      "before_onset_any_anticoagulant": "any anticoagulant",
+      "before_onset_any_antiplatelet": "any antiplatelet"
+    },
+    "risk_factors": {
+      "risk_hypertension": "hypertension",
+      "risk_diabetes": "diabetes",
+      "risk_hyperlipidemia": "hyperlipidemia",
+      "risk_atrial_fibrilation": "AF",
+      "risk_congestive_heart_failure": "CHF",
+      "risk_smoker_last_10_years": "smoking",
+      "risk_smoker": "smoking",
+      "risk_previous_stroke": "stroke",
+      "risk_previous_ischemic_stroke": "ischemic stroke",
+      "risk_previous_hemorrhagic_stroke": "hemorrhagic stroke",
+      "risk_coronary_artery_disease_or_myocardial_infarction": "CAD",
+      "risk_contraception": "contraception",
+      "risk_hiv": "HIV",
+      "risk_other": "other diseases"
+    },
+    "sex": {
+      "male": "M",
+      "female": "F",
+      "other": "O"
+    },
+    "arrival_mode": {
+      "ems": "EMS",
+      "private transportation": "private transportation",
+      "another hospital": "another hospital"
+    },
+    "admittance_department": {
+      "radiology": "radiology",
+      "emergency": "ER",
+      "outpatient clinic": "outpatient clinic",
+      "other": "somewhere else"
     }
   }
 }
