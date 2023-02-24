@@ -56,7 +56,7 @@ class DiagnosisOcclusionsData(DataclassFromDict):
 @dataclass()
 class PatientData(DataclassFromDict):
     age: Optional[int] = field_from_dict(default=None)
-    gender: Optional[str] = field_from_dict(default=None)
+    sex: Optional[str] = field_from_dict(default=None)
     hospital_timestamp: Optional[datetime] = field_from_dict(default=None)
     arrival_mode: Optional[str] = field_from_dict(default=None)
     admittance_department: Optional[str] = field_from_dict(default=None)
@@ -134,9 +134,9 @@ class TreatmentData(DataclassFromDict):
     thrombectomy_transport: bool = False
 
 
-@dataclass()
-class ImagingData(DataclassFromDict):
-    imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
+# @dataclass()
+# class ImagingData(DataclassFromDict):
+#     imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
 
 
 @dataclass()
@@ -152,7 +152,9 @@ class ImagingTreatmentData(DataclassFromDict):
 
 @dataclass()
 class PostAcuteCareData(DataclassFromDict):
-    dysphagia_screening: Optional[str] = field_from_dict("dysphagia_screening_done", default=None)
+    afib_flutter: Optional[str] = field_from_dict("afib_flutter", default=None)
+    imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
+    swallowing_screening: Optional[str] = field_from_dict("swallowing_screening_done", default=None)
     physiotherapy_received: Optional[str] = field_from_dict(default=None)
     occup_physiotherapy_received: Optional[str] = field_from_dict(default=None)
     speech_therapy_received: Optional[str] = field_from_dict(default=None)

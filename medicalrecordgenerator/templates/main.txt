@@ -3,7 +3,6 @@
 {{record.onset -}}
 {{record.admission -}}
 {{record.treatment -}}
-{{record.follow_up_imaging -}}
 {{record.post_acute_care -}}
 {{record.post_stroke_complications -}}
 {{record.etiology -}}

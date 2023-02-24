@@ -6,6 +6,8 @@ import psycopg2
 import psycopg2.extras
 import psycopg2.extensions
 
+from utils.queries import select_all, select_by_id
+
 
 def get_patient_info(subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
     """Gets the patient info from database.
@@ -46,9 +48,11 @@ def get_patient_info(subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
 
         # fetch data from database
         if subject_id:
-            cur.execute("SELECT * FROM strokehealthcaremodel_strokehealthcaremodel WHERE subject_id=%s", subject_id)
+            select = select_by_id(subject_id)
+            cur.execute(select, subject_id)
         else:
-            cur.execute("SELECT * FROM strokehealthcaremodel_strokehealthcaremodel")
+            select = select_all()
+            cur.execute(select)
         data = cur.fetchall()
 
         # close the communication with the PostgreSQL

@@ -71,7 +71,7 @@
           "variants": [
             {
               "condition": {},
-              "text": "${patient.gender}/${patient.age}"
+              "text": "${patient.sex}/${patient.age}"
             },
             {
               "condition": {
@@ -613,15 +613,36 @@
       }
     ]
   },
-  "follow_up_imaging": {
+  "post_acute_care": {
     "variants": [
       {
         "condition": {
+        },
+        "text": "Post acute care. "
+      },
+      {
+        "condition": {
+          "type": "VALUE",
+          "scope": "post_acute_care.afib_flutter",
+          "value": "detected"
+        },
+        "text": "AF detected. "
+      },
+      {
+        "condition": {
+          "type": "VALUE",
+          "scope": "post_acute_care.afib_flutter",
+          "value": "no AF"
+        },
+        "text": "No AF detected. "
+      },
+      {
+        "condition": {
           "type": "EXISTENCE",
-          "scope": "follow_up_imaging.findings",
+          "scope": "post_acute_care.findings",
           "value": true
         },
-        "text": "${follow_up_imaging.findings} on follow up ${follow_up_imaging.imaging_type}. "
+        "text": "${post_acute_care.findings} on follow up ${post_acute_care.imaging_type}. "
       },
       {
         "condition": {
@@ -629,37 +650,33 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "follow_up_imaging.imaging_type",
+              "scope": "post_acute_care.imaging_type",
               "value": false
             },
             {
               "type": "VALUE",
-              "scope": "follow_up_imaging.imaging_type",
+              "scope": "post_acute_care.imaging_type",
               "value": "no"
             }
           ]
         },
         "text": "No follow up imaging performed. "
-      }
-    ]
-  },
-  "post_acute_care": {
-    "variants": [
-      {
-        "condition": {
-          "type": "VALUE",
-          "scope": "post_acute_care.dysphagia_screening",
-          "value": "no"
-        },
-        "text": "Post acute care patient screened for dysphagia but dysphagia not present. "
       },
       {
         "condition": {
           "type": "VALUE",
-          "scope": "post_acute_care.dysphagia_screening",
+          "scope": "post_acute_care.swallowing_screening",
+          "value": "no"
+        },
+        "text": "Patient screened for dysphagia but dysphagia not present. "
+      },
+      {
+        "condition": {
+          "type": "VALUE",
+          "scope": "post_acute_care.swallowing_screening",
           "value": "yes"
         },
-        "text": "Post acute care: patient diagnosed with dysphagia. "
+        "text": "Patient diagnosed with dysphagia. "
       },
       {
         "condition": {
@@ -667,12 +684,12 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "post_acute_care.dysphagia_screening",
+              "scope": "post_acute_care.swallowing_screening",
               "value": false
             },
             {
               "type": "VALUE",
-              "scope": "post_acute_care.dysphagia_screening",
+              "scope": "post_acute_care.swallowing_screening",
               "value": "not applicable"
             }
           ]
@@ -700,7 +717,7 @@
             }
           ]
         },
-        "text": "Patient received ${post_acute_care.therapies}. "
+        "text": "Received ${post_acute_care.therapies}. "
       }
     ]
   },
@@ -1015,7 +1032,7 @@
       "occlusion_va": "VA"
     },
     "hospitalized_in": {
-      "ICU/stroke unit": "ICU/stroke unit",
+      "icu/stroke unit": "ICU/stroke unit",
       "monitored bed": "monitored bed",
       "standard bed": "standard bed"
     },
@@ -1113,11 +1130,11 @@
     },
     "tici_score_meaning": {
       "tici_score_0": "no reperfusion",
-      "tici_score_1": "penetration with minimal reperfusion",
-      "tici_score_2A": "partial filling <2/3 territory",
-      "tici_score_2B": "partial filling >2/3 territory",
-      "tici_score_2C": "near complete reperfusion",
-      "tici_score_3.0": "complete reperfusion"
+      "tici_score_1": "minimal reperfusion",
+      "tici_score_2A": "partial reperfusion > 50 % territory",
+      "tici_score_2B": "partial reperfusion <= 50 % territory",
+      "tici_score_2C": "near to complete reperfusin except slow flow or few distal cortical emboli",
+      "tici_score_3": "complete reperfusion"
     },
     "prior_treatment": {
       "before_onset_antidiabetics": "anti-diabetics",
@@ -1161,9 +1178,21 @@
       "risk_hiv": "HIV",
       "risk_other": "other diseases"
     },
-    "gender": {
+    "sex": {
       "male": "M",
-      "female": "F"
+      "female": "F",
+      "other": "O"
+    },
+    "arrival_mode": {
+      "ems": "EMS",
+      "private transportation": "private transportation",
+      "another hospital": "another hospital"
+    },
+    "admittance_department": {
+      "radiology": "radiology",
+      "emergency": "ER",
+      "outpatient clinic": "outpatient clinic",
+      "other": "somewhere else"
     }
   }
 }
