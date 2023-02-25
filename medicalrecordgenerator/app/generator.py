@@ -193,7 +193,10 @@ class MedicalRecordsGenerator:
         diagnosis = Diagnosis(diagnosis_data.stroke_type,
                               diagnosis_data.aspects_score,
                               self.translate_data(self.get_variables("imaging_type"), diagnosis_data.imaging_type),
-                              self.parse_data(self.get_variables("occlusion_position"), vars(diagnosis_occlusions)))
+                              self.parse_data(self.get_variables("occlusion_position"), vars(diagnosis_occlusions)),
+                              diagnosis_data.imaging_timestamp,
+                              diagnosis_data.imaging_within_hour,
+                              self.get_setting("time_format"))
 
         return diagnosis
 
@@ -210,7 +213,8 @@ class MedicalRecordsGenerator:
         risk_factors_data = RiskFactorsData.from_dict(self.data)
         prior_treatment_data = PriorTreatmentData.from_dict(self.data)
 
-        patient = Patient(patient_data.age,
+        patient = Patient(patient_data.patient_id,
+                          patient_data.age,
                           self.translate_data(self.get_variables("sex"), patient_data.sex),
                           patient_data.hospital_timestamp,
                           self.translate_data(self.get_variables("arrival_mode"), patient_data.arrival_mode),
@@ -218,7 +222,8 @@ class MedicalRecordsGenerator:
                                               patient_data.admittance_department),
                           self.parse_data(self.get_variables("risk_factors"), vars(risk_factors_data)),
                           self.parse_data(self.get_variables("prior_treatment"), vars(prior_treatment_data)),
-                          patient_data.prenotification)
+                          patient_data.prenotification,
+                          self.get_setting("time_format"))
 
         return patient
 
@@ -334,6 +339,8 @@ class MedicalRecordsGenerator:
                                                         vars(imaging_treatment_data)),
                                         post_acute_care_data.imaging_type,
                                         post_acute_care_data.swallowing_screening,
+                                        self.translate_data(self.get_variables("swallowing_screening_type"),
+                                                            post_acute_care_data.swallowing_screening_type),
                                         post_acute_care_data.physiotherapy_received,
                                         post_acute_care_data.occup_physiotherapy_received,
                                         post_acute_care_data.speech_therapy_received,

@@ -2,7 +2,7 @@ from datetime import datetime, date
 from typing import Optional
 
 DEFAULT_DATE_FORMAT = "%b %d %Y"
-DEFAULT_TIME_FORMAT = "%H:%M"
+DEFAULT_TIME_FORMAT = "%H:%M%p"
 
 
 class Diagnosis:
@@ -12,11 +12,15 @@ class Diagnosis:
     """
 
     def __init__(self, stroke_type: Optional[str], aspects_score: Optional[int],
-                 imaging_type: Optional[str], occlusion_position: Optional[str]):
+                 imaging_type: Optional[str], occlusion_position: Optional[str], imaging_timestamp: Optional[datetime],
+                 imaging_within_hour: Optional[bool], time_format: Optional[str]):
         self.stroke_type = stroke_type
         self.aspects_score = aspects_score if aspects_score else None
         self.imaging_type = imaging_type
         self.occlusion_position = occlusion_position
+        self.imaging_timestamp = imaging_timestamp.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)\
+            if imaging_timestamp else None
+        self.imaging_within_hour = imaging_within_hour
 
 
 class Patient:
@@ -25,12 +29,14 @@ class Patient:
 
     """
 
-    def __init__(self, age: Optional[int], sex: Optional[str], arrival_time: Optional[datetime],
+    def __init__(self, patient_id: int, age: Optional[int], sex: Optional[str], arrival_time: Optional[datetime],
                  arrival_mode: Optional[str], admittance_department: Optional[str], risk_factors: Optional[str],
-                 prior_treatment: Optional[str], prenotification: Optional[bool]):
+                 prior_treatment: Optional[str], prenotification: Optional[bool], time_format: Optional[str]):
+        self.patient_id = patient_id
         self.age = age
         self.sex = sex
-        self.arrival_time = arrival_time
+        self.arrival_time = arrival_time.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)\
+            if arrival_time else None
         self.arrival_mode = arrival_mode
         self.admittance_department = admittance_department
         self.risk_factors = risk_factors
@@ -46,8 +52,10 @@ class Onset:
 
     def __init__(self, onset_timestamp: datetime, wake_up_stroke: Optional[bool],
                  date_format: str, time_format: str):
-        self.onset_date = onset_timestamp.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
-        self.onset_time = onset_timestamp.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)
+        self.onset_date = onset_timestamp.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)\
+            if onset_timestamp else None
+        self.onset_time = onset_timestamp.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)\
+            if onset_timestamp else None
         self.wake_up_stroke = wake_up_stroke if wake_up_stroke is not None else False
 
 
@@ -128,12 +136,14 @@ class PostAcuteCare:
     """
 
     def __init__(self, afib_flutter: Optional[str], findings: Optional[str], imaging_type: Optional[str],
-                 swallowing_screening: Optional[str], physiotherapy_received: Optional[str],
-                 ergotherapy_received: Optional[str], speechtherapy_received: Optional[str], therapies: Optional[str]):
+                 swallowing_screening: Optional[str], swallowing_screening_type: Optional[str],
+                 physiotherapy_received: Optional[str], ergotherapy_received: Optional[str],
+                 speechtherapy_received: Optional[str], therapies: Optional[str]):
         self.afib_flutter = afib_flutter
         self.findings = findings
         self.imaging_type = imaging_type
         self.swallowing_screening = swallowing_screening
+        self.swallowing_screening_type = swallowing_screening_type
         self.physiotherapy = physiotherapy_received is not None and physiotherapy_received == "yes"
         self.ergotherapy = ergotherapy_received is not None and ergotherapy_received == "yes"
         self.speechtherapy = speechtherapy_received is not None and speechtherapy_received == "yes"
@@ -201,7 +211,8 @@ class Discharge:
     def __init__(self, discharge_date: date, discharge_destination: Optional[str], nihss: Optional[int],
                  mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
                  discharge_medication: str, date_format: str):
-        self.discharge_date = discharge_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
+        self.discharge_date = discharge_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT)\
+            if discharge_date else None
         self.discharge_destination = discharge_destination
         self.nihss = nihss
         self.mrs = mrs,

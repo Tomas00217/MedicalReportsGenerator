@@ -29,6 +29,8 @@ class DiagnosisData(DataclassFromDict):
     stroke_type: Optional[str] = field_from_dict(default=None)
     aspects_score: Optional[int] = field_from_dict(default=None)
     imaging_type: Optional[str] = field_from_dict(default=None)
+    imaging_timestamp: Optional[datetime] = field_from_dict(default=None)
+    imaging_within_hour: Optional[bool] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -55,6 +57,7 @@ class DiagnosisOcclusionsData(DataclassFromDict):
 
 @dataclass()
 class PatientData(DataclassFromDict):
+    patient_id: int = field_from_dict("subject_id", default=None)
     age: Optional[int] = field_from_dict(default=None)
     sex: Optional[str] = field_from_dict(default=None)
     hospital_timestamp: Optional[datetime] = field_from_dict(default=None)
@@ -155,6 +158,7 @@ class PostAcuteCareData(DataclassFromDict):
     afib_flutter: Optional[str] = field_from_dict("afib_flutter", default=None)
     imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
     swallowing_screening: Optional[str] = field_from_dict("swallowing_screening_done", default=None)
+    swallowing_screening_type: Optional[str] = field_from_dict("swallowing_screening_type", default=None)
     physiotherapy_received: Optional[str] = field_from_dict(default=None)
     occup_physiotherapy_received: Optional[str] = field_from_dict(default=None)
     speech_therapy_received: Optional[str] = field_from_dict(default=None)

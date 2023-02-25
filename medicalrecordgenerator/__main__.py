@@ -1,9 +1,7 @@
-import locale
 import logging
 import sys
 import getopt
 from typing import Optional
-
 
 
 from app.generator import MedicalRecordsGenerator
@@ -48,8 +46,6 @@ def generate(app_language: str, subject_id: Optional[int] = None) -> None:
     None
         Doesn't return nothing yet, just prints the result
     """
-
-    locale.setlocale(locale.LC_ALL, app_language)
 
     data = get_patient_info(subject_id)
 
