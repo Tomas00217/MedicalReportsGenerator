@@ -74,9 +74,10 @@ class OnsetData(DataclassFromDict):
 
 @dataclass()
 class AdmissionData(DataclassFromDict):
-    hospitalized_in: Optional[str] = field_from_dict(default=None)
     nihss_score: Optional[int] = field_from_dict(default=None)
     aspects_score: Optional[int] = field_from_dict(default=None)
+    hospitalized_in: Optional[str] = field_from_dict(default=None)
+    prestroke_mrs: Optional[int] = field_from_dict(default=None)
     sys_blood_pressure: Optional[int] = field_from_dict(default=None)
     dia_blood_pressure: Optional[int] = field_from_dict(default=None)
 

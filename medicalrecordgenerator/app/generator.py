@@ -259,6 +259,7 @@ class MedicalRecordsGenerator:
         admission = Admission(admission_data.nihss_score, admission_data.aspects_score,
                               self.translate_data(self.get_variables("hospitalized_in"),
                                                   admission_data.hospitalized_in),
+                              admission_data.prestroke_mrs,
                               admission_data.sys_blood_pressure,
                               admission_data.dia_blood_pressure)
 

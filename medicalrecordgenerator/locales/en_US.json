@@ -70,8 +70,25 @@
         "chained_block": {
           "variants": [
             {
-              "condition": {},
-              "text": "${patient.sex}/${patient.age}"
+              "condition": {
+                "type": "NOT",
+                "conditions": [
+                  {
+                    "type": "VALUE",
+                    "scope": "patient.sex",
+                    "value": "other"
+                  }
+                ]
+              },
+              "text": "${patient.sex}/${patient.age}, "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "patient.sex",
+                "value": "other"
+              },
+              "text": "Patient, "
             },
             {
               "condition": {
@@ -79,7 +96,7 @@
                 "scope": "patient.risk_factors",
                 "value": true
               },
-              "text": ", with a history of ${patient.risk_factors}"
+              "text": "with a history of ${patient.risk_factors}"
             },
             {
               "condition": {
@@ -87,76 +104,7 @@
                 "scope": "patient.risk_factors",
                 "value": false
               },
-              "text": ", with no prior history"
-            },
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "patient.arrival_mode",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "patient.admittance_department",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "patient.prenotification",
-                    "value": true
-                  }
-                ]
-              },
-              "text": ", arrived via ${patient.arrival_mode} to ${patient.admittance_department} with prenotification"
-            },
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "patient.arrival_mode",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "patient.admittance_department",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "patient.prenotification",
-                    "value": false
-                  }
-                ]
-              },
-              "text": ", arrived via ${patient.arrival_mode} to ${patient.admittance_department}"
-            },
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "patient.arrival_mode",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "patient.admittance_department",
-                    "value": false
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "patient.prenotification",
-                    "value": false
-                  }
-                ]
-              },
-              "text": ", arrived via ${patient.arrival_mode}"
+              "text": "with no prior history"
             },
             {
               "condition": {},
@@ -237,21 +185,11 @@
       },
       {
         "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "admission.admission_nihss",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "admission.admission_type",
-              "value": true
-            }
-          ]
+          "type": "EXISTENCE",
+          "scope": "admission.admission_nihss",
+          "value": true
         },
-        "text": "Baseline NIHSS ${admission.admission_nihss}. Admitted to ${admission.admission_type}. "
+        "text": "Baseline NIHSS ${admission.admission_nihss}. "
       },
       {
         "condition": {
@@ -273,39 +211,27 @@
       },
       {
         "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "admission.admission_nihss",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "admission.admission_type",
-              "value": false
-            }
-          ]
+          "type": "EXISTENCE",
+          "scope": "admission.prestroke_mrs",
+          "value": true
         },
-        "text": "Baseline NIHSS ${admission.admission_nihss}. "
+        "text": "Pre-stroke mRS was ${admission.prestroke_mrs}. "
       },
       {
         "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "admission.sys_blood_pressure",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "admission.dia_blood_pressure",
-              "value": true
-            }
-          ]
+          "type": "EXISTENCE",
+          "scope": "admission.prestroke_mrs",
+          "value": false
         },
-        "text": "BP on admission - ${admission.sys_blood_pressure}/${admission.dia_blood_pressure}. "
+        "text": "Pre-stroke mRS not recorded. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.admission_type",
+          "value": true
+        },
+        "text": "Admitted to ${admission.admission_type}. "
       }
     ]
   },
@@ -617,11 +543,6 @@
     "variants": [
       {
         "condition": {
-        },
-        "text": "Post acute care. "
-      },
-      {
-        "condition": {
           "type": "VALUE",
           "scope": "post_acute_care.afib_flutter",
           "value": "detected"
@@ -735,71 +656,6 @@
   },
   "etiology": {
     "variants": [
-      {
-        "condition": {
-          "type": "EXISTENCE",
-          "scope": "etiology.large_artery",
-          "value": true
-        },
-        "large_artery_atherosclerosis": {
-          "variants": [
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "etiology.carotid_stenosis",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "etiology.carotid_stenosis_followup",
-                    "value": true
-                  }
-                ]
-              },
-              "text": ""
-            },
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "etiology.carotid_stenosis",
-                    "value": true
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "etiology.carotid_stenosis_followup",
-                    "value": false
-                  }
-                ]
-              },
-              "text": ""
-            },
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "etiology.carotid_stenosis",
-                    "value": false
-                  },
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "etiology.carotid_stenosis_followup",
-                    "value": false
-                  }
-                ]
-              },
-              "text": ""
-            }
-          ]
-        }
-      },
       {
         "condition": {
           "type": "EXISTENCE",
@@ -1181,7 +1037,7 @@
     "sex": {
       "male": "M",
       "female": "F",
-      "other": "O"
+      "other": "other"
     },
     "arrival_mode": {
       "ems": "EMS",

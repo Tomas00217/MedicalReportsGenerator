@@ -66,10 +66,11 @@ class Admission:
     """
 
     def __init__(self, admission_nihss: Optional[int], aspects_score: Optional[int], admission_type: Optional[str],
-                 sys_blood_pressure: Optional[int], dia_blood_pressure: Optional[int]):
+                 prestroke_mrs: Optional[int], sys_blood_pressure: Optional[int], dia_blood_pressure: Optional[int]):
         self.admission_nihss = admission_nihss
         self.aspects_score = aspects_score
         self.admission_type = admission_type
+        self.prestroke_mrs = prestroke_mrs
         self.sys_blood_pressure = sys_blood_pressure
         self.dia_blood_pressure = dia_blood_pressure
 
