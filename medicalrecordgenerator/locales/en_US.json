@@ -863,11 +863,10 @@
       "CT CTA perfusion": "CT CTA perfusion",
       "MR DWI/FLAIR": "MR DWI/FLAIR",
       "MR DWI/FLAIR MRA": "MR DWI/FLAIR MRA\"",
-      "MR DWI/FLAIR MRA perfusion": "MR DWI/FLAIR MRA perfusion",
-      "done elsewhere": "done elsewhere",
-      "not done": "not done"
+      "MR DWI/FLAIR MRA perfusion": "MR DWI/FLAIR MRA perfusion"
     },
     "occlusion_position": {
+      "occlusion_on_angio": "",
       "occlusion_left_mca_m1": "left M1 MCA",
       "occlusion_left_mca_m2": "left M2 MCA",
       "occlusion_left_mca_m3": "left M3 MCA",
@@ -919,6 +918,7 @@
       "cost of treatment": "cost of treatment",
       "transferred elsewhere": "transferred elsewhere",
       "not available": "not available",
+      "technically not possible": "technically not possible",
       "other": "other"
     },
     "post_treatment_findings": {
@@ -938,8 +938,7 @@
       "post_stroke_sores": "pressure sores",
       "post_stroke_sepsis": "drip site sepsis",
       "post_stroke_extension": "reccurence/Extension of stroke",
-      "post_stroke_other": "other",
-      "post_stroke_none": "none"
+      "post_stroke_other": "other"
     },
     "therapies": {
       "physiotherapy": "physiotherapy",
@@ -1011,8 +1010,7 @@
       "before_onset_heparin": "heparin",
       "before_onset_other": "other",
       "before_onset_anticoagulant_recommended": "anticoagulant recommended",
-      "before_onset_lmwh_prophylactic": "lmwh prophylactic",
-      "before_onset_lmwh_therapeutic": "lmwh therapeutic",
+      "before_onset_contraception": "contraception",
       "before_onset_other_antiplatelet": "other antiplatelet",
       "before_onset_other_anticoagulant": "other anticoagulant",
       "before_onset_any_anticoagulant": "any anticoagulant",
@@ -1024,13 +1022,13 @@
       "risk_hyperlipidemia": "hyperlipidemia",
       "risk_atrial_fibrilation": "AF",
       "risk_congestive_heart_failure": "CHF",
-      "risk_smoker_last_10_years": "smoking",
+      "risk_smoker_last_10_years": "",
       "risk_smoker": "smoking",
       "risk_previous_stroke": "stroke",
       "risk_previous_ischemic_stroke": "ischemic stroke",
       "risk_previous_hemorrhagic_stroke": "hemorrhagic stroke",
       "risk_coronary_artery_disease_or_myocardial_infarction": "CAD",
-      "risk_contraception": "contraception",
+      "risk_covid": "covid",
       "risk_hiv": "HIV",
       "risk_other": "other diseases"
     },
@@ -1038,6 +1036,13 @@
       "male": "M",
       "female": "F",
       "other": "other"
+    },
+    "department_type": {
+      "neurology": "neurology",
+      "neurosurgery": "neurosurgery",
+      "critical care/icu": "critical care/icu",
+      "internal medicine": "internal medicine",
+      "other": "Another hospital"
     },
     "arrival_mode": {
       "ems": "EMS",

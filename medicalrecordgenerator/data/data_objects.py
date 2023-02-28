@@ -60,10 +60,6 @@ class PatientData(DataclassFromDict):
     patient_id: int = field_from_dict("subject_id", default=None)
     age: Optional[int] = field_from_dict(default=None)
     sex: Optional[str] = field_from_dict(default=None)
-    hospital_timestamp: Optional[datetime] = field_from_dict(default=None)
-    arrival_mode: Optional[str] = field_from_dict(default=None)
-    admittance_department: Optional[str] = field_from_dict(default=None)
-    prenotification: Optional[bool] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -80,6 +76,10 @@ class AdmissionData(DataclassFromDict):
     prestroke_mrs: Optional[int] = field_from_dict(default=None)
     sys_blood_pressure: Optional[int] = field_from_dict(default=None)
     dia_blood_pressure: Optional[int] = field_from_dict(default=None)
+    hospital_timestamp: Optional[datetime] = field_from_dict(default=None)
+    arrival_mode: Optional[str] = field_from_dict(default=None)
+    department_type: Optional[str] = field_from_dict(default=None)
+    prenotification: Optional[bool] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -95,7 +95,7 @@ class RiskFactorsData(DataclassFromDict):
     risk_previous_ischemic_stroke: Optional[bool] = field_from_dict(default=None)
     risk_previous_hemorrhagic_stroke: Optional[bool] = field_from_dict(default=None)
     risk_coronary_artery_disease_or_myocardial_infarction: Optional[bool] = field_from_dict(default=None)
-    risk_contraception: Optional[bool] = field_from_dict(default=None)
+    risk_covid: Optional[bool] = field_from_dict(default=None)
     risk_hiv: Optional[bool] = field_from_dict(default=None)
     risk_other: Optional[bool] = field_from_dict(default=None)
 
@@ -118,8 +118,7 @@ class PriorTreatmentData(DataclassFromDict):
     before_onset_edoxaban: Optional[bool] = field_from_dict(default=None)
     before_onset_statin: Optional[bool] = field_from_dict(default=None)
     before_onset_heparin: Optional[bool] = field_from_dict(default=None)
-    before_onset_lmwh_prophylactic: Optional[bool] = field_from_dict(default=None)
-    before_onset_lmwh_therapeutic: Optional[bool] = field_from_dict(default=None)
+    before_onset_contraception: Optional[bool] = field_from_dict(default=None)
     before_onset_other: Optional[bool] = field_from_dict(default=None)
 
 

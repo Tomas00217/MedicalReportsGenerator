@@ -216,14 +216,8 @@ class MedicalRecordsGenerator:
         patient = Patient(patient_data.patient_id,
                           patient_data.age,
                           self.translate_data(self.get_variables("sex"), patient_data.sex),
-                          patient_data.hospital_timestamp,
-                          self.translate_data(self.get_variables("arrival_mode"), patient_data.arrival_mode),
-                          self.translate_data(self.get_variables("admittance_department"),
-                                              patient_data.admittance_department),
                           self.parse_data(self.get_variables("risk_factors"), vars(risk_factors_data)),
-                          self.parse_data(self.get_variables("prior_treatment"), vars(prior_treatment_data)),
-                          patient_data.prenotification,
-                          self.get_setting("time_format"))
+                          self.parse_data(self.get_variables("prior_treatment"), vars(prior_treatment_data)))
 
         return patient
 
@@ -261,7 +255,13 @@ class MedicalRecordsGenerator:
                                                   admission_data.hospitalized_in),
                               admission_data.prestroke_mrs,
                               admission_data.sys_blood_pressure,
-                              admission_data.dia_blood_pressure)
+                              admission_data.dia_blood_pressure,
+                              admission_data.hospital_timestamp,
+                              self.translate_data(self.get_variables("arrival_mode"), admission_data.arrival_mode),
+                              self.translate_data(self.get_variables("department_type"),
+                                                  admission_data.department_type),
+                              admission_data.prenotification,
+                              self.get_setting("time_format"))
 
         return admission
 
@@ -565,9 +565,10 @@ class MedicalRecordsGenerator:
                 except KeyError:
                     logging.error("Invalid key %s", key)
 
-                result += variable if result == "" else f", {variable}"
+                if variable != "":
+                    result += variable if result == "" else f", {variable}"
 
-        result = self.replace_last(result, ",", " and")
+        result = self.replace_last(result, ",", ", and")
 
         return result
 

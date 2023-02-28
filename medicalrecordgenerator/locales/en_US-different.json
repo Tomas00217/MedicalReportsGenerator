@@ -1105,7 +1105,7 @@
       "risk_hyperlipidemia": "hyperlipidemia",
       "risk_atrial_fibrilation": "AF",
       "risk_congestive_heart_failure": "CHF",
-      "risk_smoker_last_10_years": "smoking",
+      "risk_smoker_last_10_years": "",
       "risk_smoker": "smoking",
       "risk_previous_stroke": "stroke",
       "risk_previous_ischemic_stroke": "ischemic stroke",

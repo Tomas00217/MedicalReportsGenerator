@@ -29,19 +29,13 @@ class Patient:
 
     """
 
-    def __init__(self, patient_id: int, age: Optional[int], sex: Optional[str], arrival_time: Optional[datetime],
-                 arrival_mode: Optional[str], admittance_department: Optional[str], risk_factors: Optional[str],
-                 prior_treatment: Optional[str], prenotification: Optional[bool], time_format: Optional[str]):
+    def __init__(self, patient_id: int, age: Optional[int], sex: Optional[str], risk_factors: Optional[str],
+                 prior_treatment: Optional[str]):
         self.patient_id = patient_id
         self.age = age
         self.sex = sex
-        self.arrival_time = arrival_time.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)\
-            if arrival_time else None
-        self.arrival_mode = arrival_mode
-        self.admittance_department = admittance_department
         self.risk_factors = risk_factors
         self.prior_treatment = prior_treatment
-        self.prenotification = prenotification
 
 
 class Onset:
@@ -66,13 +60,20 @@ class Admission:
     """
 
     def __init__(self, admission_nihss: Optional[int], aspects_score: Optional[int], admission_type: Optional[str],
-                 prestroke_mrs: Optional[int], sys_blood_pressure: Optional[int], dia_blood_pressure: Optional[int]):
+                 prestroke_mrs: Optional[int], sys_blood_pressure: Optional[int], dia_blood_pressure: Optional[int],
+                 arrival_time: Optional[datetime], arrival_mode: Optional[str], department_type: Optional[str],
+                 prenotification: Optional[bool], time_format: Optional[str]):
         self.admission_nihss = admission_nihss
         self.aspects_score = aspects_score
         self.admission_type = admission_type
         self.prestroke_mrs = prestroke_mrs
         self.sys_blood_pressure = sys_blood_pressure
         self.dia_blood_pressure = dia_blood_pressure
+        self.arrival_time = arrival_time.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)\
+            if arrival_time else None
+        self.arrival_mode = arrival_mode
+        self.department_type = department_type
+        self.prenotification = prenotification
 
 
 class Thrombolysis:
