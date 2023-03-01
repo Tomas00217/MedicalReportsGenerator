@@ -160,7 +160,7 @@
                   }
                 ]
               },
-              "text": "with no prior history. "
+              "text": "with no prior risk history. "
             }
           ]
         }
@@ -485,7 +485,7 @@
                 "scope": "treatment.tici_score",
                 "value": false
               },
-              "text": "Mechanical thrombectomy performed ${treatment.dtg} after arrival. "
+              "text": "Mechanical thrombectomy performed ${treatment.dtg} minutes after arrival. "
             }
           ]
         }
@@ -626,7 +626,7 @@
           "scope": "post_acute_care.findings",
           "value": true
         },
-        "text": "${post_acute_care.findings} on follow up ${post_acute_care.imaging_type}. "
+        "text": "On follow up ${post_acute_care.imaging_type} found ${post_acute_care.findings}. "
       },
       {
         "condition": {
@@ -751,49 +751,25 @@
   "discharge": {
     "variants": [
       {
-        "condition": {},
+        "condition": {
+          "type": "NOT",
+          "conditions": [
+            {
+              "type": "VALUE",
+              "scope": "discharge.discharge_destination",
+              "value": "dead"
+            }
+          ]
+        },
         "discharged": {
           "variants": [
             {
               "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "discharge.discharge_destination",
-                    "value": true
-                  },
-                  {
-                    "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "discharge.discharge_destination",
-                        "value": "dead"
-                      }
-                    ]
-                  }
-                ]
+                "type": "EXISTENCE",
+                "scope": "discharge.discharge_destination",
+                "value": true
               },
               "text": "Patient discharged on ${discharge.discharge_date} to ${discharge.discharge_destination}. "
-            },
-            {
-              "condition": {
-                "type": "AND",
-                "conditions": [
-                  {
-                    "type": "EXISTENCE",
-                    "scope": "discharge.discharge_destination",
-                    "value": true
-                  },
-                  {
-                    "type": "VALUE",
-                    "scope": "discharge.discharge_destination",
-                    "value": "dead"
-                  }
-                ]
-              },
-              "text": "Patient died on ${discharge.discharge_date}. "
             },
             {
               "condition": {
@@ -830,7 +806,16 @@
         "text": "Medication: ${discharge.discharge_medication}. "
       },
       {
-        "condition": {},
+        "condition": {
+          "type": "NOT",
+          "conditions": [
+            {
+              "type": "VALUE",
+              "scope": "discharge.discharge_destination",
+              "value": "dead"
+            }
+          ]
+        },
         "scores": {
           "variants": [
             {
@@ -844,12 +829,12 @@
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "discharge.mrs",
+                    "scope": "discharge.discharge_mrs",
                     "value": true
                   }
                 ]
               },
-              "text": "NIHSS on discharge ${discharge.nihss}, mRS on discharge ${discharge.mrs}. "
+              "text": "NIHSS on discharge ${discharge.nihss}, mRS on discharge ${discharge.discharge_mrs}. "
             },
             {
               "condition": {
@@ -862,7 +847,7 @@
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "discharge.mrs",
+                    "scope": "discharge.discharge_mrs",
                     "value": false
                   }
                 ]
@@ -880,12 +865,20 @@
                   },
                   {
                     "type": "EXISTENCE",
-                    "scope": "discharge.mrs",
+                    "scope": "discharge.discharge_mrs",
                     "value": true
                   }
                 ]
               },
-              "text": "mRS on discharge ${discharge.mrs}. "
+              "text": "mRS on discharge ${discharge.discharge_mrs}. "
+            },
+            {
+              "condition": {
+                "type": "EXISTENCE",
+                "scope": "discharge.contact_date",
+                "value": true
+              },
+              "text": "Next appointment scheduled to ${discharge.contact_date}. "
             }
           ]
         }
@@ -896,22 +889,18 @@
           "conditions": [
             {
               "type": "EXISTENCE",
-              "scope": "discharge.contact_date",
+              "scope": "discharge.discharge_destination",
               "value": true
             },
             {
-              "type": "NOT",
-              "conditions": [
-                {
-                  "type": "VALUE",
-                  "scope": "discharge.discharge_destination",
-                  "value": "dead"
-                }
-              ]
+              "type": "VALUE",
+              "scope": "discharge.discharge_destination",
+              "value": "dead"
             }
           ]
         },
-        "text": "Next appointment scheduled to ${discharge.contact_date}. "
+
+        "text": "Patient died on ${discharge.discharge_date}. "
       }
     ]
   },
@@ -985,13 +974,13 @@
       "other": "other"
     },
     "post_treatment_findings": {
-      "post_treatment_infarction": "Brain infarct",
-      "post_treatment_no_bleeding": "No bleeding",
-      "post_treatment_remote": "Remote bleeding in the brain",
-      "post_treatment_hi_i": "Bleeding at the site of infarction hemorrhage HI type 1",
-      "post_treatment_hi_ii": "Bleeding at the site of infarction hemorrhage HI type 2",
-      "post_treatment_ph_i": "Bleeding at the site of infarction parenchymal hemorrhage PH type 1",
-      "post_treatment_ph_ii": "Bleeding at the site of infarction parenchymal hemorrhage PH type 2"
+      "post_treatment_infarction": "brain infarct",
+      "post_treatment_no_bleeding": "no bleeding",
+      "post_treatment_remote": "remote bleeding in the brain",
+      "post_treatment_hi_i": "bleeding at the site of infarction hemorrhage HI type 1",
+      "post_treatment_hi_ii": "bleeding at the site of infarction hemorrhage HI type 2",
+      "post_treatment_ph_i": "bleeding at the site of infarction parenchymal hemorrhage PH type 1",
+      "post_treatment_ph_ii": "bleeding at the site of infarction parenchymal hemorrhage PH type 2"
     },
     "post_stroke_complications": {
       "post_stroke_pneumonia": "pneumonia",

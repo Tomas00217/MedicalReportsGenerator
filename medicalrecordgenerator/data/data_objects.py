@@ -194,7 +194,7 @@ class DischargeData(DataclassFromDict):
     discharge_date: date = field_from_dict()
     discharge_destination: Optional[str] = field_from_dict(default=None)
     nihss: Optional[int] = field_from_dict("discharge_nihss_score", default=None)
-    mrs: Optional[int] = field_from_dict("discharge_mrs", default=None)
+    discharge_mrs: Optional[int] = field_from_dict(default=None)
     contact_date: Optional[date] = field_from_dict(default=None)
     mode_contact: Optional[str] = field_from_dict(default=None)
 

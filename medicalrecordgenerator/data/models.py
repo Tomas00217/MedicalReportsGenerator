@@ -212,13 +212,13 @@ class Discharge:
     """
 
     def __init__(self, discharge_date: date, discharge_destination: Optional[str], nihss: Optional[int],
-                 mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
+                 discharge_mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
                  discharge_medication: str, date_format: str):
         self.discharge_date = discharge_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT)\
             if discharge_date else None
         self.discharge_destination = discharge_destination
         self.nihss = nihss
-        self.mrs = mrs,
+        self.discharge_mrs = discharge_mrs
         self.contact_date = contact_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT) \
             if contact_date else None
         self.mode_contact = mode_contact

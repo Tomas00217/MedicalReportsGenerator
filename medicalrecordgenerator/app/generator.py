@@ -419,9 +419,11 @@ class MedicalRecordsGenerator:
         discharge = Discharge(discharge_data.discharge_date,
                               self.translate_data(self.get_variables("discharge_destination"),
                                                   discharge_data.discharge_destination),
-                              discharge_data.nihss, discharge_data.mrs, discharge_data.contact_date,
-                              discharge_data.mode_contact, self.parse_data(self.get_variables("medications"),
-                                                                           vars(medication_data)),
+                              discharge_data.nihss,
+                              discharge_data.discharge_mrs,
+                              discharge_data.contact_date,
+                              discharge_data.mode_contact,
+                              self.parse_data(self.get_variables("medications"), vars(medication_data)),
                               self.get_setting("date_format"))
 
         return discharge
