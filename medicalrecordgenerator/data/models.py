@@ -30,12 +30,13 @@ class Patient:
     """
 
     def __init__(self, patient_id: int, age: Optional[int], sex: Optional[str], risk_factors: Optional[str],
-                 prior_treatment: Optional[str]):
+                 prior_treatment: Optional[str], risk_atrial_fibrilation: Optional[str]):
         self.patient_id = patient_id
         self.age = age
         self.sex = sex
         self.risk_factors = risk_factors
         self.prior_treatment = prior_treatment
+        self.risk_atrial_fibrilation = risk_atrial_fibrilation
 
 
 class Onset:

@@ -60,6 +60,7 @@ class PatientData(DataclassFromDict):
     patient_id: int = field_from_dict("subject_id", default=None)
     age: Optional[int] = field_from_dict(default=None)
     sex: Optional[str] = field_from_dict(default=None)
+    risk_atrial_fibrilation: Optional[bool] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -87,10 +88,8 @@ class RiskFactorsData(DataclassFromDict):
     risk_hypertension: Optional[bool] = field_from_dict(default=None)
     risk_diabetes: Optional[bool] = field_from_dict(default=None)
     risk_hyperlipidemia: Optional[bool] = field_from_dict(default=None)
-    risk_atrial_fibrilation: Optional[bool] = field_from_dict(default=None)
     risk_congestive_heart_failure: Optional[bool] = field_from_dict(default=None)
-    risk_smoker_last_10_years: Optional[bool] = field_from_dict(default=None)
-    risk_smoker: Optional[bool] = field_from_dict(default=None)
+    risk_smoker: Optional[bool] = field_from_dict(default=field_from_dict("risk_smoker_last_10_years", default=None))
     risk_previous_stroke: Optional[bool] = field_from_dict(default=None)
     risk_previous_ischemic_stroke: Optional[bool] = field_from_dict(default=None)
     risk_previous_hemorrhagic_stroke: Optional[bool] = field_from_dict(default=None)

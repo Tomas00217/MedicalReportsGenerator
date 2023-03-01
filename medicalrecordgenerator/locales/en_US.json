@@ -92,23 +92,75 @@
             },
             {
               "condition": {
-                "type": "EXISTENCE",
-                "scope": "patient.risk_factors",
-                "value": true
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_factors",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_atrial_fibrilation",
+                    "value": true
+                  }
+                ]
               },
-              "text": "with a history of ${patient.risk_factors}"
+              "text": "with a history of ${patient.risk_atrial_fibrilation}, ${patient.risk_factors}. "
             },
             {
               "condition": {
-                "type": "EXISTENCE",
-                "scope": "patient.risk_factors",
-                "value": false
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_factors",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_atrial_fibrilation",
+                    "value": false
+                  }
+                ]
               },
-              "text": "with no prior history"
+              "text": "with a history of ${patient.risk_factors}. "
             },
             {
-              "condition": {},
-              "text": ". "
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_factors",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_atrial_fibrilation",
+                    "value": true
+                  }
+                ]
+              },
+              "text": "with a history of ${patient.risk_atrial_fibrilation}. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_factors",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_atrial_fibrilation",
+                    "value": false
+                  }
+                ]
+              },
+              "text": "with no prior history. "
             }
           ]
         }
@@ -215,7 +267,7 @@
           "scope": "admission.prestroke_mrs",
           "value": true
         },
-        "text": "Pre-stroke mRS was ${admission.prestroke_mrs}. "
+        "text": "Prestroke mRS was ${admission.prestroke_mrs}. "
       },
       {
         "condition": {
@@ -223,7 +275,7 @@
           "scope": "admission.prestroke_mrs",
           "value": false
         },
-        "text": "Pre-stroke mRS not recorded. "
+        "text": "Prestroke mRS not recorded. "
       },
       {
         "condition": {
@@ -543,19 +595,30 @@
     "variants": [
       {
         "condition": {
-          "type": "VALUE",
-          "scope": "post_acute_care.afib_flutter",
-          "value": "detected"
+          "type": "EXISTENCE",
+          "scope": "patient.risk_atrial_fibrilation",
+          "value": false
         },
-        "text": "AF detected. "
-      },
-      {
-        "condition": {
-          "type": "VALUE",
-          "scope": "post_acute_care.afib_flutter",
-          "value": "no AF"
-        },
-        "text": "No AF detected. "
+        "atrial_fibrilation": {
+          "variants": [
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "post_acute_care.afib_flutter",
+                "value": "detected"
+              },
+              "text": "AF detected. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "post_acute_care.afib_flutter",
+                "value": "no AF"
+              },
+              "text": "No AF detected. "
+            }
+          ]
+        }
       },
       {
         "condition": {
@@ -1022,7 +1085,6 @@
       "risk_hyperlipidemia": "hyperlipidemia",
       "risk_atrial_fibrilation": "AF",
       "risk_congestive_heart_failure": "CHF",
-      "risk_smoker_last_10_years": "",
       "risk_smoker": "smoking",
       "risk_previous_stroke": "stroke",
       "risk_previous_ischemic_stroke": "ischemic stroke",

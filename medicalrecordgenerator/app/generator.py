@@ -212,12 +212,14 @@ class MedicalRecordsGenerator:
         patient_data = PatientData.from_dict(self.data)
         risk_factors_data = RiskFactorsData.from_dict(self.data)
         prior_treatment_data = PriorTreatmentData.from_dict(self.data)
+        risk_atrial_fib = {"risk_atrial_fibrilation": patient_data.risk_atrial_fibrilation}
 
         patient = Patient(patient_data.patient_id,
                           patient_data.age,
                           self.translate_data(self.get_variables("sex"), patient_data.sex),
                           self.parse_data(self.get_variables("risk_factors"), vars(risk_factors_data)),
-                          self.parse_data(self.get_variables("prior_treatment"), vars(prior_treatment_data)))
+                          self.parse_data(self.get_variables("prior_treatment"), vars(prior_treatment_data)),
+                          self.parse_data(self.get_variables("risk_factors"), risk_atrial_fib))
 
         return patient
 

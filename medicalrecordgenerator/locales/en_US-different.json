@@ -43,6 +43,38 @@
       {
         "condition": {},
         "text": "Gender: ${patient.sex}\n"
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "patient.risk_factors",
+          "value": true
+        },
+        "text": "Risk factors: ${patient.risk_factors}\n"
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "patient.risk_factors",
+          "value": false
+        },
+        "text": "Risk factors: None\n"
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "patient.prior_treatment",
+          "value": true
+        },
+        "text": "Prior treatment: ${patient.prior_treatment}\n"
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "patient.prior_treatment",
+          "value": false
+        },
+        "text": "Prior treatment: None\n"
       }
     ]
   },
@@ -101,120 +133,88 @@
           ]
         },
         "text": "Stroke onset date and time: ${onset.onset_date}, time unknown\n"
-      },
-      {
-        "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "patient.arrival_mode",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "patient.admittance_department",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "patient.prenotification",
-              "value": true
-            }
-          ]
-        },
-        "text": "Patient arrived from and to: ${patient.arrival_mode} to ${patient.admittance_department} with prenotification\n"
-      },
-      {
-        "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "patient.arrival_mode",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "patient.admittance_department",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "patient.prenotification",
-              "value": false
-            }
-          ]
-        },
-        "text": "Patient arrived from and to: ${patient.arrival_mode} to ${patient.admittance_department}\n"
-      },
-      {
-        "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "patient.arrival_mode",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "patient.admittance_department",
-              "value": false
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "patient.prenotification",
-              "value": false
-            }
-          ]
-        },
-        "text": "Patient arrived from: ${patient.arrival_mode}\n"
-      },
-      {
-        "condition": {
-          "type": "EXISTENCE",
-          "scope": "patient.arrival_time",
-          "value": true
-        },
-        "text": "Patient arrival time: ${patient.arrival_time}\n"
-      },
-      {
-        "condition": {
-          "type": "EXISTENCE",
-          "scope": "patient.risk_factors",
-          "value": true
-        },
-        "text": "Risk factors: ${patient.risk_factors}\n"
-      },
-      {
-        "condition": {
-          "type": "EXISTENCE",
-          "scope": "patient.risk_factors",
-          "value": false
-        },
-        "text": "Risk factors: None\n"
-      },
-      {
-        "condition": {
-          "type": "EXISTENCE",
-          "scope": "patient.prior_treatment",
-          "value": true
-        },
-        "text": "Prior treatment: ${patient.prior_treatment}\n"
-      },
-      {
-        "condition": {
-          "type": "EXISTENCE",
-          "scope": "patient.prior_treatment",
-          "value": false
-        },
-        "text": "Prior treatment: None\n"
       }
     ]
   },
   "admission": {
     "variants": [
+      {
+        "condition": {
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.arrival_mode",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.department_type",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.prenotification",
+              "value": true
+            }
+          ]
+        },
+        "text": "Patient arrived from and to: ${admission.arrival_mode} to ${admission.department_type} with prenotification\n"
+      },
+      {
+        "condition": {
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.arrival_mode",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.department_type",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.prenotification",
+              "value": false
+            }
+          ]
+        },
+        "text": "Patient arrived from and to: ${admission.arrival_mode} to ${admission.department_type}\n"
+      },
+      {
+        "condition": {
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.arrival_mode",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.department_type",
+              "value": false
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.prenotification",
+              "value": false
+            }
+          ]
+        },
+        "text": "Patient arrived from: ${admission.arrival_mode}\n"
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.arrival_time",
+          "value": true
+        },
+        "text": "Patient arrival time: ${admission.arrival_time}\n"
+      },
       {
         "condition": {
           "type": "AND",
@@ -250,8 +250,20 @@
         "text": "Baseline NIHSS: not done\n"
       },
       {
-        "condition": {},
-        "text": "Admission modified Rankin Scale (mRS): ?\n"
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.prestroke_mrs",
+          "value": true
+        },
+        "text": "Prestroke modified Rankin Scale (mRS): ${admission.prestroke_mrs}\n"
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.prestroke_mrs",
+          "value": false
+        },
+        "text": "Prestroke modified Rankin Scale (mRS): not recorded\n"
       },
       {
         "condition": {
@@ -640,10 +652,6 @@
   },
   "post_acute_care": {
     "variants": [
-      {
-        "condition": {},
-        "text": "Post acute care\n"
-      },
       {
         "condition": {
           "type": "EXISTENCE",
@@ -1105,13 +1113,12 @@
       "risk_hyperlipidemia": "hyperlipidemia",
       "risk_atrial_fibrilation": "AF",
       "risk_congestive_heart_failure": "CHF",
-      "risk_smoker_last_10_years": "",
       "risk_smoker": "smoking",
       "risk_previous_stroke": "stroke",
       "risk_previous_ischemic_stroke": "ischemic stroke",
       "risk_previous_hemorrhagic_stroke": "hemorrhagic stroke",
       "risk_coronary_artery_disease_or_myocardial_infarction": "CAD",
-      "risk_contraception": "contraception",
+      "risk_covid": "covid",
       "risk_hiv": "HIV",
       "risk_other": "other diseases"
     },
@@ -1125,11 +1132,12 @@
       "private transportation": "Private transportation",
       "another hospital": "Another hospital"
     },
-    "admittance_department": {
-      "radiology": "radiology",
-      "emergency": "ER",
-      "outpatient clinic": "outpatient clinic",
-      "other": "somewhere else"
+    "department_type": {
+      "neurology": "neurology",
+      "neurosurgery": "neurosurgery",
+      "critical care/icu": "critical care/icu",
+      "internal medicine": "internal medicine",
+      "other": "Another hospital"
     },
     "swallowing_screening_type": {
       "GUSS": "GUSS test",
