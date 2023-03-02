@@ -98,8 +98,6 @@ The following is the default structure that every dictionary, that is to be used
       "MR DWI/FLAIR": "",
       "MR DWI/FLAIR MRA": "",
       "MR DWI/FLAIR MRA perfusion": "",
-      "done elsewhere": "",
-      "not done": ""
     },
     "occlusion_position": {
       "occlusion_left_mca_m1": "",
@@ -153,6 +151,7 @@ The following is the default structure that every dictionary, that is to be used
       "cost of treatment": "",
       "transferred elsewhere": "",
       "not available": "",
+      "technically not possible": "",
       "other": ""
     },
     "post_treatment_findings": {
@@ -173,7 +172,6 @@ The following is the default structure that every dictionary, that is to be used
       "post_stroke_sepsis": "",
       "post_stroke_extension": "",
       "post_stroke_other": "",
-      "post_stroke_none": ""
     },
     "therapies": {
       "physiotherapy": "",
@@ -245,8 +243,7 @@ The following is the default structure that every dictionary, that is to be used
       "before_onset_heparin": "",
       "before_onset_other": "",
       "before_onset_anticoagulant_recommended": "",
-      "before_onset_lmwh_prophylactic": "",
-      "before_onset_lmwh_therapeutic": "",
+      "before_onset_contraception": "",
       "before_onset_other_antiplatelet": "",
       "before_onset_other_anticoagulant": "",
       "before_onset_any_anticoagulant": "",
@@ -258,13 +255,12 @@ The following is the default structure that every dictionary, that is to be used
       "risk_hyperlipidemia": "" ,
       "risk_atrial_fibrilation": "" ,
       "risk_congestive_heart_failure": "" ,
-      "risk_smoker_last_10_years": "" ,
       "risk_smoker": "" ,
       "risk_previous_stroke": "" ,
       "risk_previous_ischemic_stroke": "",
       "risk_previous_hemorrhagic_stroke": "" ,
       "risk_coronary_artery_disease_or_myocardial_infarction": "" ,
-      "risk_contraception": "",
+      "risk_covid": "",
       "risk_hiv": "" ,
       "risk_other": ""
     },
@@ -273,16 +269,17 @@ The following is the default structure that every dictionary, that is to be used
       "female": "",
       "other": ""
     },
+    "department_type": {
+      "neurology": "",
+      "neurosurgery": "",
+      "critical care/icu": "",
+      "internal medicine": "",
+      "other": ""
+    },
     "arrival_mode": {
       "ems": "",
       "private transportation": "",
       "another hospital": ""
-    },
-    "admittance_department": {
-      "radiology": "",
-      "emergency": "",
-      "outpatient clinic": "",
-      "other": ""
     },
     "swallowing_screening_type": {
       "GUSS": "",
@@ -524,29 +521,33 @@ List of all scopes:
 |------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | diagnosis.stroke_type                    | ['ischemic', 'intracerebral hemorrhage', 'transient ischemic', 'subarachnoid hemorrhage', 'cerebral venous thrombosis', 'stroke mimics', 'undetermined']                     |
 | diagnosis.aspects_score                  | int                                                                                                                                                                          |
-| diagnosis.imaging_type                   | Values from variables part of dictionary                                                                                                                                     |
+| diagnosis.imaging_type                   | ['CT', 'CT CTA', 'CT CTA perfusion', 'MR DWI/FLAIR', 'MR DWI/FLAIR MRA', 'MR DWI/FLAIR MRA perfusion']                                                                       |
 | diagnosis.imaging_timestamp              | datetime                                                                                                                                                                     |
 | diagnosis.imaging_within_hour            | [True, False]                                                                                                                                                                |
 | diagnosis.occlusion_position             | concatenated string                                                                                                                                                          |
 | patient.patient_id                       | integer                                                                                                                                                                      |
 | patient.age                              | integer                                                                                                                                                                      |
-| patient.sex                              | Values from variables part of dictionary                                                                                                                                     |
-| patient.arrival_time                     | datetime                                                                                                                                                                     |
-| patient.arrival_mode                     | Values from variables part of dictionary                                                                                                                                     |
-| patient.admittance_department            | Values from variables part of dictionary                                                                                                                                     |
+| patient.sex                              | ['male', 'female', 'other']                                                                                                                                                  |
 | patient.risk_factors                     | concatenated string                                                                                                                                                          |
 | patient.prior_treatment                  | concatenated string                                                                                                                                                          |
-| patient.prenotification                  | [True, False]                                                                                                                                                                |
+| patient.risk_atrial_fibrilation          | [True, False]                                                                                                                                                                |
 | onset.onset_date                         | datetime                                                                                                                                                                     |
 | onset.onset_time                         | time                                                                                                                                                                         |
 | onset.wake_up_stroke                     | [True, False]                                                                                                                                                                |
 | admission.admission_nihss                | integer                                                                                                                                                                      |
 | admission.aspects_score                  | integer                                                                                                                                                                      |
-| admission.admission_type                 | Values from variables part of dictionary                                                                                                                                     |
+| admission.admission_type                 | ['icu/stroke unit', 'monitored bed', 'standard bed']                                                                                                                         |
+| admission.prestroke_mrs                  | integer                                                                                                                                                                      |
+| admission.sys_blood_pressure             | integer                                                                                                                                                                      |
+| admission.dia_blood_pressure             | integer                                                                                                                                                                      |
+| admission.arrival_time                   | datetime                                                                                                                                                                     |
+| admission.arrival_mode                   | ['ems', 'private transportation', 'another hospital']                                                                                                                        |
+| admission.department_type                | ['neurology', 'neurosurgery', 'critical care/icu', 'internal medicine', 'other']                                                                                             |
+| admission.prenotification                | [True, False]                                                                                                                                                                |
 | treatment.thrombolysis_done              | [True, False]                                                                                                                                                                |
 | treatment.thrombectomy_done              | [True, False]                                                                                                                                                                |
-| treatment.thrombolysis_reasons           | Values from variables part of dictionary                                                                                                                                     |
-| treatment.thrombectomy_reasons           | Values from variables part of dictionary                                                                                                                                     |
+| treatment.no_thrombolysis_reasons        | ['done elsewhere', 'time window', 'mild deficit', 'consent', 'cost of treatment', 'transferred elsewhere', 'only MT', 'not available', 'other']                              |
+| treatment.no_thrombectomy_reasons        | ['done elsewhere', 'time window', 'mild deficit', 'large vessel occlusion', 'disability', 'consent', 'cost of treatment', 'transferred elsewhere', 'technically not possible', 'not available', 'other'] |
 | treatment.dtn                            | integer                                                                                                                                                                      |
 | treatment.ivt_treatment                  | ['alteplase', 'tenecteplase', 'streptokinase', 'staphylokinase']                                                                                                             |
 | treatment.ivt_dose                       | number                                                                                                                                                                       |
@@ -554,23 +555,22 @@ List of all scopes:
 | treatment.tici_score                     | ['0', '1', '2A', '2B', '2C', '3', 'occlusion not confirmed']                                                                                                                 |
 | treatment.dio                            | integer                                                                                                                                                                      |
 | treatment.thrombectomy_transport         | [True, False]                                                                                                                                                                |
-| treatment.tici_score_meaning             | Values from variables part of dictionary                                                                                                                                     |
+| treatment.tici_score_meaning             | ['tici_score_0', 'tici_score_1', 'tici_score_2A', 'tici_score_2B', 'tici_score_2C', 'tici_score_3']                                                                          |
 | post_acute_care.afib_flutter             | ['known AF', 'detected', 'no AF', 'not screened']                                                                                                                            |
 | post_acute_care.findings                 | concatenated string                                                                                                                                                          |
 | post_acute_care.imaging_type             | ['CT', 'MR', 'no']                                                                                                                                                           |
 | post_acute_care.swallowing_screening     | ['yes', 'no', 'not applicable']                                                                                                                                              |
-| post_acute_care.swallowing_screening_type| Values from variables part of dictionary                                                                                                                                     |
+| post_acute_care.swallowing_screening_type| ['GUSS', 'ASSIST', 'water test', 'other']                                                                                                                                    |
 | post_acute_care.physiotherapy            | [True, False]                                                                                                                                                                |
 | post_acute_care.ergotherapy              | [True, False]                                                                                                                                                                |
 | post_acute_care.speechtherapy            | [True, False]                                                                                                                                                                |
 | post_acute_care.therapies                | concatenated string                                                                                                                                                          |
 | post_stroke_complications.complications  | concatenated string                                                                                                                                                          |
 | discharge.discharge_date                 | datetime                                                                                                                                                                     |
-| discharge.discharge_destination          | Values from variables part of dictionary                                                                                                                                     |
+| discharge.discharge_destination          | ['home', 'same hospital', 'another hospital', 'social care', 'dead']                                                                                                         |
 | discharge.nihss                          | integer                                                                                                                                                                      |
 | discharge.mrs                            | integer                                                                                                                                                                      |
 | discharge.contact_date                   | datetime                                                                                                                                                                     |
-| discharge.mode_contact                   | Values from variables part of dictionary                                                                                                                                     |
 | discharge.discharge_medication           | concatenated string                                                                                                                                                          |
 
 ### **Examples**

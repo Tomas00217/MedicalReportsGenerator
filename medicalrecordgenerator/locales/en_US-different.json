@@ -448,7 +448,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "treatment.thrombolysis_reasons",
+                        "scope": "treatment.no_thrombolysis_reasons",
                         "value": "other"
                       }
                     ]
@@ -458,7 +458,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "treatment.thrombolysis_reasons",
+                        "scope": "treatment.no_thrombolysis_reasons",
                         "value": "time window"
                       }
                     ]
@@ -468,7 +468,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "treatment.thrombolysis_reasons",
+                        "scope": "treatment.no_thrombolysis_reasons",
                         "value": "not available"
                       }
                     ]
@@ -478,19 +478,19 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "treatment.thrombolysis_reasons",
+                        "scope": "treatment.no_thrombolysis_reasons",
                         "value": "done elsewhere"
                       }
                     ]
                   }
                 ]
               },
-              "text": "Thrombolysis: not given because of ${treatment.thrombolysis_reasons}.\n"
+              "text": "Thrombolysis: not given because of ${treatment.no_thrombolysis_reasons}.\n"
             },
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "treatment.thrombolysis_reasons",
+                "scope": "treatment.no_thrombolysis_reasons",
                 "value": "other"
               },
               "text": "Thrombolysis: not given, no specific reason provided.\n"
@@ -498,7 +498,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "treatment.thrombolysis_reasons",
+                "scope": "treatment.no_thrombolysis_reasons",
                 "value": "time window"
               },
               "text": "Thrombolysis: not given because patient was out of time window.\n"
@@ -506,7 +506,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "treatment.thrombolysis_reasons",
+                "scope": "treatment.no_thrombolysis_reasons",
                 "value": "not available"
               },
               "text": "Thrombolysis: not given as not available.\n"
@@ -514,7 +514,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "treatment.thrombolysis_reasons",
+                "scope": "treatment.no_thrombolysis_reasons",
                 "value": "done elsewhere"
               },
               "text": "Thrombolysis: done in the other hospital before admission.\n"
@@ -566,7 +566,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "treatment.thrombectomy_reasons",
+                        "scope": "treatment.no_thrombectomy_reasons",
                         "value": "other"
                       }
                     ]
@@ -576,7 +576,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "treatment.thrombectomy_reasons",
+                        "scope": "treatment.no_thrombectomy_reasons",
                         "value": "time window"
                       }
                     ]
@@ -586,7 +586,7 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "treatment.thrombectomy_reasons",
+                        "scope": "treatment.no_thrombectomy_reasons",
                         "value": "not available"
                       }
                     ]
@@ -596,19 +596,19 @@
                     "conditions": [
                       {
                         "type": "VALUE",
-                        "scope": "treatment.thrombectomy_reasons",
+                        "scope": "treatment.no_thrombectomy_reasons",
                         "value": "transferred elsewhere"
                       }
                     ]
                   }
                 ]
               },
-              "text": "Thrombectomy: not performed because of ${treatment.thrombectomy_reasons}.\n"
+              "text": "Thrombectomy: not performed because of ${treatment.no_thrombectomy_reasons}.\n"
             },
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "treatment.thrombectomy_reasons",
+                "scope": "treatment.no_thrombectomy_reasons",
                 "value": "other"
               },
               "text": "Thrombectomy: not performed, no specific reason provided.\n"
@@ -616,7 +616,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "treatment.thrombectomy_reasons",
+                "scope": "treatment.no_thrombectomy_reasons",
                 "value": "time window"
               },
               "text": "Thrombectomy: not performed because patient was out of time window.\n"
@@ -624,7 +624,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "treatment.thrombectomy_reasons",
+                "scope": "treatment.no_thrombectomy_reasons",
                 "value": "not available"
               },
               "text": "Thrombectomy: not performed as not available.\n"
@@ -632,7 +632,7 @@
             {
               "condition": {
                 "type": "VALUE",
-                "scope": "treatment.thrombectomy_reasons",
+                "scope": "treatment.no_thrombectomy_reasons",
                 "value": "done elsewhere"
               },
               "text": "Thrombectomy: performed in the other hospital before admission.\n"
@@ -880,15 +880,15 @@
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "discharge.mrs",
+          "scope": "discharge.discharge_mrs",
           "value": true
         },
-        "text": "mRS on discharge: ${discharge.mrs}\n"
+        "text": "mRS on discharge: ${discharge.discharge_mrs}\n"
       },
       {
         "condition": {
           "type": "EXISTENCE",
-          "scope": "discharge.mrs",
+          "scope": "discharge.discharge_mrs",
           "value": false
         },
         "text": "mRS on discharge: unknown\n"
@@ -976,7 +976,7 @@
       "occlusion_ba": "BA",
       "occlusion_va": "VA"
     },
-    "hospitalized_in": {
+    "admission_type": {
       "icu/stroke unit": "ICU/stroke unit",
       "monitored bed": "monitored bed",
       "standard bed": "standard bed"

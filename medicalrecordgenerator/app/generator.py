@@ -284,9 +284,13 @@ class MedicalRecordsGenerator:
                                     treatment_data.ivt_treatment,
                                     treatment_data.ivt_dose)
 
+        tici_score_meaning_val = None
+
+        if treatment_data.tici_score is not None and treatment_data.tici_score != "occlusion not confirmed":
+            tici_score_meaning_val = f"tici_score_{treatment_data.tici_score}"
+
         thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio,
-                                    self.get_tici_meaning(self.get_variables("tici_score_meaning"),
-                                                          treatment_data.tici_score))
+                                    tici_score_meaning_val)
 
         self.transported = thrombectomy.thrombectomy_transport
 
@@ -595,31 +599,6 @@ class MedicalRecordsGenerator:
 
         return new.join(string.rsplit(old, 1))
 
-    @staticmethod
-    def get_tici_meaning(dictionary: dict, tici_score: str) -> str:
-        """Gets the tici meaning based on the tici score
-
-        Parameters
-        ----------
-        dictionary : dict
-            Dictionary from which the text is being taken
-        tici_score : str
-            Tici score of patient
-
-        Returns
-        -------
-        str
-            Parsed tici meaning based on the tici score
-
-        """
-
-        if dictionary is None:
-            return ""
-
-        if tici_score is not None and tici_score != "occlusion not confirmed":
-            tici_score = tici_score
-            return dictionary[f"tici_score_{tici_score}"]
-
     def translate_variables(self) -> dict:
         """Translates the variables in the discharge report
 
@@ -638,7 +617,7 @@ class MedicalRecordsGenerator:
         mr.patient.sex = self.translate_data(self.get_variables("sex"), mr.patient.sex)
 
         # Admission
-        mr.admission.admission_type = self.translate_data(self.get_variables("hospitalized_in"),
+        mr.admission.admission_type = self.translate_data(self.get_variables("admission_type"),
                                                           mr.admission.admission_type)
         mr.admission.arrival_mode = self.translate_data(self.get_variables("arrival_mode"), mr.admission.arrival_mode)
         mr.admission.department_type = self.translate_data(self.get_variables("department_type"),
@@ -647,16 +626,18 @@ class MedicalRecordsGenerator:
         # Treatment
         mr.treatment.thrombolysis.ivt_treatment = self.translate_data(self.get_variables("ivt_treatment"),
                                                                       mr.treatment.thrombolysis.ivt_treatment)
-        mr.treatment.thrombolysis_reasons = self.translate_data(self.get_variables("no_thrombolysis_reason"),
-                                                                mr.treatment.thrombolysis_reasons),
-        mr.treatment.thrombectomy_reasons = self.translate_data(self.get_variables("no_thrombectomy_reason"),
-                                                                mr.treatment.thrombectomy_reasons),
+        mr.treatment.no_thrombolysis_reasons = self.translate_data(self.get_variables("no_thrombolysis_reason"),
+                                                                   mr.treatment.no_thrombolysis_reasons)
+        mr.treatment.no_thrombectomy_reasons = self.translate_data(self.get_variables("no_thrombectomy_reason"),
+                                                                   mr.treatment.no_thrombectomy_reasons)
+        mr.treatment.thrombectomy.tici_score_meaning = self.translate_data(self.get_variables("tici_score_meaning"),
+                                                                           mr.treatment.thrombectomy.tici_score_meaning)
 
         # Post acute care
         if not self.transported:
             mr.post_acute_care.swallowing_screening_type = \
                 self.translate_data(self.get_variables("swallowing_screening_type"),
-                                    mr.post_acute_care.swallowing_screening_type),
+                                    mr.post_acute_care.swallowing_screening_type)
 
         # Discharge
         mr.discharge.discharge_destination = self.translate_data(self.get_variables("discharge_destination"),

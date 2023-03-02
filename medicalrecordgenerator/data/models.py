@@ -111,12 +111,12 @@ class Treatment:
     """
 
     def __init__(self, thrombolysis_done: Optional[bool], thrombectomy_done: Optional[bool],
-                 thrombolysis_reasons: Optional[str], thrombectomy_reasons: Optional[str],
+                 no_thrombolysis_reasons: Optional[str], no_thrombectomy_reasons: Optional[str],
                  thrombolysis: Thrombolysis, thrombectomy: Thrombectomy):
         self.thrombolysis_done = thrombolysis_done
         self.thrombectomy_done = thrombectomy_done
-        self.thrombolysis_reasons = thrombolysis_reasons
-        self.thrombectomy_reasons = thrombectomy_reasons
+        self.no_thrombolysis_reasons = no_thrombolysis_reasons
+        self.no_thrombectomy_reasons = no_thrombectomy_reasons
         self.thrombolysis = thrombolysis
         self.thrombectomy = thrombectomy
 
