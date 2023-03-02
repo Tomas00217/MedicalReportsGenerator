@@ -1009,7 +1009,7 @@
       "same hospital": "same hospital",
       "another hospital": "another centre",
       "social care": "social care",
-      "dead": "dead"
+      "dead": "muerto"
     },
     "medications": {
       "discharge_antidiabetics": "anti-diabetics",
@@ -1093,7 +1093,7 @@
       "neurosurgery": "neurosurgery",
       "critical care/icu": "critical care/icu",
       "internal medicine": "internal medicine",
-      "other": "Another hospital"
+      "other": "another hospital"
     },
     "arrival_mode": {
       "ems": "EMS",
