@@ -33,7 +33,7 @@
                   }
                 ]
               },
-              "text": "Cerebral ischemic stroke without occlusion on plain ${diagnosis.imaging_type}. "
+              "text": "Cerebral ischemic stroke. "
             },
             {
               "condition": {
@@ -911,10 +911,10 @@
   "variables": {
     "imaging_type": {
       "CT": "CT",
-      "CT CTA": "CT CTA",
-      "CT CTA perfusion": "CT CTA perfusion",
+      "CT CTA": "CTA",
+      "CT CTA perfusion": "CTA perfusion",
       "MR DWI/FLAIR": "MR DWI/FLAIR",
-      "MR DWI/FLAIR MRA": "MR DWI/FLAIR MRA\"",
+      "MR DWI/FLAIR MRA": "MR DWI/FLAIR MRA",
       "MR DWI/FLAIR MRA perfusion": "MR DWI/FLAIR MRA perfusion"
     },
     "occlusion_position": {
