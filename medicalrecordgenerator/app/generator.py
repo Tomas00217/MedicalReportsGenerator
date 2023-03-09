@@ -10,8 +10,7 @@ from data.data_objects import DiagnosisData, OnsetData, AdmissionData, Treatment
     PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData, RiskFactorsData, PriorTreatmentData, PatientData
 from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
-    PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
-    Discharge, MedicalRecord, Patient
+    PostAcuteCare, PostStrokeComplications, Etiology, Discharge, MedicalRecord, Patient
 
 
 class MyTemplate(Template):
@@ -393,17 +392,10 @@ class MedicalRecordsGenerator:
 
         etiology_data = EtiologyData.from_dict(self.data)
 
-        large_artery = LargeArteryAtherosclerosis(etiology_data.carotid_stenosis,
-                                                  etiology_data.carotid_stenosis_level,
-                                                  etiology_data.carotid_stenosis_followup)
-
-        cardioembolism = Cardioembolism(etiology_data.afib_flutter, None)
-        if cardioembolism.afib_flutter is not None:
-            cardioembolism.reasons = "atrial fibrilation/flutter"
-
         etiology = Etiology(etiology_data.etiology_large_artery, etiology_data.etiology_cardioembolism,
                             etiology_data.etiology_other, etiology_data.etiology_cryptogenic_stroke,
-                            etiology_data.etiology_small_vessel, large_artery, cardioembolism)
+                            etiology_data.etiology_small_vessel, etiology_data.carotid_stenosis,
+                            etiology_data.carotid_stenosis_level, etiology_data.afib_flutter)
 
         return etiology
 

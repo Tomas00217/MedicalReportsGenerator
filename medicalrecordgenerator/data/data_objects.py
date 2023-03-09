@@ -185,7 +185,6 @@ class EtiologyData(DataclassFromDict):
     etiology_small_vessel: Optional[bool] = field_from_dict(default=None)
     carotid_stenosis: Optional[bool] = field_from_dict(default=None)
     carotid_stenosis_level: Optional[str] = field_from_dict(default=None)
-    carotid_stenosis_followup: Optional[bool] = field_from_dict(default=None)
     afib_flutter: Optional[str] = field_from_dict(default=None)
 
 

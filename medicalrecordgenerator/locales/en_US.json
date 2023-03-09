@@ -171,57 +171,19 @@
     "variants": [
       {
         "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "onset.onset_time",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "onset.wake_up_stroke",
-              "value": false
-            }
-          ]
-        },
-        "text": "Onset on ${onset.onset_date} at ${onset.onset_time}. "
-      },
-      {
-        "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "onset.onset_time",
-              "value": true
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "onset.wake_up_stroke",
-              "value": true
-            }
-          ]
+            "type": "EXISTENCE",
+            "scope": "onset.wake_up_stroke",
+            "value": true
         },
         "text": "Onset on ${onset.onset_date}, wake up stroke. "
       },
       {
         "condition": {
-          "type": "AND",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "onset.onset_time",
-              "value": false
-            },
-            {
-              "type": "EXISTENCE",
-              "scope": "onset.wake_up_stroke",
-              "value": false
-            }
-          ]
+            "type": "EXISTENCE",
+            "scope": "onset.wake_up_stroke",
+            "value": false
         },
-        "text": "Onset on ${onset.onset_date} at an unknown time. "
+        "text": "Onset on ${onset.onset_date}. "
       }
     ]
   },
@@ -729,22 +691,103 @@
           "variants": [
             {
               "condition": {
-                "type": "EXISTENCE",
-                "scope": "etiology.afib_flutter",
-                "value": true
+                "type": "OR",
+                "conditions": [
+                  {
+                    "type": "VALUE",
+                    "scope": "etiology.afib_flutter",
+                    "value": "known AF"
+                  },
+                  {
+                    "type": "VALUE",
+                    "scope": "etiology.afib_flutter",
+                    "value": "detected"
+                  }
+                ]
               },
-              "text": "Cardioembolic etiology due to ${etiology.reasons}. "
+              "text": "Etiology is cardioembolic (Atrial Fibrillation). "
             },
             {
               "condition": {
-                "type": "EXISTENCE",
-                "scope": "etiology.afib_flutter",
-                "value": false
+                "type": "NOT",
+                "conditions": [
+                  {
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "etiology.afib_flutter",
+                        "value": "known AF"
+                      },
+                      {
+                        "type": "VALUE",
+                        "scope": "etiology.afib_flutter",
+                        "value": "detected"
+                      }
+                    ]
+                  }
+                ]
               },
-              "text": ""
+              "text": "Etiology is cardioembolic. "
             }
           ]
         }
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "etiology.large_artery",
+          "value": true
+        },
+        "large_artery": {
+          "variants": [
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "etiology.carotid_stenosis_level",
+                "value": "over 70"
+              },
+              "text": "Etiology is atherosclerosis (carotid stenosis more than 70%). "
+            },
+            {
+              "condition": {
+                "type": "NOT",
+                "conditions": [
+                  {
+                    "type": "VALUE",
+                    "scope": "etiology.carotid_stenosis_level",
+                    "value": "over 70"
+                  }
+                ]
+              },
+              "text": "Etiology is atherosclerosis. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "etiology.cryptogenic_stroke",
+          "value": true
+        },
+        "text": "Etiology is cryptogenic. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "etiology.small_vessel",
+          "value": true
+        },
+        "text": "Etiology is lacunar. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "etiology.other",
+          "value": true
+        },
+        "text": "Etiology is other. "
       }
     ]
   },

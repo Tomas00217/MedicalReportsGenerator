@@ -163,30 +163,6 @@ class PostStrokeComplications:
         self.complications = complications if complications != "" else None
 
 
-class LargeArteryAtherosclerosis:
-    """
-    A class representing large artery atherosclerosis. Is part of Etiology.
-
-    """
-
-    def __init__(self, carotid_stenosis: Optional[bool], carotid_stenosis_level: Optional[str],
-                 carotid_stenosis_followup: Optional[str]):
-        self.carotid_stenosis = carotid_stenosis
-        self.carotid_stenosis_level = carotid_stenosis_level
-        self.carotid_stenosis_followup = carotid_stenosis_followup
-
-
-class Cardioembolism:
-    """
-    A class representing cardioembolism. Is part of Etiology.
-
-    """
-
-    def __init__(self, afib_flutter: Optional[str], reasons: Optional[str]):
-        self.afib_flutter = afib_flutter
-        self.reasons = reasons
-
-
 class Etiology:
     """
     A class representing etiology. Is part of MedicalRecord.
@@ -195,14 +171,15 @@ class Etiology:
 
     def __init__(self, large_artery: Optional[bool], cardioembolism: Optional[bool], other: Optional[bool],
                  cryptogenic_stroke: Optional[bool], small_vessel: Optional[bool],
-                 large_artery_atherosclerosis_dat: LargeArteryAtherosclerosis, cardioembolism_dat: Cardioembolism):
+                 carotid_stenosis: Optional[bool], carotid_stenosis_level: [str], afib_flutter: Optional[bool]):
         self.large_artery = large_artery
         self.cardioembolism = cardioembolism
         self.other = other
         self.cryptogenic_stroke = cryptogenic_stroke
         self.small_vessel = small_vessel
-        self.large_artery_atherosclerosis_dat = large_artery_atherosclerosis_dat
-        self.cardioembolism_dat = cardioembolism_dat
+        self.carotid_stenosis = carotid_stenosis
+        self.carotid_stenosis_level = carotid_stenosis_level
+        self.afib_flutter = afib_flutter
 
 
 class Discharge:
@@ -269,8 +246,5 @@ class MedicalRecord:
         if self.treatment:
             data["treatment"].update(vars(self.treatment.thrombolysis))
             data["treatment"].update(vars(self.treatment.thrombectomy))
-        if self.etiology:
-            data["etiology"].update(vars(self.etiology.large_artery_atherosclerosis_dat))
-            data["etiology"].update(vars(self.etiology.cardioembolism_dat))
 
         return data
