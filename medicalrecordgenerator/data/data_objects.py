@@ -1,27 +1,8 @@
 from datetime import datetime, date
-from enum import Enum
 from dataclasses import dataclass
 from typing import Optional
 
 from dict_to_dataclass import DataclassFromDict, field_from_dict
-
-
-class StrokeType(Enum):
-    Ischemic = "ischemic"
-    IntracerebralHemorrhage = "intracerebral hemorrhage"
-    TransientIschemic = "transient ischemic"
-    SubarachnoidHemorrhage = "subarachnoid hemorrhage"
-    CerebralVenousThrombosis = "cerebral venous thrombosis"
-    StrokeMimics = "stroke mimics"
-    Undetermined = "undetermined"
-
-
-class ConditionType(Enum):
-    Value = "VALUE"
-    Existence = "EXISTENCE"
-    And = "AND"
-    Or = "OR"
-    Not = "NOT"
 
 
 @dataclass()

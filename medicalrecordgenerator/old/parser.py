@@ -1,8 +1,15 @@
 import logging
 
 from datetime import time
+from enum import Enum
 
-from data.data_objects import ConditionType
+
+class ConditionType(Enum):
+    Value = "VALUE"
+    Existence = "EXISTENCE"
+    And = "AND"
+    Or = "OR"
+    Not = "NOT"
 
 
 class Parser:
