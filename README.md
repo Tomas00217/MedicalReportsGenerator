@@ -1,4 +1,13 @@
-# **Medical Records Generator**
+# **Medical Records Generator** <!-- omit in toc -->
+
+## **Contents** <!-- omit in toc -->
+- [**Project description**](#project-description)
+- [**Installation**](#installation)
+  - [**Python**](#python)
+  - [**Poetry**](#poetry)
+- [**Running the generator**](#running-the-generator)
+- [**Writing report structure**](#writing-report-structure)
+
 
 ## **Project description**
 Automatic generation of medical reports from the RES-Q system. This project is used for bachelor's thesis.
@@ -50,3 +59,6 @@ Command line options:
 - ```-i```, ```--subject_id``` -> Specifies the id of the subject for which we want to generate the report. **None** by default, resulting in generating for every subject.
 - ```-l```, ```--language``` -> Specifies the language file which we want to use for the generation process. **en_US** by default.
 - ```--csv``` -> Option for test and showcase purposes reading from the csv instead of database.
+
+## **Writing report structure**
+The rules for writing the structure for reports is described [here](reports_format.md).
