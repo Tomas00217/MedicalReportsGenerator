@@ -6,9 +6,9 @@ def select_all() -> str:
         ADM.name AS admittance_department, AMM.name AS arrival_mode, HIM.name AS hospitalized_in, 
         IVTTM.name AS ivt_treatment, NTTR.name as no_thrombectomy_reason, NTLR.name AS no_thrombolysis_reason,
         PTIM.name AS post_treatment_imaging, TSM.name AS tici_score, SSDM.name AS swallowing_screening_done,
-        PTDM.name AS physiotherapy_received, OTDM.name AS occup_physiotherapy_received, 
-        STDM.name AS speech_therapy_received, AFM.name AS afib_flutter, DDM.name AS discharge_destination,
-        MDM.name AS mode_contact
+        SSTM.name AS swallowing_screening_type, PTDM.name AS physiotherapy_received, 
+        OTDM.name AS occup_physiotherapy_received, STDM.name AS speech_therapy_received, AFM.name AS afib_flutter, 
+        DDM.name AS discharge_destination, MDM.name AS mode_contact, CSLM.name AS carotid_stenosis_level
         
         FROM {pfx}_strokehealthcaremodel AS SHCM
         
@@ -47,6 +47,9 @@ def select_all() -> str:
         
         LEFT JOIN {pfx}_swallowingscreeningdonemodel AS SSDM
         ON SHCM.swallowing_screening_done_id = SSDM.id
+        
+        LEFT JOIN {pfx}_swallowingscreeningtypemodel AS SSTM
+        ON SHCM.swallowing_screening_type_id = SSTM.id
                 
         LEFT JOIN {pfx}_physiotherapydonemodel AS PTDM
         ON SHCM.physiotherapy_done_id = PTDM.id
@@ -65,6 +68,9 @@ def select_all() -> str:
         
         LEFT JOIN {pfx}_modecontactmodel AS MDM
         ON SHCM.mode_contact_id = MDM.id
+                
+        LEFT JOIN {pfx}_carotidstenosislevelmodel AS CSLM
+        ON SHCM.carotid_stenosis_level_id = CSLM.id
     """
 
     return query

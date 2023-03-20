@@ -2,7 +2,7 @@ from datetime import datetime, date
 from typing import Optional
 
 DEFAULT_DATE_FORMAT = "%b %d %Y"
-DEFAULT_TIME_FORMAT = "%H:%M"
+DEFAULT_TIME_FORMAT = "%H:%M%p"
 
 
 class Diagnosis:
@@ -12,11 +12,15 @@ class Diagnosis:
     """
 
     def __init__(self, stroke_type: Optional[str], aspects_score: Optional[int],
-                 imaging_type: Optional[str], occlusion_position: Optional[str]):
+                 imaging_type: Optional[str], occlusion_position: Optional[str], imaging_timestamp: Optional[datetime],
+                 imaging_within_hour: Optional[bool], time_format: Optional[str]):
         self.stroke_type = stroke_type
         self.aspects_score = aspects_score if aspects_score else None
         self.imaging_type = imaging_type
         self.occlusion_position = occlusion_position
+        self.imaging_timestamp = imaging_timestamp.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)\
+            if imaging_timestamp else None
+        self.imaging_within_hour = imaging_within_hour
 
 
 class Patient:
@@ -25,17 +29,14 @@ class Patient:
 
     """
 
-    def __init__(self, age: Optional[int], sex: Optional[str], arrival_time: Optional[datetime],
-                 arrival_mode: Optional[str], admittance_department: Optional[str], risk_factors: Optional[str],
-                 prior_treatment: Optional[str], prenotification: Optional[bool]):
+    def __init__(self, patient_id: int, age: Optional[int], sex: Optional[str], risk_factors: Optional[str],
+                 prior_treatment: Optional[str], risk_atrial_fibrilation: Optional[str]):
+        self.patient_id = patient_id
         self.age = age
         self.sex = sex
-        self.arrival_time = arrival_time
-        self.arrival_mode = arrival_mode
-        self.admittance_department = admittance_department
         self.risk_factors = risk_factors
         self.prior_treatment = prior_treatment
-        self.prenotification = prenotification
+        self.risk_atrial_fibrilation = risk_atrial_fibrilation
 
 
 class Onset:
@@ -46,8 +47,10 @@ class Onset:
 
     def __init__(self, onset_timestamp: datetime, wake_up_stroke: Optional[bool],
                  date_format: str, time_format: str):
-        self.onset_date = onset_timestamp.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
-        self.onset_time = onset_timestamp.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)
+        self.onset_date = onset_timestamp.date().strftime(date_format if date_format else DEFAULT_DATE_FORMAT)\
+            if onset_timestamp else None
+        self.onset_time = onset_timestamp.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)\
+            if onset_timestamp else None
         self.wake_up_stroke = wake_up_stroke if wake_up_stroke is not None else False
 
 
@@ -58,12 +61,20 @@ class Admission:
     """
 
     def __init__(self, admission_nihss: Optional[int], aspects_score: Optional[int], admission_type: Optional[str],
-                 sys_blood_pressure: Optional[int], dia_blood_pressure: Optional[int]):
+                 prestroke_mrs: Optional[int], sys_blood_pressure: Optional[int], dia_blood_pressure: Optional[int],
+                 arrival_time: Optional[datetime], arrival_mode: Optional[str], department_type: Optional[str],
+                 prenotification: Optional[bool], time_format: Optional[str]):
         self.admission_nihss = admission_nihss
         self.aspects_score = aspects_score
         self.admission_type = admission_type
+        self.prestroke_mrs = prestroke_mrs
         self.sys_blood_pressure = sys_blood_pressure
         self.dia_blood_pressure = dia_blood_pressure
+        self.arrival_time = arrival_time.time().strftime(time_format if time_format else DEFAULT_TIME_FORMAT)\
+            if arrival_time else None
+        self.arrival_mode = arrival_mode
+        self.department_type = department_type
+        self.prenotification = prenotification
 
 
 class Thrombolysis:
@@ -100,12 +111,12 @@ class Treatment:
     """
 
     def __init__(self, thrombolysis_done: Optional[bool], thrombectomy_done: Optional[bool],
-                 thrombolysis_reasons: Optional[str], thrombectomy_reasons: Optional[str],
+                 no_thrombolysis_reasons: Optional[str], no_thrombectomy_reasons: Optional[str],
                  thrombolysis: Thrombolysis, thrombectomy: Thrombectomy):
         self.thrombolysis_done = thrombolysis_done
         self.thrombectomy_done = thrombectomy_done
-        self.thrombolysis_reasons = thrombolysis_reasons
-        self.thrombectomy_reasons = thrombectomy_reasons
+        self.no_thrombolysis_reasons = no_thrombolysis_reasons
+        self.no_thrombectomy_reasons = no_thrombectomy_reasons
         self.thrombolysis = thrombolysis
         self.thrombectomy = thrombectomy
 
@@ -128,12 +139,14 @@ class PostAcuteCare:
     """
 
     def __init__(self, afib_flutter: Optional[str], findings: Optional[str], imaging_type: Optional[str],
-                 swallowing_screening: Optional[str], physiotherapy_received: Optional[str],
-                 ergotherapy_received: Optional[str], speechtherapy_received: Optional[str], therapies: Optional[str]):
+                 swallowing_screening: Optional[str], swallowing_screening_type: Optional[str],
+                 physiotherapy_received: Optional[str], ergotherapy_received: Optional[str],
+                 speechtherapy_received: Optional[str], therapies: Optional[str]):
         self.afib_flutter = afib_flutter
         self.findings = findings
         self.imaging_type = imaging_type
         self.swallowing_screening = swallowing_screening
+        self.swallowing_screening_type = swallowing_screening_type
         self.physiotherapy = physiotherapy_received is not None and physiotherapy_received == "yes"
         self.ergotherapy = ergotherapy_received is not None and ergotherapy_received == "yes"
         self.speechtherapy = speechtherapy_received is not None and speechtherapy_received == "yes"
@@ -150,30 +163,6 @@ class PostStrokeComplications:
         self.complications = complications if complications != "" else None
 
 
-class LargeArteryAtherosclerosis:
-    """
-    A class representing large artery atherosclerosis. Is part of Etiology.
-
-    """
-
-    def __init__(self, carotid_stenosis: Optional[bool], carotid_stenosis_level: Optional[str],
-                 carotid_stenosis_followup: Optional[str]):
-        self.carotid_stenosis = carotid_stenosis
-        self.carotid_stenosis_level = carotid_stenosis_level
-        self.carotid_stenosis_followup = carotid_stenosis_followup
-
-
-class Cardioembolism:
-    """
-    A class representing cardioembolism. Is part of Etiology.
-
-    """
-
-    def __init__(self, afib_flutter: Optional[str], reasons: Optional[str]):
-        self.afib_flutter = afib_flutter
-        self.reasons = reasons
-
-
 class Etiology:
     """
     A class representing etiology. Is part of MedicalRecord.
@@ -182,14 +171,15 @@ class Etiology:
 
     def __init__(self, large_artery: Optional[bool], cardioembolism: Optional[bool], other: Optional[bool],
                  cryptogenic_stroke: Optional[bool], small_vessel: Optional[bool],
-                 large_artery_atherosclerosis_dat: LargeArteryAtherosclerosis, cardioembolism_dat: Cardioembolism):
+                 carotid_stenosis: Optional[bool], carotid_stenosis_level: [str], afib_flutter: Optional[bool]):
         self.large_artery = large_artery
         self.cardioembolism = cardioembolism
         self.other = other
         self.cryptogenic_stroke = cryptogenic_stroke
         self.small_vessel = small_vessel
-        self.large_artery_atherosclerosis_dat = large_artery_atherosclerosis_dat
-        self.cardioembolism_dat = cardioembolism_dat
+        self.carotid_stenosis = carotid_stenosis
+        self.carotid_stenosis_level = carotid_stenosis_level
+        self.afib_flutter = afib_flutter
 
 
 class Discharge:
@@ -199,12 +189,13 @@ class Discharge:
     """
 
     def __init__(self, discharge_date: date, discharge_destination: Optional[str], nihss: Optional[int],
-                 mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
+                 discharge_mrs: Optional[int], contact_date: Optional[datetime], mode_contact: Optional[str],
                  discharge_medication: str, date_format: str):
-        self.discharge_date = discharge_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT)
+        self.discharge_date = discharge_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT)\
+            if discharge_date else None
         self.discharge_destination = discharge_destination
         self.nihss = nihss
-        self.mrs = mrs,
+        self.discharge_mrs = discharge_mrs
         self.contact_date = contact_date.strftime(date_format if date_format else DEFAULT_DATE_FORMAT) \
             if contact_date else None
         self.mode_contact = mode_contact
@@ -255,8 +246,5 @@ class MedicalRecord:
         if self.treatment:
             data["treatment"].update(vars(self.treatment.thrombolysis))
             data["treatment"].update(vars(self.treatment.thrombectomy))
-        if self.etiology:
-            data["etiology"].update(vars(self.etiology.large_artery_atherosclerosis_dat))
-            data["etiology"].update(vars(self.etiology.cardioembolism_dat))
 
         return data

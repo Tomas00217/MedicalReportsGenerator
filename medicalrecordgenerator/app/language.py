@@ -144,7 +144,7 @@ class ConditionValue(Condition):
         self.scope = scope
         self.value = value
         if value is None:
-            raise TypeError("Invalid 'value' key inside condition block")
+            raise AttributeError("Invalid 'value' key inside condition block")
 
     def get_condition_result(self, data: dict) -> bool:
         """Gets the boolean result of the VALUE condition.

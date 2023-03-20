@@ -1,27 +1,8 @@
 from datetime import datetime, date
-from enum import Enum
 from dataclasses import dataclass
 from typing import Optional
 
 from dict_to_dataclass import DataclassFromDict, field_from_dict
-
-
-class StrokeType(Enum):
-    Ischemic = "ischemic"
-    IntracerebralHemorrhage = "intracerebral hemorrhage"
-    TransientIschemic = "transient ischemic"
-    SubarachnoidHemorrhage = "subarachnoid hemorrhage"
-    CerebralVenousThrombosis = "cerebral venous thrombosis"
-    StrokeMimics = "stroke mimics"
-    Undetermined = "undetermined"
-
-
-class ConditionType(Enum):
-    Value = "VALUE"
-    Existence = "EXISTENCE"
-    And = "AND"
-    Or = "OR"
-    Not = "NOT"
 
 
 @dataclass()
@@ -29,6 +10,8 @@ class DiagnosisData(DataclassFromDict):
     stroke_type: Optional[str] = field_from_dict(default=None)
     aspects_score: Optional[int] = field_from_dict(default=None)
     imaging_type: Optional[str] = field_from_dict(default=None)
+    imaging_timestamp: Optional[datetime] = field_from_dict(default=None)
+    imaging_within_hour: Optional[bool] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -55,12 +38,10 @@ class DiagnosisOcclusionsData(DataclassFromDict):
 
 @dataclass()
 class PatientData(DataclassFromDict):
+    patient_id: int = field_from_dict("subject_id", default=None)
     age: Optional[int] = field_from_dict(default=None)
     sex: Optional[str] = field_from_dict(default=None)
-    hospital_timestamp: Optional[datetime] = field_from_dict(default=None)
-    arrival_mode: Optional[str] = field_from_dict(default=None)
-    admittance_department: Optional[str] = field_from_dict(default=None)
-    prenotification: Optional[bool] = field_from_dict(default=None)
+    risk_atrial_fibrilation: Optional[bool] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -71,11 +52,16 @@ class OnsetData(DataclassFromDict):
 
 @dataclass()
 class AdmissionData(DataclassFromDict):
-    hospitalized_in: Optional[str] = field_from_dict(default=None)
     nihss_score: Optional[int] = field_from_dict(default=None)
     aspects_score: Optional[int] = field_from_dict(default=None)
+    hospitalized_in: Optional[str] = field_from_dict(default=None)
+    prestroke_mrs: Optional[int] = field_from_dict(default=None)
     sys_blood_pressure: Optional[int] = field_from_dict(default=None)
     dia_blood_pressure: Optional[int] = field_from_dict(default=None)
+    hospital_timestamp: Optional[datetime] = field_from_dict(default=None)
+    arrival_mode: Optional[str] = field_from_dict(default=None)
+    department_type: Optional[str] = field_from_dict(default=None)
+    prenotification: Optional[bool] = field_from_dict(default=None)
 
 
 @dataclass()
@@ -83,15 +69,13 @@ class RiskFactorsData(DataclassFromDict):
     risk_hypertension: Optional[bool] = field_from_dict(default=None)
     risk_diabetes: Optional[bool] = field_from_dict(default=None)
     risk_hyperlipidemia: Optional[bool] = field_from_dict(default=None)
-    risk_atrial_fibrilation: Optional[bool] = field_from_dict(default=None)
     risk_congestive_heart_failure: Optional[bool] = field_from_dict(default=None)
-    risk_smoker_last_10_years: Optional[bool] = field_from_dict(default=None)
-    risk_smoker: Optional[bool] = field_from_dict(default=None)
+    risk_smoker: Optional[bool] = field_from_dict(default=field_from_dict("risk_smoker_last_10_years", default=None))
     risk_previous_stroke: Optional[bool] = field_from_dict(default=None)
     risk_previous_ischemic_stroke: Optional[bool] = field_from_dict(default=None)
     risk_previous_hemorrhagic_stroke: Optional[bool] = field_from_dict(default=None)
     risk_coronary_artery_disease_or_myocardial_infarction: Optional[bool] = field_from_dict(default=None)
-    risk_contraception: Optional[bool] = field_from_dict(default=None)
+    risk_covid: Optional[bool] = field_from_dict(default=None)
     risk_hiv: Optional[bool] = field_from_dict(default=None)
     risk_other: Optional[bool] = field_from_dict(default=None)
 
@@ -114,8 +98,7 @@ class PriorTreatmentData(DataclassFromDict):
     before_onset_edoxaban: Optional[bool] = field_from_dict(default=None)
     before_onset_statin: Optional[bool] = field_from_dict(default=None)
     before_onset_heparin: Optional[bool] = field_from_dict(default=None)
-    before_onset_lmwh_prophylactic: Optional[bool] = field_from_dict(default=None)
-    before_onset_lmwh_therapeutic: Optional[bool] = field_from_dict(default=None)
+    before_onset_contraception: Optional[bool] = field_from_dict(default=None)
     before_onset_other: Optional[bool] = field_from_dict(default=None)
 
 
@@ -155,6 +138,7 @@ class PostAcuteCareData(DataclassFromDict):
     afib_flutter: Optional[str] = field_from_dict("afib_flutter", default=None)
     imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
     swallowing_screening: Optional[str] = field_from_dict("swallowing_screening_done", default=None)
+    swallowing_screening_type: Optional[str] = field_from_dict("swallowing_screening_type", default=None)
     physiotherapy_received: Optional[str] = field_from_dict(default=None)
     occup_physiotherapy_received: Optional[str] = field_from_dict(default=None)
     speech_therapy_received: Optional[str] = field_from_dict(default=None)
@@ -182,7 +166,6 @@ class EtiologyData(DataclassFromDict):
     etiology_small_vessel: Optional[bool] = field_from_dict(default=None)
     carotid_stenosis: Optional[bool] = field_from_dict(default=None)
     carotid_stenosis_level: Optional[str] = field_from_dict(default=None)
-    carotid_stenosis_followup: Optional[bool] = field_from_dict(default=None)
     afib_flutter: Optional[str] = field_from_dict(default=None)
 
 
@@ -191,7 +174,7 @@ class DischargeData(DataclassFromDict):
     discharge_date: date = field_from_dict()
     discharge_destination: Optional[str] = field_from_dict(default=None)
     nihss: Optional[int] = field_from_dict("discharge_nihss_score", default=None)
-    mrs: Optional[int] = field_from_dict("discharge_mrs", default=None)
+    discharge_mrs: Optional[int] = field_from_dict(default=None)
     contact_date: Optional[date] = field_from_dict(default=None)
     mode_contact: Optional[str] = field_from_dict(default=None)
 

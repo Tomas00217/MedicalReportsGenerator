@@ -1,4 +1,5 @@
 import logging
+import copy
 from string import Template
 from typing import Any, Optional
 
@@ -9,8 +10,7 @@ from data.data_objects import DiagnosisData, OnsetData, AdmissionData, Treatment
     PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData, RiskFactorsData, PriorTreatmentData, PatientData
 from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
-    PostAcuteCare, PostStrokeComplications, Etiology, LargeArteryAtherosclerosis, Cardioembolism, \
-    Discharge, MedicalRecord, Patient
+    PostAcuteCare, PostStrokeComplications, Etiology, Discharge, MedicalRecord, Patient
 
 
 class MyTemplate(Template):
@@ -73,6 +73,8 @@ class MedicalRecordsGenerator:
         Replaces the last substring with new substring of given string
     get_tici_meaning(dictionary, tici_score)
         Gets the tici meaning based on the tici score
+    translate_variables()
+        Translates the variables in the discharge report
 
     """
 
@@ -117,9 +119,11 @@ class MedicalRecordsGenerator:
             Medical record as a dict to be used for jinja2 template
         """
 
-        variables = self.medical_record.to_dict()
-
-        scoped_values = self.prepare_scoped_values(variables)
+        # We create a deep copy of dictionary with variables from medical record for the purpose of condition evaluation
+        # while parsing, these variables are then translated and used for substitution
+        variables = copy.deepcopy(self.medical_record.to_dict())
+        translations = self.translate_variables()
+        scoped_values = self.prepare_scoped_values(translations)
 
         record = {
             "diagnosis": MyTemplate(self.language.diagnosis.get_block_result(variables)
@@ -192,8 +196,11 @@ class MedicalRecordsGenerator:
 
         diagnosis = Diagnosis(diagnosis_data.stroke_type,
                               diagnosis_data.aspects_score,
-                              self.translate_data(self.get_variables("imaging_type"), diagnosis_data.imaging_type),
-                              self.parse_data(self.get_variables("occlusion_position"), vars(diagnosis_occlusions)))
+                              diagnosis_data.imaging_type,
+                              self.parse_data(self.get_variables("occlusion_position"), vars(diagnosis_occlusions)),
+                              diagnosis_data.imaging_timestamp,
+                              diagnosis_data.imaging_within_hour,
+                              self.get_setting("time_format"))
 
         return diagnosis
 
@@ -209,16 +216,14 @@ class MedicalRecordsGenerator:
         patient_data = PatientData.from_dict(self.data)
         risk_factors_data = RiskFactorsData.from_dict(self.data)
         prior_treatment_data = PriorTreatmentData.from_dict(self.data)
+        risk_atrial_fib = {"risk_atrial_fibrilation": patient_data.risk_atrial_fibrilation}
 
-        patient = Patient(patient_data.age,
-                          self.translate_data(self.get_variables("sex"), patient_data.sex),
-                          patient_data.hospital_timestamp,
-                          self.translate_data(self.get_variables("arrival_mode"), patient_data.arrival_mode),
-                          self.translate_data(self.get_variables("admittance_department"),
-                                              patient_data.admittance_department),
+        patient = Patient(patient_data.patient_id,
+                          patient_data.age,
+                          patient_data.sex,
                           self.parse_data(self.get_variables("risk_factors"), vars(risk_factors_data)),
                           self.parse_data(self.get_variables("prior_treatment"), vars(prior_treatment_data)),
-                          patient_data.prenotification)
+                          self.parse_data(self.get_variables("risk_factors"), risk_atrial_fib))
 
         return patient
 
@@ -252,10 +257,15 @@ class MedicalRecordsGenerator:
         admission_data = AdmissionData.from_dict(self.data)
 
         admission = Admission(admission_data.nihss_score, admission_data.aspects_score,
-                              self.translate_data(self.get_variables("hospitalized_in"),
-                                                  admission_data.hospitalized_in),
+                              admission_data.hospitalized_in,
+                              admission_data.prestroke_mrs,
                               admission_data.sys_blood_pressure,
-                              admission_data.dia_blood_pressure)
+                              admission_data.dia_blood_pressure,
+                              admission_data.hospital_timestamp,
+                              admission_data.arrival_mode,
+                              admission_data.department_type,
+                              admission_data.prenotification,
+                              self.get_setting("time_format"))
 
         return admission
 
@@ -270,21 +280,22 @@ class MedicalRecordsGenerator:
 
         treatment_data = TreatmentData.from_dict(self.data)
         thrombolysis = Thrombolysis(treatment_data.dtn,
-                                    self.translate_data(self.get_variables("ivt_treatment"),
-                                                        treatment_data.ivt_treatment),
+                                    treatment_data.ivt_treatment,
                                     treatment_data.ivt_dose)
 
+        tici_score_meaning_val = None
+
+        if treatment_data.tici_score is not None and treatment_data.tici_score != "occlusion not confirmed":
+            tici_score_meaning_val = f"tici_score_{treatment_data.tici_score}"
+
         thrombectomy = Thrombectomy(treatment_data.dtg, treatment_data.tici_score, treatment_data.dio,
-                                    self.get_tici_meaning(self.get_variables("tici_score_meaning"),
-                                                          treatment_data.tici_score))
+                                    tici_score_meaning_val)
 
         self.transported = thrombectomy.thrombectomy_transport
 
         treatment = Treatment(treatment_data.thrombolysis, treatment_data.thrombectomy,
-                              self.translate_data(self.get_variables("no_thrombolysis_reason"),
-                                                  treatment_data.no_thrombolysis_reason),
-                              self.translate_data(self.get_variables("no_thrombectomy_reason"),
-                                                  treatment_data.no_thrombectomy_reason),
+                              treatment_data.no_thrombolysis_reason,
+                              treatment_data.no_thrombectomy_reason,
                               thrombolysis, thrombectomy)
 
         return treatment
@@ -334,6 +345,7 @@ class MedicalRecordsGenerator:
                                                         vars(imaging_treatment_data)),
                                         post_acute_care_data.imaging_type,
                                         post_acute_care_data.swallowing_screening,
+                                        post_acute_care_data.swallowing_screening_type,
                                         post_acute_care_data.physiotherapy_received,
                                         post_acute_care_data.occup_physiotherapy_received,
                                         post_acute_care_data.speech_therapy_received,
@@ -380,17 +392,10 @@ class MedicalRecordsGenerator:
 
         etiology_data = EtiologyData.from_dict(self.data)
 
-        large_artery = LargeArteryAtherosclerosis(etiology_data.carotid_stenosis,
-                                                  etiology_data.carotid_stenosis_level,
-                                                  etiology_data.carotid_stenosis_followup)
-
-        cardioembolism = Cardioembolism(etiology_data.afib_flutter, None)
-        if cardioembolism.afib_flutter is not None:
-            cardioembolism.reasons = "atrial fibrilation/flutter"
-
         etiology = Etiology(etiology_data.etiology_large_artery, etiology_data.etiology_cardioembolism,
                             etiology_data.etiology_other, etiology_data.etiology_cryptogenic_stroke,
-                            etiology_data.etiology_small_vessel, large_artery, cardioembolism)
+                            etiology_data.etiology_small_vessel, etiology_data.carotid_stenosis,
+                            etiology_data.carotid_stenosis_level, etiology_data.afib_flutter)
 
         return etiology
 
@@ -407,11 +412,12 @@ class MedicalRecordsGenerator:
         medication_data = MedicationData.from_dict(self.data)
 
         discharge = Discharge(discharge_data.discharge_date,
-                              self.translate_data(self.get_variables("discharge_destination"),
-                                                  discharge_data.discharge_destination),
-                              discharge_data.nihss, discharge_data.mrs, discharge_data.contact_date,
-                              discharge_data.mode_contact, self.parse_data(self.get_variables("medications"),
-                                                                           vars(medication_data)),
+                              discharge_data.discharge_destination,
+                              discharge_data.nihss,
+                              discharge_data.discharge_mrs,
+                              discharge_data.contact_date,
+                              discharge_data.mode_contact,
+                              self.parse_data(self.get_variables("medications"), vars(medication_data)),
                               self.get_setting("date_format"))
 
         return discharge
@@ -557,9 +563,10 @@ class MedicalRecordsGenerator:
                 except KeyError:
                     logging.error("Invalid key %s", key)
 
-                result += variable if result == "" else f", {variable}"
+                if variable != "":
+                    result += variable if result == "" else f", {variable}"
 
-        result = self.replace_last(result, ",", " and")
+        result = self.replace_last(result, ",", ", and")
 
         return result
 
@@ -584,27 +591,48 @@ class MedicalRecordsGenerator:
 
         return new.join(string.rsplit(old, 1))
 
-    @staticmethod
-    def get_tici_meaning(dictionary: dict, tici_score: str) -> str:
-        """Gets the tici meaning based on the tici score
-
-        Parameters
-        ----------
-        dictionary : dict
-            Dictionary from which the text is being taken
-        tici_score : str
-            Tici score of patient
+    def translate_variables(self) -> dict:
+        """Translates the variables in the discharge report
 
         Returns
         -------
-        str
-            Parsed tici meaning based on the tici score
-
+        dict
+            Dictionary of the medical discharge report with translated values
         """
 
-        if dictionary is None:
-            return ""
+        mr = self.medical_record
 
-        if tici_score is not None and tici_score != "occlusion not confirmed":
-            tici_score = tici_score
-            return dictionary[f"tici_score_{tici_score}"]
+        # Diagnosis
+        mr.diagnosis.imaging_type = self.translate_data(self.get_variables("imaging_type"), mr.diagnosis.imaging_type)
+
+        # Patient
+        mr.patient.sex = self.translate_data(self.get_variables("sex"), mr.patient.sex)
+
+        # Admission
+        mr.admission.admission_type = self.translate_data(self.get_variables("admission_type"),
+                                                          mr.admission.admission_type)
+        mr.admission.arrival_mode = self.translate_data(self.get_variables("arrival_mode"), mr.admission.arrival_mode)
+        mr.admission.department_type = self.translate_data(self.get_variables("department_type"),
+                                                           mr.admission.department_type)
+
+        # Treatment
+        mr.treatment.thrombolysis.ivt_treatment = self.translate_data(self.get_variables("ivt_treatment"),
+                                                                      mr.treatment.thrombolysis.ivt_treatment)
+        mr.treatment.no_thrombolysis_reasons = self.translate_data(self.get_variables("no_thrombolysis_reason"),
+                                                                   mr.treatment.no_thrombolysis_reasons)
+        mr.treatment.no_thrombectomy_reasons = self.translate_data(self.get_variables("no_thrombectomy_reason"),
+                                                                   mr.treatment.no_thrombectomy_reasons)
+        mr.treatment.thrombectomy.tici_score_meaning = self.translate_data(self.get_variables("tici_score_meaning"),
+                                                                           mr.treatment.thrombectomy.tici_score_meaning)
+
+        # Post acute care
+        if not self.transported:
+            mr.post_acute_care.swallowing_screening_type = \
+                self.translate_data(self.get_variables("swallowing_screening_type"),
+                                    mr.post_acute_care.swallowing_screening_type)
+
+        # Discharge
+        mr.discharge.discharge_destination = self.translate_data(self.get_variables("discharge_destination"),
+                                                                 mr.discharge.discharge_destination)
+
+        return self.medical_record.to_dict()
