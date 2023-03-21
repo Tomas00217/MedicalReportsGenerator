@@ -635,4 +635,4 @@ class MedicalRecordsGenerator:
         mr.discharge.discharge_destination = self.translate_data(self.get_variables("discharge_destination"),
                                                                  mr.discharge.discharge_destination)
 
-        return self.medical_record.to_dict()
+        return mr.to_dict()

@@ -2,7 +2,7 @@ import logging
 import unittest
 
 from app.language import Condition, ConditionEmpty, ConditionValue, ConditionExistence, ConditionAnd, ConditionOr, \
-    ConditionNot
+    ConditionNot, Variant, MedicalRecordBlock
 
 
 class TestCondition(unittest.TestCase):
@@ -375,6 +375,170 @@ class TestConditionNot(unittest.TestCase):
         result = condition.get_condition_result(data)
 
         self.assertFalse(result)
+
+
+class TestVariant(unittest.TestCase):
+    def test_parse_text_alone(self):
+        text = "This is a simple text"
+        data = {"text": text}
+
+        result = Variant.parse_rest(data)
+
+        self.assertEqual(text, result)
+
+    def test_parse_text_with_filling(self):
+        text = "This is a simple text"
+        data = {"some_data": 12, "text": text}
+
+        result = Variant.parse_rest(data)
+
+        self.assertEqual(text, result)
+
+    def test_parse_block_valid(self):
+        data = {"block": {"variants": []}}
+
+        result = Variant.parse_rest(data)
+
+        self.assertIsInstance(result, MedicalRecordBlock)
+
+    def test_parse_block_invalid(self):
+        data = {"block": {}}
+
+        with self.assertRaises(TypeError):
+            Variant.parse_rest(data)
+
+    def test_get_result_text_true(self):
+        text = "This condition is true"
+        condition = {"type": "VALUE", "scope": "scope.a", "value": 4}
+
+        variant_data = {"condition": condition, "text": text}
+        database_data = {"scope": {"a": 4}}
+
+        variant = Variant(**variant_data)
+
+        result = variant.get_variant_result(database_data)
+
+        self.assertEqual(text, result)
+
+    def test_get_result_text_false(self):
+        text = "This condition is false"
+        condition = {"type": "VALUE", "scope": "scope.a", "value": 4}
+
+        variant_data = {"condition": condition, "text": text}
+        database_data = {"scope": {"a": 1}}
+
+        variant = Variant(**variant_data)
+
+        result = variant.get_variant_result(database_data)
+
+        self.assertEqual("", result)
+
+    def test_get_result_block(self):
+        text = "This condition is true"
+        condition = {"type": "VALUE", "scope": "scope.a", "value": 4}
+        block = {"variants": [{"condition": {"type": "VALUE", "scope": "scope2.b", "value": "hello"},
+                               "text": text}]}
+
+        variant_data = {"condition": condition, "block": block}
+        database_data = {"scope": {"a": 4}, "scope2": {"b": "hello"}}
+
+        variant = Variant(**variant_data)
+
+        result = variant.get_variant_result(database_data)
+
+        self.assertEqual(text, result)
+
+
+class TestMedicalRecordBlock(unittest.TestCase):
+    def test_parse_single(self):
+        medical_record_block = MedicalRecordBlock("Test", [])
+
+        data = [{"condition": {"type": "VALUE", "scope": "scope2.b", "value": "hello"}, "text": "Some text"}]
+
+        result = medical_record_block.parse_variants(data)
+
+        self.assertEqual(1, len(result))
+        self.assertIsInstance(result[0], Variant)
+
+    def test_parse_multiple(self):
+        medical_record_block = MedicalRecordBlock("Test", [])
+
+        data = [{"condition": {"type": "VALUE", "scope": "scope2.b", "value": "hello"},
+                 "text": "Some text"},
+                {"condition": {"type": "EXISTENCE", "scope": "scope.a", "value": False},
+                 "text": "Some other text"},
+                {"condition": {"type": "EXISTENCE", "scope": "scope.b", "value": True},
+                 "block": {"variants": [{"condition": {"type": "EXISTENCE", "scope": "scope.b", "value": True},
+                                         "text": "Some other text again"}]}}]
+
+        result = medical_record_block.parse_variants(data)
+
+        self.assertEqual(3, len(result))
+        self.assertIsInstance(result[0], Variant)
+        self.assertIsInstance(result[1], Variant)
+        self.assertIsInstance(result[2], Variant)
+
+    def test_parse_invalid(self):
+        medical_record_block = MedicalRecordBlock("Test", [])
+
+        data = [{}]
+
+        with self.assertRaises(TypeError):
+            medical_record_block.parse_variants(data)
+
+    def test_get_result_single_true(self):
+        variants = [{"condition": {"type": "VALUE", "scope": "scope.a", "value": "hello"},
+                     "text": "Some text;"}]
+
+        medical_record_block = MedicalRecordBlock("Test", variants)
+        data = {"scope": {"a": "hello"}}
+
+        result = medical_record_block.get_block_result(data)
+
+        self.assertEqual("Some text;", result)
+
+    def test_get_result_multiple_false(self):
+        variants = [{"condition": {"type": "VALUE", "scope": "scope.a", "value": "hello"},
+                     "text": "Some text;"}]
+
+        medical_record_block = MedicalRecordBlock("Test", variants)
+        data = {"scope": {"a": "hey"}}
+
+        result = medical_record_block.get_block_result(data)
+
+        self.assertEqual("", result)
+
+    def test_get_result_multiple_one_true(self):
+        variants = [{"condition": {"type": "VALUE", "scope": "scope2.b", "value": "hello"},
+                     "text": "Some text;"},
+                    {"condition": {"type": "EXISTENCE", "scope": "scope.a", "value": False},
+                     "text": "Some other text;"},
+                    {"condition": {"type": "EXISTENCE", "scope": "scope.b", "value": True},
+                     "block": {"variants": [{"condition": {"type": "EXISTENCE", "scope": "scope.b", "value": True},
+                                             "text": "Some other text again;"}]}}]
+
+        medical_record_block = MedicalRecordBlock("Test", variants)
+        data = {"scope": {"a": "hey", "b": 5}, "scope2": {"b": "aloha"}}
+
+        result = medical_record_block.get_block_result(data)
+
+        self.assertEqual("Some other text again;", result)
+
+    def test_get_result_multiple_all_true(self):
+        variants = [{"condition": {"type": "VALUE", "scope": "scope2.b", "value": "hello"},
+                     "text": "Some text;"},
+                    {"condition": {"type": "EXISTENCE", "scope": "scope.a", "value": False},
+                     "text": "Some other text;"},
+                    {"condition": {"type": "EXISTENCE", "scope": "scope.b", "value": True},
+                     "block": {"variants": [{"condition": {"type": "EXISTENCE", "scope": "scope.b", "value": True},
+                                             "text": "Some other text again;"}]}}]
+
+        medical_record_block = MedicalRecordBlock("Test", variants)
+        data = {"scope": {"a": "", "b": 5}, "scope2": {"b": "hello"}}
+
+        result = medical_record_block.get_block_result(data)
+
+        self.assertEqual("Some text;Some other text;Some other text again;", result)
 
 
 if __name__ == '__main__':
