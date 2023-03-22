@@ -46,7 +46,7 @@ class PatientData(DataclassFromDict):
 
 @dataclass()
 class OnsetData(DataclassFromDict):
-    onset_timestamp: datetime = field_from_dict()
+    onset_timestamp: Optional[datetime] = field_from_dict(default=None)
     wake_up_stroke: Optional[bool] = field_from_dict(default=None)
 
 
@@ -171,7 +171,7 @@ class EtiologyData(DataclassFromDict):
 
 @dataclass()
 class DischargeData(DataclassFromDict):
-    discharge_date: date = field_from_dict()
+    discharge_date: Optional[date] = field_from_dict(default=None)
     discharge_destination: Optional[str] = field_from_dict(default=None)
     nihss: Optional[int] = field_from_dict("discharge_nihss_score", default=None)
     discharge_mrs: Optional[int] = field_from_dict(default=None)

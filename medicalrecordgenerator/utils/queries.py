@@ -8,7 +8,8 @@ def select_all() -> str:
         PTIM.name AS post_treatment_imaging, TSM.name AS tici_score, SSDM.name AS swallowing_screening_done,
         SSTM.name AS swallowing_screening_type, PTDM.name AS physiotherapy_received, 
         OTDM.name AS occup_physiotherapy_received, STDM.name AS speech_therapy_received, AFM.name AS afib_flutter, 
-        DDM.name AS discharge_destination, MDM.name AS mode_contact, CSLM.name AS carotid_stenosis_level
+        DDM.name AS discharge_destination, MDM.name AS mode_contact, CSLM.name AS carotid_stenosis_level, 
+        DTM.name as department_type
         
         FROM {pfx}_strokehealthcaremodel AS SHCM
         
@@ -71,6 +72,9 @@ def select_all() -> str:
                 
         LEFT JOIN {pfx}_carotidstenosislevelmodel AS CSLM
         ON SHCM.carotid_stenosis_level_id = CSLM.id
+        
+        LEFT JOIN {pfx}_departmenttypemodel AS DTM
+        ON SHCM.department_type_id = DTM.id
     """
 
     return query

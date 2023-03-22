@@ -92,7 +92,6 @@ class MedicalRecordsGenerator:
         self.language = language
         self.data = data
         self.transported = False
-        self.medical_record = self.create_medical_record()
 
     def generate_medical_record(self) -> str:
         """Loads the jinja2 template and renders the template with generated structure
@@ -119,45 +118,47 @@ class MedicalRecordsGenerator:
             Medical record as a dict to be used for jinja2 template
         """
 
+        medical_record = self.create_medical_record()
+
         # We create a deep copy of dictionary with variables from medical record for the purpose of condition evaluation
         # while parsing, these variables are then translated and used for substitution
-        variables = copy.deepcopy(self.medical_record.to_dict())
-        translations = self.translate_variables()
+        variables = copy.deepcopy(medical_record.to_dict())
+        translations = self.translate_variables(medical_record)
         scoped_values = self.prepare_scoped_values(translations)
 
         record = {
             "diagnosis": MyTemplate(self.language.diagnosis.get_block_result(variables)
-                                    if self.medical_record.diagnosis else "").safe_substitute(scoped_values),
+                                    if medical_record.diagnosis else "").safe_substitute(scoped_values),
 
             "patient": MyTemplate(self.language.patient.get_block_result(variables)
-                                  if self.medical_record.patient else "").safe_substitute(scoped_values),
+                                  if medical_record.patient else "").safe_substitute(scoped_values),
 
             "onset": MyTemplate(self.language.onset.get_block_result(variables)
-                                if self.medical_record.onset else "").safe_substitute(scoped_values),
+                                if medical_record.onset else "").safe_substitute(scoped_values),
 
             "admission": MyTemplate(self.language.admission.get_block_result(variables)
-                                    if self.medical_record.admission else "").safe_substitute(scoped_values),
+                                    if medical_record.admission else "").safe_substitute(scoped_values),
 
             "treatment": MyTemplate(self.language.treatment.get_block_result(variables)
-                                    if self.medical_record.treatment else "").safe_substitute(scoped_values),
+                                    if medical_record.treatment else "").safe_substitute(scoped_values),
 
             # "follow_up_imaging": MyTemplate(self.language.follow_up_imaging.get_block_result(variables)
             #                                 if self.medical_record.follow_up_imaging else "")
             # .safe_substitute(scoped_values),
 
             "post_acute_care": MyTemplate(self.language.post_acute_care.get_block_result(variables)
-                                          if self.medical_record.post_acute_care else "")
+                                          if medical_record.post_acute_care else "")
             .safe_substitute(scoped_values),
 
             "post_stroke_complications": MyTemplate(self.language.post_stroke_complications.get_block_result(variables)
-                                                    if self.medical_record.post_stroke_complications else "")
+                                                    if medical_record.post_stroke_complications else "")
             .safe_substitute(scoped_values),
 
             "etiology": MyTemplate(self.language.etiology.get_block_result(variables)
-                                   if self.medical_record.etiology else "").safe_substitute(scoped_values),
+                                   if medical_record.etiology else "").safe_substitute(scoped_values),
 
             "discharge": MyTemplate(self.language.discharge.get_block_result(variables)
-                                    if self.medical_record.discharge else "").safe_substitute(scoped_values),
+                                    if medical_record.discharge else "").safe_substitute(scoped_values),
         }
 
         return record
@@ -591,7 +592,7 @@ class MedicalRecordsGenerator:
 
         return new.join(string.rsplit(old, 1))
 
-    def translate_variables(self) -> dict:
+    def translate_variables(self, mr: MedicalRecord) -> dict:
         """Translates the variables in the discharge report
 
         Returns
@@ -599,8 +600,6 @@ class MedicalRecordsGenerator:
         dict
             Dictionary of the medical discharge report with translated values
         """
-
-        mr = self.medical_record
 
         # Diagnosis
         mr.diagnosis.imaging_type = self.translate_data(self.get_variables("imaging_type"), mr.diagnosis.imaging_type)

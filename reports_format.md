@@ -97,7 +97,7 @@ The following is the default structure that every dictionary, that is to be used
       "CT CTA perfusion": "",
       "MR DWI/FLAIR": "",
       "MR DWI/FLAIR MRA": "",
-      "MR DWI/FLAIR MRA perfusion": "",
+      "MR DWI/FLAIR MRA perfusion": ""
     },
     "occlusion_position": {
       "occlusion_left_mca_m1": "",
@@ -171,7 +171,7 @@ The following is the default structure that every dictionary, that is to be used
       "post_stroke_sores": "",
       "post_stroke_sepsis": "",
       "post_stroke_extension": "",
-      "post_stroke_other": "",
+      "post_stroke_other": ""
     },
     "therapies": {
       "physiotherapy": "",
