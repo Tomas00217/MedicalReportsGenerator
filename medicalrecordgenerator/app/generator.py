@@ -93,17 +93,23 @@ class MedicalRecordsGenerator:
         self.data = data
         self.transported = False
 
-    def generate_medical_record(self) -> str:
+    def generate_medical_record(self, path: str, file: str) -> str:
         """Loads the jinja2 template and renders the template with generated structure
 
+        Parameters
+        ----------
+        path : str
+            Path towards the dictionary with templates
+        file : str
+            File name
         Returns
         -------
         str
             Generated medical record with all the values substituted
         """
 
-        env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
-        template = env.get_template("main.txt")
+        env = Environment(loader=FileSystemLoader(path), autoescape=select_autoescape())
+        template = env.get_template(file)
 
         record = self.generate_structure()
 

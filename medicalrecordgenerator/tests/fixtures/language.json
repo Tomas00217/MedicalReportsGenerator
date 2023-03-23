@@ -1,0 +1,330 @@
+{
+  "diagnosis": {
+    "variants": [
+      {
+        "condition": {},
+        "text": "Diagnosis test with ${diagnosis.imaging_type} variable"
+      }
+    ]
+  },
+  "patient": {
+    "variants": [
+      {
+        "condition": {
+          "type": "NOT",
+          "conditions": [
+            {
+              "type": "VALUE",
+              "scope": "patient.sex",
+              "value": "other"
+            }
+          ]
+        },
+        "text": "Test patient whose sex is not other ${patient.sex}/${patient.age}"
+      }
+    ]
+  },
+  "onset": {
+    "variants": [
+      {
+        "condition": {
+            "type": "EXISTENCE",
+            "scope": "onset.wake_up_stroke",
+            "value": false
+        },
+        "text": "Onset on ${onset.onset_date}. "
+      }
+    ]
+  },
+  "admission": {
+    "variants": [
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.aspects_score",
+          "value": true
+        },
+        "text": "ASPECT score ${admission.aspects_score}. "
+      }
+    ]
+  },
+  "treatment": {
+    "variants": [
+      {
+        "condition": {},
+        "text": "Treatment showing dtg ${treatment.dtg}"
+      }
+    ]
+  },
+  "post_acute_care": {
+    "variants": [
+      {
+        "condition": {
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "post_acute_care.physiotherapy",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "post_acute_care.ergotherapy",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "post_acute_care.speechtherapy",
+              "value": true
+            }
+          ]
+        },
+        "text": "Received ${post_acute_care.therapies}. "
+      }
+    ]
+  },
+  "post_stroke_complications": {
+    "variants": [
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "post_stroke_complications.complications",
+          "value": true
+        },
+        "text": "Post stroke complications: ${post_stroke_complications.complications}. "
+      }
+    ]
+  },
+  "etiology": {
+    "variants": []
+  },
+  "discharge": {
+    "variants": [
+      {
+        "condition": {
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "discharge.discharge_medication",
+              "value": true
+            },
+            {
+              "type": "NOT",
+              "conditions": [
+                {
+                  "type": "VALUE",
+                  "scope": "discharge.discharge_destination",
+                  "value": "dead"
+                }
+              ]
+            }
+          ]
+        },
+        "text": "Medication: ${discharge.discharge_medication}. "
+      }
+    ]
+  },
+  "settings": {
+    "date_format": "",
+    "time_format": ""
+  },
+  "variables": {
+    "imaging_type": {
+      "CT": "",
+      "CT CTA": "CT CTA",
+      "CT CTA perfusion": "",
+      "MR DWI/FLAIR": "",
+      "MR DWI/FLAIR MRA": "",
+      "MR DWI/FLAIR MRA perfusion": ""
+    },
+    "occlusion_position": {
+      "occlusion_left_mca_m1": "left MCA M1",
+      "occlusion_left_mca_m2": "",
+      "occlusion_left_mca_m3": "",
+      "occlusion_left_aca": "",
+      "occlusion_left_pca_p1": "",
+      "occlusion_left_pca_p2": "",
+      "occlusion_left_cae": "",
+      "occlusion_left_cai": "",
+      "occlusion_right_mca_m1": "right MCA M1",
+      "occlusion_right_mca_m2": "",
+      "occlusion_right_mca_m3": "",
+      "occlusion_right_aca": "",
+      "occlusion_right_pca_p1": "",
+      "occlusion_right_pca_p2": "",
+      "occlusion_right_cae": "",
+      "occlusion_right_cai": "",
+      "occlusion_ba": "",
+      "occlusion_va": ""
+    },
+    "admission_type": {
+      "icu/stroke unit": "",
+      "monitored bed": "",
+      "standard bed": ""
+    },
+    "ivt_treatment": {
+      "alteplase": "",
+      "tenecteplase": "",
+      "streptokinase": "",
+      "staphylokinase": ""
+    },
+    "no_thrombolysis_reason": {
+      "done elsewhere": "",
+      "time window": "",
+      "mild deficit": "",
+      "consent": "",
+      "cost of treatment": "",
+      "transferred elsewhere": "",
+      "only MT": "",
+      "not available": "",
+      "other": ""
+    },
+    "no_thrombectomy_reason": {
+      "done elsewhere": "",
+      "time window": "",
+      "mild deficit": "",
+      "large vessel occlusion": "",
+      "disability": "",
+      "consent": "",
+      "cost of treatment": "",
+      "transferred elsewhere": "",
+      "not available": "",
+      "technically not possible": "",
+      "other": ""
+    },
+    "post_treatment_findings": {
+      "post_treatment_infarction": "brain infarct",
+      "post_treatment_no_bleeding": "",
+      "post_treatment_remote": "",
+      "post_treatment_hi_i": "",
+      "post_treatment_hi_ii": "",
+      "post_treatment_ph_i": "",
+      "post_treatment_ph_ii": ""
+    },
+    "post_stroke_complications": {
+      "post_stroke_pneumonia": "pneumonia",
+      "post_stroke_dvt": "deep vein thrombosis (DVT)",
+      "post_stroke_embolism": "",
+      "post_stroke_infection": "",
+      "post_stroke_sores": "",
+      "post_stroke_sepsis": "drip site sepsis",
+      "post_stroke_extension": "",
+      "post_stroke_other": ""
+    },
+    "therapies": {
+      "physiotherapy": "physiotherapy",
+      "ergotherapy": "",
+      "speechtherapy": "speechtherapy"
+    },
+    "etiology": {
+      "etiology_large_artery": "",
+      "etiology_cardioembolism": "",
+      "etiology_other": "",
+      "etiology_cryptogenic_stroke": "",
+      "etiology_small_vessel": ""
+    },
+    "discharge_destination": {
+      "home": "",
+      "same hospital": "",
+      "another hospital": "",
+      "social care": "",
+      "dead": ""
+    },
+    "medications": {
+      "discharge_antidiabetics": "",
+      "discharge_antihypertensives": "",
+      "discharge_asa": "",
+      "discharge_cilostazol": "cilostazol",
+      "discharge_clopidrogel": "clopidrogel",
+      "discharge_ticagrelor": "",
+      "discharge_ticlopidine": "ticlopidine",
+      "discharge_prasugrel": "",
+      "discharge_dipyridamol": "",
+      "discharge_warfarin": "",
+      "discharge_dabigatran": "",
+      "discharge_rivaroxaban": "",
+      "discharge_apixaban": "",
+      "discharge_edoxaban": "",
+      "discharge_statin": "",
+      "discharge_heparin": "",
+      "discharge_other": "",
+      "discharge_anticoagulant_recommended": "",
+      "discharge_other_antiplatelet": "",
+      "discharge_other_anticoagulant": "",
+      "discharge_any_anticoagulant": "",
+      "discharge_any_antiplatelet": ""
+    },
+    "tici_score_meaning": {
+      "tici_score_0": "",
+      "tici_score_1": "",
+      "tici_score_2A": "",
+      "tici_score_2B": "",
+      "tici_score_2C": "",
+      "tici_score_3": ""
+    },
+    "prior_treatment": {
+      "before_onset_antidiabetics": "",
+      "before_onset_antihypertensives": "",
+      "before_onset_asa": "",
+      "before_onset_cilostazol": "cilostazol",
+      "before_onset_clopidrogel": "",
+      "before_onset_ticagrelor": "",
+      "before_onset_ticlopidine": "",
+      "before_onset_prasugrel": "",
+      "before_onset_dipyridamol": "",
+      "before_onset_warfarin": "",
+      "before_onset_dabigatran": "",
+      "before_onset_rivaroxaban": "",
+      "before_onset_apixaban": "",
+      "before_onset_edoxaban": "",
+      "before_onset_statin": "",
+      "before_onset_heparin": "",
+      "before_onset_other": "",
+      "before_onset_anticoagulant_recommended": "",
+      "before_onset_contraception": "",
+      "before_onset_other_antiplatelet": "",
+      "before_onset_other_anticoagulant": "",
+      "before_onset_any_anticoagulant": "",
+      "before_onset_any_antiplatelet": ""
+    },
+    "risk_factors": {
+      "risk_hypertension": "" ,
+      "risk_diabetes": "diabetes" ,
+      "risk_hyperlipidemia": "" ,
+      "risk_atrial_fibrilation": "AF" ,
+      "risk_congestive_heart_failure": "" ,
+      "risk_smoker": "" ,
+      "risk_previous_stroke": "" ,
+      "risk_previous_ischemic_stroke": "",
+      "risk_previous_hemorrhagic_stroke": "" ,
+      "risk_coronary_artery_disease_or_myocardial_infarction": "" ,
+      "risk_covid": "covid",
+      "risk_hiv": "" ,
+      "risk_other": ""
+    },
+    "sex": {
+      "male": "M",
+      "female": "",
+      "other": ""
+    },
+    "department_type": {
+      "neurology": "",
+      "neurosurgery": "",
+      "critical care/icu": "",
+      "internal medicine": "",
+      "other": ""
+    },
+    "arrival_mode": {
+      "ems": "",
+      "private transportation": "",
+      "another hospital": ""
+    },
+    "swallowing_screening_type": {
+      "GUSS": "",
+      "ASSIST": "",
+      "water test": "",
+      "other": ""
+    }
+  }
+}

@@ -12,6 +12,8 @@ from utils.load_utils import load_csv_file
 
 OPTIONS = "hl:i:"
 LONG_OPTIONS = ["help", "csv", "language=", "subject_id="]
+TEMPLATES_PATH = "templates"
+DEFAULT_TEMPLATE = "main.txt"
 
 
 def main(argv=None):
@@ -77,7 +79,7 @@ def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None
         # generate records
         for idx, row in enumerate(data):
             generator = MedicalRecordsGenerator(language, row)
-            report = generator.generate_medical_record()
+            report = generator.generate_medical_record(TEMPLATES_PATH, DEFAULT_TEMPLATE)
             print(report)
             """
             with open(f"med_record{idx+1}.txt", "w") as file:

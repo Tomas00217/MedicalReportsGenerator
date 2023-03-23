@@ -119,7 +119,7 @@ The following is the default structure that every dictionary, that is to be used
       "occlusion_ba": "",
       "occlusion_va": ""
     },
-    "hospitalized_in": {
+    "admission_type": {
       "icu/stroke unit": "",
       "monitored bed": "",
       "standard bed": ""

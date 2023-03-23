@@ -59,7 +59,7 @@
       "occlusion_ba": "",
       "occlusion_va": ""
     },
-    "hospitalized_in": {
+    "admission_type": {
       "icu/stroke unit": "",
       "monitored bed": "",
       "standard bed": ""

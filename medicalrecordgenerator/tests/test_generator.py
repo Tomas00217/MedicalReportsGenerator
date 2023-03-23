@@ -5,7 +5,7 @@ import logging
 from app.generator import MedicalRecordsGenerator
 from app.language import Language
 from data.models import Diagnosis, Discharge, Etiology, PostStrokeComplications, PostAcuteCare, Treatment, Admission, \
-    Onset, Patient
+    Onset, Patient, Thrombolysis, Thrombectomy, MedicalRecord
 from utils.load_utils import load_language_file
 
 
@@ -15,6 +15,30 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         language = Language(**language_file)
 
         self.data = load_language_file("fixtures/data.json")
+        self.data["occlusion_left_mca_m1"] = True
+        self.data["occlusion_right_mca_m1"] = True
+        self.data["risk_diabetes"] = True
+        self.data["risk_covid"] = True
+        self.data["risk_atrial_fibrilation"] = True
+        self.data["before_onset_cilostazol"] = True
+        self.data["thrombolysis"] = True
+        self.data["no_thrombolysis_reason"] = None
+        self.data["door_to_needle"] = 14
+        self.data["ivt_treatment"] = "alteplase"
+        self.data["ivt_dose"] = 50
+        self.data["thrombectomy"] = True
+        self.data["no_thrombectomy_reason"] = None
+        self.data["door_to_groin"] = 56
+        self.data["tici_score"] = "2B"
+        self.data["post_treatment_infarction"] = True
+        self.data["post_stroke_pneumonia"] = True
+        self.data["post_stroke_dvt"] = True
+        self.data["post_stroke_sepsis"] = True
+        self.data["discharge_cilostazol"] = True
+        self.data["discharge_clopidrogel"] = True
+        self.data["discharge_ticlopidine"] = True
+        self.data["discharge_date"] = datetime.date(2022, 11, 24)
+        self.data["discharge_medication"] = True
         self.generator = MedicalRecordsGenerator(language, {})
 
     def test_replace_last(self):
@@ -135,12 +159,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertIsInstance(result, Diagnosis)
 
     def test_diagnosis_with_data(self):
-        self.data["occlusion_left_mca_m1"] = True
-        self.data["occlusion_right_mca_m1"] = True
         self.generator.data = self.data
-
-        self.generator.language.variables["occlusion_position"]["occlusion_left_mca_m1"] = "left MCA M1"
-        self.generator.language.variables["occlusion_position"]["occlusion_right_mca_m1"] = "right MCA M1"
 
         result = self.generator.create_diagnosis()
 
@@ -160,16 +179,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertIsInstance(result, Patient)
 
     def test_patient_with_data(self):
-        self.data["risk_diabetes"] = True
-        self.data["risk_covid"] = True
-        self.data["risk_atrial_fibrilation"] = True
-        self.data["before_onset_cilostazol"] = True
         self.generator.data = self.data
-
-        self.generator.language.variables["risk_factors"]["risk_diabetes"] = "diabetes"
-        self.generator.language.variables["risk_factors"]["risk_covid"] = "covid"
-        self.generator.language.variables["risk_factors"]["risk_atrial_fibrilation"] = "AF"
-        self.generator.language.variables["prior_treatment"]["before_onset_cilostazol"] = "cilostazol"
 
         result = self.generator.create_patient()
 
@@ -230,7 +240,28 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertIsInstance(result, Treatment)
 
     def test_treatment_with_data(self):
-        pass
+        self.generator.data = self.data
+
+        result = self.generator.create_treatment()
+
+        self.assertIsInstance(result, Treatment)
+        self.assertTrue(result.thrombolysis_done)
+        self.assertIsNone(result.no_thrombolysis_reasons)
+        self.assertTrue(result.thrombectomy_done)
+        self.assertIsNone(result.no_thrombectomy_reasons)
+
+        with self.subTest("Thrombolysis check"):
+            self.assertIsInstance(result.thrombolysis, Thrombolysis)
+            self.assertEqual(14, result.thrombolysis.dtn)
+            self.assertEqual("alteplase", result.thrombolysis.ivt_treatment)
+            self.assertEqual(50, result.thrombolysis.ivt_dose)
+
+        with self.subTest("Thrombectomy check"):
+            self.assertIsInstance(result.thrombectomy, Thrombectomy)
+            self.assertEqual(56, result.thrombectomy.dtg)
+            self.assertIsNone(result.thrombectomy.dio)
+            self.assertEqual("2B", result.thrombectomy.tici_score)
+            self.assertEqual("tici_score_2B", result.thrombectomy.tici_score_meaning)
 
     def test_post_acute_care_empty(self):
         self.generator.data = {}
@@ -240,7 +271,20 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertIsInstance(result, PostAcuteCare)
 
     def test_post_acute_care_with_data(self):
-        pass
+        self.generator.data = self.data
+
+        result = self.generator.create_post_acute_care()
+
+        self.assertIsInstance(result, PostAcuteCare)
+        self.assertEqual("no AF", result.afib_flutter)
+        self.assertEqual("brain infarct", result.findings)
+        self.assertEqual("no", result.imaging_type)
+        self.assertEqual("yes", result.swallowing_screening)
+        self.assertEqual("other", result.swallowing_screening_type)
+        self.assertTrue(result.physiotherapy)
+        self.assertFalse(result.ergotherapy)
+        self.assertTrue(result.speechtherapy)
+        self.assertEqual("physiotherapy, and speechtherapy", result.therapies)
 
     def test_post_stroke_complications_empty(self):
         self.generator.data = {}
@@ -250,7 +294,13 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertIsInstance(result, PostStrokeComplications)
 
     def test_post_stroke_complications_with_data(self):
-        pass
+        self.generator.data = self.data
+
+        result = self.generator.create_post_stroke_complications()
+        expected = "pneumonia, deep vein thrombosis (DVT), and drip site sepsis"
+
+        self.assertIsInstance(result, PostStrokeComplications)
+        self.assertEqual(expected, result.complications)
 
     def test_etiology_empty(self):
         self.generator.data = {}
@@ -260,7 +310,19 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertIsInstance(result, Etiology)
 
     def test_etiology_with_data(self):
-        pass
+        self.generator.data = self.data
+
+        result = self.generator.create_etiology()
+
+        self.assertIsInstance(result, Etiology)
+        self.assertTrue(result.large_artery)
+        self.assertFalse(result.cardioembolism)
+        self.assertFalse(result.cryptogenic_stroke)
+        self.assertFalse(result.small_vessel)
+        self.assertFalse(result.other)
+        self.assertTrue(result.carotid_stenosis)
+        self.assertEqual("over 70", result.carotid_stenosis_level)
+        self.assertEqual("no AF", result.afib_flutter)
 
     def test_discharge_empty(self):
         self.generator.data = {}
@@ -270,7 +332,60 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertIsInstance(result, Discharge)
 
     def test_discharge_with_data(self):
-        pass
+        self.generator.data = self.data
+
+        result = self.generator.create_discharge()
+
+        self.assertIsInstance(result, Discharge)
+        self.assertEqual(datetime.date(2022, 11, 24).strftime("%b %d %Y"), result.discharge_date)
+        self.assertEqual("home", result.discharge_destination)
+        self.assertEqual(2, result.nihss)
+        self.assertEqual(1, result.discharge_mrs)
+        self.assertIsNone(result.contact_date)
+        self.assertEqual("not contacted", result.mode_contact)
+        self.assertEqual("cilostazol, clopidrogel, and ticlopidine", result.discharge_medication)
+
+    def test_create_medical_record(self):
+        result = self.generator.create_medical_record()
+
+        self.assertIsInstance(result, MedicalRecord)
+        self.assertIsInstance(result.diagnosis, Diagnosis)
+        self.assertIsInstance(result.patient, Patient)
+        self.assertIsInstance(result.onset, Onset)
+        self.assertIsInstance(result.admission, Admission)
+        self.assertIsInstance(result.treatment, Treatment)
+        self.assertIsInstance(result.post_acute_care, PostAcuteCare)
+        self.assertIsInstance(result.post_stroke_complications, PostStrokeComplications)
+        self.assertIsInstance(result.etiology, Etiology)
+        self.assertIsInstance(result.discharge, Discharge)
+
+    def test_generate_structure(self):
+        self.generator.data = self.data
+
+        result = self.generator.generate_structure()
+        expected = {"diagnosis": "Diagnosis test with CT CTA variable",
+                    "patient": "Test patient whose sex is not other M/77",
+                    "onset": "Onset on Jun 10 2022. ",
+                    "admission": "ASPECT score 10. ",
+                    "treatment": "Treatment showing dtg 56",
+                    "post_acute_care": "Received physiotherapy, and speechtherapy. ",
+                    "post_stroke_complications": "Post stroke complications: "
+                                                 "pneumonia, deep vein thrombosis (DVT), and drip site sepsis. ",
+                    "etiology": "",
+                    "discharge": "Medication: cilostazol, clopidrogel, and ticlopidine. "}
+
+        self.assertEqual(expected, result)
+
+    def test_generate_medical_record(self):
+        self.generator.data = self.data
+
+        result = self.generator.generate_medical_record("fixtures", "test.txt")
+        expected = "Diagnosis test with CT CTA variableTest patient whose sex is not other M/77Onset on Jun 10 2022. " \
+                   "ASPECT score 10. Treatment showing dtg 56Received physiotherapy, and speechtherapy. " \
+                   "Post stroke complications: pneumonia, deep vein thrombosis (DVT), and drip site sepsis. " \
+                   "Medication: cilostazol, clopidrogel, and ticlopidine. "
+
+        self.assertEqual(expected, result)
 
 
 if __name__ == '__main__':
