@@ -6,15 +6,15 @@ from app.generator import MedicalRecordsGenerator
 from app.language import Language
 from data.models import Diagnosis, Discharge, Etiology, PostStrokeComplications, PostAcuteCare, Treatment, Admission, \
     Onset, Patient, Thrombolysis, Thrombectomy, MedicalRecord
-from utils.load_utils import load_language_file
+from utils.load_utils import load_json_file
 
 
 class TestMedicalRecordsGenerator(unittest.TestCase):
     def setUp(self) -> None:
-        language_file = load_language_file("fixtures/language.json")
+        language_file = load_json_file("fixtures/language.json")
         language = Language(**language_file)
 
-        self.data = load_language_file("fixtures/data.json")
+        self.data = load_json_file("fixtures/data.json")
         self.data["occlusion_left_mca_m1"] = True
         self.data["occlusion_right_mca_m1"] = True
         self.data["risk_diabetes"] = True

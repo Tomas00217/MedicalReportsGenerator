@@ -1,0 +1,1153 @@
+{
+  "diagnosis": {
+    "variants": [
+      {
+        "condition": {
+          "type": "VALUE",
+          "scope": "diagnosis.stroke_type",
+          "value": "ischemic"
+        },
+        "ischemicStroke": {
+          "variants": [
+            {
+              "condition": {
+                "type": "EXISTENCE",
+                "scope": "diagnosis.occlusion_position",
+                "value": true
+              },
+              "text": "Cerebral ischemic stroke due to occlusion of ${diagnosis.occlusion_position} on ${diagnosis.imaging_type}. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "diagnosis.occlusion_position",
+                    "value": false
+                  },
+                  {
+                    "type": "VALUE",
+                    "scope": "diagnosis.imaging_type",
+                    "value": "CT"
+                  }
+                ]
+              },
+              "text": "Cerebral ischemic stroke. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "diagnosis.occlusion_position",
+                    "value": false
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "diagnosis.imaging_type",
+                        "value": "CT"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "text": "Cerebral ischemic stroke without occlusion on ${diagnosis.imaging_type}. "
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "patient": {
+    "variants": [
+      {
+        "condition": {},
+        "chained_block": {
+          "variants": [
+            {
+              "condition": {
+                "type": "NOT",
+                "conditions": [
+                  {
+                    "type": "VALUE",
+                    "scope": "patient.sex",
+                    "value": "other"
+                  }
+                ]
+              },
+              "text": "${patient.sex}/${patient.age}, "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "patient.sex",
+                "value": "other"
+              },
+              "text": "Patient, "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_factors",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_atrial_fibrilation",
+                    "value": true
+                  }
+                ]
+              },
+              "text": "with a history of ${patient.risk_atrial_fibrilation}, ${patient.risk_factors}. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_factors",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_atrial_fibrilation",
+                    "value": false
+                  }
+                ]
+              },
+              "text": "with a history of ${patient.risk_factors}. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_factors",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_atrial_fibrilation",
+                    "value": true
+                  }
+                ]
+              },
+              "text": "with a history of ${patient.risk_atrial_fibrilation}. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_factors",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "patient.risk_atrial_fibrilation",
+                    "value": false
+                  }
+                ]
+              },
+              "text": "with no prior risk history. "
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "onset": {
+    "variants": [
+      {
+        "condition": {
+            "type": "EXISTENCE",
+            "scope": "onset.wake_up_stroke",
+            "value": true
+        },
+        "text": "Onset on ${onset.onset_date}, wake up stroke. "
+      },
+      {
+        "condition": {
+            "type": "EXISTENCE",
+            "scope": "onset.wake_up_stroke",
+            "value": false
+        },
+        "text": "Onset on ${onset.onset_date}. "
+      }
+    ]
+  },
+  "admission": {
+    "variants": [
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.aspects_score",
+          "value": true
+        },
+        "text": "ASPECT score ${admission.aspects_score}. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.admission_nihss",
+          "value": true
+        },
+        "text": "Baseline NIHSS ${admission.admission_nihss}. "
+      },
+      {
+        "condition": {
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.admission_nihss",
+              "value": false
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "admission.aspects_score",
+              "value": false
+            }
+          ]
+        },
+        "text": "NIHSS and ASPECT not performed. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.prestroke_mrs",
+          "value": true
+        },
+        "text": "Prestroke mRS was ${admission.prestroke_mrs}. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.prestroke_mrs",
+          "value": false
+        },
+        "text": "Prestroke mRS not recorded. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "admission.admission_type",
+          "value": true
+        },
+        "text": "Admitted to ${admission.admission_type}. "
+      }
+    ]
+  },
+  "treatment": {
+    "variants": [
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "treatment.thrombolysis_done",
+          "value": true
+        },
+        "thrombolysis": {
+          "variants": [
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "treatment.ivt_dose",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "treatment.ivt_treatment",
+                    "value": true
+                  }
+                ]
+              },
+              "text": "Intravenous thrombolysis given with ${treatment.ivt_dose} mg ${treatment.ivt_treatment} ${treatment.dtn} minutes after arrival to hospital. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "treatment.ivt_dose",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "treatment.ivt_treatment",
+                    "value": true
+                  }
+                ]
+              },
+              "text": "Intravenous thrombolysis given with ${treatment.ivt_treatment} ${treatment.dtn} minutes after arrival to hospital. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "treatment.ivt_dose",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "treatment.ivt_treatment",
+                    "value": false
+                  }
+                ]
+              },
+              "text": "Intravenous thrombolysis given with ${treatment.ivt_dose} mg ${treatment.dtn} minutes after arrival to hospital. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "treatment.ivt_dose",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "treatment.ivt_treatment",
+                    "value": false
+                  }
+                ]
+              },
+              "text": "Intravenous thrombolysis given ${treatment.dtn} minutes after arrival to hospital. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "treatment.thrombolysis_done",
+          "value": false
+        },
+        "thrombolysis_done": {
+          "variants": [
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "treatment.no_thrombolysis_reasons",
+                        "value": "other"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "treatment.no_thrombolysis_reasons",
+                        "value": "time window"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "treatment.no_thrombolysis_reasons",
+                        "value": "not available"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "treatment.no_thrombolysis_reasons",
+                        "value": "done elsewhere"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "text": "Thrombolysis not given because of ${treatment.no_thrombolysis_reasons}. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "treatment.no_thrombolysis_reasons",
+                "value": "other"
+              },
+              "text": "Thrombolysis not given, no specific reason provided. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "treatment.no_thrombolysis_reasons",
+                "value": "time window"
+              },
+              "text": "Thrombolysis not given because patient was out of time window. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "treatment.no_thrombolysis_reasons",
+                "value": "not available"
+              },
+              "text": "Thrombolysis not given as not available. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "treatment.no_thrombolysis_reasons",
+                "value": "done elsewhere"
+              },
+              "text": "Thrombolysis done in the other hospital before admission. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "treatment.thrombectomy_done",
+          "value": true
+        },
+        "thrombectomy": {
+          "variants": [
+            {
+              "condition": {
+                "type": "EXISTENCE",
+                "scope": "treatment.tici_score",
+                "value": true
+              },
+              "text": "Mechanical thrombectomy performed ${treatment.dtg} minutes after arrival, achieved TICI ${treatment.tici_score} ${treatment.tici_score_meaning}. "
+            },
+            {
+              "condition": {
+                "type": "EXISTENCE",
+                "scope": "treatment.tici_score",
+                "value": false
+              },
+              "text": "Mechanical thrombectomy performed ${treatment.dtg} minutes after arrival. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "treatment.thrombectomy_done",
+          "value": false
+        },
+        "thrombectomy_done": {
+          "variants": [
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "treatment.no_thrombectomy_reasons",
+                        "value": "other"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "treatment.no_thrombectomy_reasons",
+                        "value": "time window"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "treatment.no_thrombectomy_reasons",
+                        "value": "not available"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "treatment.no_thrombectomy_reasons",
+                        "value": "transferred elsewhere"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "text": "Thrombectomy not performed because of ${treatment.no_thrombectomy_reasons}. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "treatment.no_thrombectomy_reasons",
+                "value": "other"
+              },
+              "text": "Thrombectomy not performed, no specific reason provided. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "treatment.no_thrombectomy_reasons",
+                "value": "time window"
+              },
+              "text": "Thrombectomy not performed because patient was out of time window. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "treatment.no_thrombectomy_reasons",
+                "value": "not available"
+              },
+              "text": "Thrombectomy not performed as not available. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "treatment.no_thrombectomy_reasons",
+                "value": "done elsewhere"
+              },
+              "text": "Thrombectomy performed in the other hospital before admission. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "treatment.thrombectomy_transport",
+          "value": true
+        },
+        "text": "Thrombectomy not performed because of transferred elsewhere for MT after ${treatment.dio} minutes from the arrival. "
+      }
+    ]
+  },
+  "post_acute_care": {
+    "variants": [
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "patient.risk_atrial_fibrilation",
+          "value": false
+        },
+        "atrial_fibrilation": {
+          "variants": [
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "post_acute_care.afib_flutter",
+                "value": "detected"
+              },
+              "text": "AF detected. "
+            },
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "post_acute_care.afib_flutter",
+                "value": "no AF"
+              },
+              "text": "No AF detected. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "post_acute_care.findings",
+          "value": true
+        },
+        "text": "On follow up ${post_acute_care.imaging_type} found ${post_acute_care.findings}. "
+      },
+      {
+        "condition": {
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "post_acute_care.imaging_type",
+              "value": false
+            },
+            {
+              "type": "VALUE",
+              "scope": "post_acute_care.imaging_type",
+              "value": "no"
+            }
+          ]
+        },
+        "text": "No follow up imaging performed. "
+      },
+      {
+        "condition": {
+          "type": "VALUE",
+          "scope": "post_acute_care.swallowing_screening",
+          "value": "no"
+        },
+        "text": "Patient screened for dysphagia but dysphagia not present. "
+      },
+      {
+        "condition": {
+          "type": "VALUE",
+          "scope": "post_acute_care.swallowing_screening",
+          "value": "yes"
+        },
+        "text": "Patient diagnosed with dysphagia. "
+      },
+      {
+        "condition": {
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "post_acute_care.swallowing_screening",
+              "value": false
+            },
+            {
+              "type": "VALUE",
+              "scope": "post_acute_care.swallowing_screening",
+              "value": "not applicable"
+            }
+          ]
+        },
+        "text": "Patient not screened for dysphagia. "
+      },
+      {
+        "condition": {
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "post_acute_care.physiotherapy",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "post_acute_care.ergotherapy",
+              "value": true
+            },
+            {
+              "type": "EXISTENCE",
+              "scope": "post_acute_care.speechtherapy",
+              "value": true
+            }
+          ]
+        },
+        "text": "Received ${post_acute_care.therapies}. "
+      }
+    ]
+  },
+  "post_stroke_complications": {
+    "variants": [
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "post_stroke_complications.complications",
+          "value": true
+        },
+        "text": "Post stroke complications: ${post_stroke_complications.complications}. "
+      }
+    ]
+  },
+  "etiology": {
+    "variants": [
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "etiology.cardioembolism",
+          "value": true
+        },
+        "cardioembolism": {
+          "variants": [
+            {
+              "condition": {
+                "type": "OR",
+                "conditions": [
+                  {
+                    "type": "VALUE",
+                    "scope": "etiology.afib_flutter",
+                    "value": "known AF"
+                  },
+                  {
+                    "type": "VALUE",
+                    "scope": "etiology.afib_flutter",
+                    "value": "detected"
+                  }
+                ]
+              },
+              "text": "Etiology is cardioembolic (Atrial Fibrillation). "
+            },
+            {
+              "condition": {
+                "type": "NOT",
+                "conditions": [
+                  {
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "type": "VALUE",
+                        "scope": "etiology.afib_flutter",
+                        "value": "known AF"
+                      },
+                      {
+                        "type": "VALUE",
+                        "scope": "etiology.afib_flutter",
+                        "value": "detected"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "text": "Etiology is cardioembolic. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "etiology.large_artery",
+          "value": true
+        },
+        "large_artery": {
+          "variants": [
+            {
+              "condition": {
+                "type": "VALUE",
+                "scope": "etiology.carotid_stenosis_level",
+                "value": "over 70"
+              },
+              "text": "Etiology is atherosclerosis (carotid stenosis more than 70%). "
+            },
+            {
+              "condition": {
+                "type": "NOT",
+                "conditions": [
+                  {
+                    "type": "VALUE",
+                    "scope": "etiology.carotid_stenosis_level",
+                    "value": "over 70"
+                  }
+                ]
+              },
+              "text": "Etiology is atherosclerosis. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "etiology.cryptogenic_stroke",
+          "value": true
+        },
+        "text": "Etiology is cryptogenic. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "etiology.small_vessel",
+          "value": true
+        },
+        "text": "Etiology is lacunar. "
+      },
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "etiology.other",
+          "value": true
+        },
+        "text": "Etiology is other. "
+      }
+    ]
+  },
+  "discharge": {
+    "variants": [
+      {
+        "condition": {
+          "type": "NOT",
+          "conditions": [
+            {
+              "type": "VALUE",
+              "scope": "discharge.discharge_destination",
+              "value": "dead"
+            }
+          ]
+        },
+        "discharged": {
+          "variants": [
+            {
+              "condition": {
+                "type": "EXISTENCE",
+                "scope": "discharge.discharge_destination",
+                "value": true
+              },
+              "text": "Patient discharged on ${discharge.discharge_date} to ${discharge.discharge_destination}. "
+            },
+            {
+              "condition": {
+                "type": "EXISTENCE",
+                "scope": "discharge.discharge_destination",
+                "value": false
+              },
+              "text": "Patient discharged on ${discharge.discharge_date}. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "discharge.discharge_medication",
+              "value": true
+            },
+            {
+              "type": "NOT",
+              "conditions": [
+                {
+                  "type": "VALUE",
+                  "scope": "discharge.discharge_destination",
+                  "value": "dead"
+                }
+              ]
+            }
+          ]
+        },
+        "text": "Medication: ${discharge.discharge_medication}. "
+      },
+      {
+        "condition": {
+          "type": "NOT",
+          "conditions": [
+            {
+              "type": "VALUE",
+              "scope": "discharge.discharge_destination",
+              "value": "dead"
+            }
+          ]
+        },
+        "scores": {
+          "variants": [
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.nihss",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.discharge_mrs",
+                    "value": true
+                  }
+                ]
+              },
+              "text": "NIHSS on discharge ${discharge.nihss}, mRS on discharge ${discharge.discharge_mrs}. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.nihss",
+                    "value": true
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.discharge_mrs",
+                    "value": false
+                  }
+                ]
+              },
+              "text": "NIHSS on discharge ${discharge.nihss}, mRS on discharge not performed. "
+            },
+            {
+              "condition": {
+                "type": "AND",
+                "conditions": [
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.nihss",
+                    "value": false
+                  },
+                  {
+                    "type": "EXISTENCE",
+                    "scope": "discharge.discharge_mrs",
+                    "value": true
+                  }
+                ]
+              },
+              "text": "mRS on discharge ${discharge.discharge_mrs}. "
+            },
+            {
+              "condition": {
+                "type": "EXISTENCE",
+                "scope": "discharge.contact_date",
+                "value": true
+              },
+              "text": "Next appointment scheduled to ${discharge.contact_date}. "
+            }
+          ]
+        }
+      },
+      {
+        "condition": {
+          "type": "AND",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "discharge.discharge_destination",
+              "value": true
+            },
+            {
+              "type": "VALUE",
+              "scope": "discharge.discharge_destination",
+              "value": "dead"
+            }
+          ]
+        },
+
+        "text": "Patient died on ${discharge.discharge_date}. "
+      }
+    ]
+  },
+  "settings": {
+    "date_format": "%b %d %Y",
+    "time_format": "%H:%M%p"
+  },
+  "variables": {
+    "imaging_type": {
+      "CT": "CT",
+      "CT CTA": "CTA",
+      "CT CTA perfusion": "CTA perfusion",
+      "MR DWI/FLAIR": "MR DWI/FLAIR",
+      "MR DWI/FLAIR MRA": "MR DWI/FLAIR MRA",
+      "MR DWI/FLAIR MRA perfusion": "MR DWI/FLAIR MRA perfusion"
+    },
+    "occlusion_position": {
+      "occlusion_on_angio": "",
+      "occlusion_left_mca_m1": "left M1 MCA",
+      "occlusion_left_mca_m2": "left M2 MCA",
+      "occlusion_left_mca_m3": "left M3 MCA",
+      "occlusion_left_aca": "left ACA",
+      "occlusion_left_pca_p1": "left P1 PCA",
+      "occlusion_left_pca_p2": "left P2 PCA",
+      "occlusion_left_cae": "left CAE",
+      "occlusion_left_cai": "left ICA",
+      "occlusion_right_mca_m1": "right M1 MCA",
+      "occlusion_right_mca_m2": "right M2 MCA",
+      "occlusion_right_mca_m3": "right M3 MCA",
+      "occlusion_right_aca": "right ACA",
+      "occlusion_right_pca_p1": "right P1 PCA",
+      "occlusion_right_pca_p2": "right P2 PCA",
+      "occlusion_right_cae": "right CAE",
+      "occlusion_right_cai": "right ICA",
+      "occlusion_ba": "BA",
+      "occlusion_va": "VA"
+    },
+    "admission_type": {
+      "icu/stroke unit": "ICU/stroke unit",
+      "monitored bed": "monitored bed",
+      "standard bed": "standard bed"
+    },
+    "ivt_treatment": {
+      "alteplase": "IV alteplase",
+      "tenecteplase": "IV tenecteplase",
+      "streptokinase": "IV streptokinase",
+      "staphylokinase": "IV staphylokinase"
+    },
+    "no_thrombolysis_reason": {
+      "done elsewhere": "done elsewhere",
+      "time window": "time window",
+      "mild deficit": "mild deficit",
+      "consent": "consent",
+      "cost of treatment": "cost of treatment",
+      "transferred elsewhere": "transferred elsewhere",
+      "only MT": "only MT",
+      "not available": "not available",
+      "other": "other"
+    },
+    "no_thrombectomy_reason": {
+      "done elsewhere": "done elsewhere",
+      "time window": "time window",
+      "mild deficit": "mild deficit",
+      "large vessel occlusion": "large vessel occlusion",
+      "disability": "disability",
+      "consent": "consent",
+      "cost of treatment": "cost of treatment",
+      "transferred elsewhere": "transferred elsewhere",
+      "not available": "not available",
+      "technically not possible": "technically not possible",
+      "other": "other"
+    },
+    "post_treatment_findings": {
+      "post_treatment_infarction": "brain infarct",
+      "post_treatment_no_bleeding": "no bleeding",
+      "post_treatment_remote": "remote bleeding in the brain",
+      "post_treatment_hi_i": "bleeding at the site of infarction hemorrhage HI type 1",
+      "post_treatment_hi_ii": "bleeding at the site of infarction hemorrhage HI type 2",
+      "post_treatment_ph_i": "bleeding at the site of infarction parenchymal hemorrhage PH type 1",
+      "post_treatment_ph_ii": "bleeding at the site of infarction parenchymal hemorrhage PH type 2"
+    },
+    "post_stroke_complications": {
+      "post_stroke_pneumonia": "pneumonia",
+      "post_stroke_dvt": "deep vein thrombosis (DVT)",
+      "post_stroke_embolism": "pulmonary embolism",
+      "post_stroke_infection": "UTI",
+      "post_stroke_sores": "pressure sores",
+      "post_stroke_sepsis": "drip site sepsis",
+      "post_stroke_extension": "reccurence/Extension of stroke",
+      "post_stroke_other": "other"
+    },
+    "therapies": {
+      "physiotherapy": "physiotherapy",
+      "ergotherapy": "ergotherapy",
+      "speechtherapy": "speech therapy"
+    },
+    "etiology": {
+      "etiology_large_artery": "Large artery atherosclerosis (e.g. Carotid or basilar stenosis)",
+      "etiology_cardioembolism": "Cardioembolism (e.g. AF/flutter/prosthetic heart valve)",
+      "etiology_other": "Stroke of other determined etiology (dissection, vasculopathy or hematologic disorder)",
+      "etiology_cryptogenic_stroke": "Cryptogenic stroke (stroke of undetermined etiology including ESUS)",
+      "etiology_small_vessel": "Small vessel disease/lacunar"
+    },
+    "discharge_destination": {
+      "home": "home",
+      "same hospital": "same hospital",
+      "another hospital": "another centre",
+      "social care": "social care",
+      "dead": "dead"
+    },
+    "medications": {
+      "discharge_antidiabetics": "anti-diabetics",
+      "discharge_antihypertensives": "anti-hypertensives",
+      "discharge_asa": "aspirin",
+      "discharge_cilostazol": "cilostazol",
+      "discharge_clopidrogel": "clopidrogel",
+      "discharge_ticagrelor": "ticagrelor",
+      "discharge_ticlopidine": "ticlopidine",
+      "discharge_prasugrel": "prasugrel",
+      "discharge_dipyridamol": "dipyridamol",
+      "discharge_warfarin": "warfarin",
+      "discharge_dabigatran": "dabigatran",
+      "discharge_rivaroxaban": "rivaroxaban",
+      "discharge_apixaban": "apixaban",
+      "discharge_edoxaban": "edoxaban",
+      "discharge_statin": "statin",
+      "discharge_heparin": "heparin",
+      "discharge_other": "other",
+      "discharge_anticoagulant_recommended": "anticoagulant recommended",
+      "discharge_other_antiplatelet": "other antiplatelet",
+      "discharge_other_anticoagulant": "other anticoagulant",
+      "discharge_any_anticoagulant": "any anticoagulant",
+      "discharge_any_antiplatelet": "any antiplatelet"
+    },
+    "tici_score_meaning": {
+      "tici_score_0": "no reperfusion",
+      "tici_score_1": "minimal reperfusion",
+      "tici_score_2A": "partial reperfusion > 50 % territory",
+      "tici_score_2B": "partial reperfusion <= 50 % territory",
+      "tici_score_2C": "near to complete reperfusin except slow flow or few distal cortical emboli",
+      "tici_score_3": "complete reperfusion"
+    },
+    "prior_treatment": {
+      "before_onset_antidiabetics": "anti-diabetics",
+      "before_onset_antihypertensives": "anti-hypertensives",
+      "before_onset_asa": "aspirin",
+      "before_onset_cilostazol": "cilostazol",
+      "before_onset_clopidrogel": "clopidrogel",
+      "before_onset_ticagrelor": "ticagrelor",
+      "before_onset_ticlopidine": "ticlopidine",
+      "before_onset_prasugrel": "prasugrel",
+      "before_onset_dipyridamol": "dipyridamol",
+      "before_onset_warfarin": "warfarin",
+      "before_onset_dabigatran": "dabigatran",
+      "before_onset_rivaroxaban": "rivaroxaban",
+      "before_onset_apixaban": "apixaban",
+      "before_onset_edoxaban": "edoxaban",
+      "before_onset_statin": "statin",
+      "before_onset_heparin": "heparin",
+      "before_onset_other": "other",
+      "before_onset_anticoagulant_recommended": "anticoagulant recommended",
+      "before_onset_contraception": "contraception",
+      "before_onset_other_antiplatelet": "other antiplatelet",
+      "before_onset_other_anticoagulant": "other anticoagulant",
+      "before_onset_any_anticoagulant": "any anticoagulant",
+      "before_onset_any_antiplatelet": "any antiplatelet"
+    },
+    "risk_factors": {
+      "risk_hypertension": "hypertension",
+      "risk_diabetes": "diabetes",
+      "risk_hyperlipidemia": "hyperlipidemia",
+      "risk_atrial_fibrilation": "AF",
+      "risk_congestive_heart_failure": "CHF",
+      "risk_smoker": "smoking",
+      "risk_previous_stroke": "stroke",
+      "risk_previous_ischemic_stroke": "ischemic stroke",
+      "risk_previous_hemorrhagic_stroke": "hemorrhagic stroke",
+      "risk_coronary_artery_disease_or_myocardial_infarction": "CAD",
+      "risk_covid": "covid",
+      "risk_hiv": "HIV",
+      "risk_other": "other diseases"
+    },
+    "sex": {
+      "male": "M",
+      "female": "F",
+      "other": "other"
+    },
+    "department_type": {
+      "neurology": "neurology",
+      "neurosurgery": "neurosurgery",
+      "critical care/icu": "critical care/icu",
+      "internal medicine": "internal medicine",
+      "other": "another hospital"
+    },
+    "arrival_mode": {
+      "ems": "EMS",
+      "private transportation": "Private transportation",
+      "another hospital": "Another hospital"
+    },
+    "swallowing_screening_type": {
+      "GUSS": "GUSS test",
+      "ASSIST": "ASSIST test",
+      "water test": "water test",
+      "other": "other test"
+    }
+  }
+}

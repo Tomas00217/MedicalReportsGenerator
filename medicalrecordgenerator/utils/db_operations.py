@@ -10,7 +10,7 @@ from utils.queries import select_all, select_by_id
 
 
 def get_patient_info(subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
-    """Gets the patient info from database.
+    """Creates connection to the database and fetches data about patient
 
     Parameters
     ----------
@@ -36,9 +36,6 @@ def get_patient_info(subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
             database=os.getenv("EMS_DB_NAME")
         )
 
-        # create a cursor that loads data as dictionary
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
         # Register a customized adapter for PostgreSQL to load decimal as floats
         DEC2FLOAT = psycopg2.extensions.new_type(
             psycopg2.extensions.DECIMAL.values,
@@ -46,17 +43,7 @@ def get_patient_info(subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
             lambda value, curs: float(value) if value is not None else None)
         psycopg2.extensions.register_type(DEC2FLOAT)
 
-        # fetch data from database
-        if subject_id:
-            select = select_by_id(subject_id)
-            cur.execute(select, subject_id)
-        else:
-            select = select_all()
-            cur.execute(select)
-        data = cur.fetchall()
-
-        # close the communication with the PostgreSQL
-        cur.close()
+        data = get_patient_info_from_db(conn, subject_id)
 
         return data
     except (Exception, psycopg2.DatabaseError) as error:
@@ -65,3 +52,31 @@ def get_patient_info(subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
         if conn is not None:
             conn.close()
             logging.info('Database connection closed.')
+
+
+def get_patient_info_from_db(conn, subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
+    """Fetches data about patient from the database
+
+    Parameters
+    ----------
+    conn
+        Connection to the database from which we create the cursor
+    subject_id
+        The id of subject for which the medical record should be generated.
+
+    Returns
+    -------
+        Fetched data from database
+    """
+
+    with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+        # fetch data from database
+        if subject_id:
+            select = select_by_id(subject_id)
+            cursor.execute(select, subject_id)
+        else:
+            select = select_all(True)
+            cursor.execute(select)
+        data = cursor.fetchall()
+
+    return data

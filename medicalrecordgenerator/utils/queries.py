@@ -1,4 +1,4 @@
-def select_all() -> str:
+def select_all(ordered: bool) -> str:
     pfx = "strokehealthcaremodel"
 
     query = f"""
@@ -77,11 +77,14 @@ def select_all() -> str:
         ON SHCM.department_type_id = DTM.id
     """
 
+    if ordered:
+        query += "ORDER BY SHCM.subject_id"
+
     return query
 
 
 def select_by_id(subject_id: int) -> str:
-    query = select_all()
+    query = select_all(False)
 
     query += f" WHERE SHCM.subject_id={subject_id}"
 

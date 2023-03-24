@@ -31,12 +31,12 @@ def load_language(app_language: str) -> dict:
         lang_code = filename[-1].split('.')[0]
 
         if lang_code == app_language:
-            return load_language_file(lang)
+            return load_json_file(lang)
 
-    return load_language_file(DEFAULT_LANGUAGE)
+    return load_json_file(DEFAULT_LANGUAGE)
 
 
-def load_language_file(file_name: str) -> dict:
+def load_json_file(file_name: str) -> dict:
     """Loads the json file
 
     Parameters
