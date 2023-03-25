@@ -444,11 +444,11 @@ There are five types of conditions. These are:
   }
 }
 ```
-The **EXISTENCE** type of conditions checks wether the variable is existent or not. It contains ```scope``` and ```value``` fields.\
+The **EXISTENCE** type of conditions checks whether the variable is existent or not. It contains ```scope``` and ```value``` fields.\
 The ```scope``` defines the variable that the condition is about to check.\
 The ```value``` can be either ```true``` or ```false```.
-- Specifying the value to be ```true``` we are checking wether the variable specified in ```scope``` **does exist**.
-- Specifying the value to be ```false``` we are checking wether the variable specified in ```scope``` **does not exist**.
+- Specifying the value to be ```true``` we are checking whether the variable specified in ```scope``` **does exist**.
+- Specifying the value to be ```false``` we are checking whether the variable specified in ```scope``` **does not exist**.
   
 [Examples](#existence-examples)
 
@@ -463,7 +463,7 @@ The ```value``` can be either ```true``` or ```false```.
   }
 }
 ```
-The **VALUE** type of conditions checks wether the variable is equal to the ```value``` field. It contains ```scope``` and ```value``` fields.\
+The **VALUE** type of conditions checks whether the variable is equal to the ```value``` field. It contains ```scope``` and ```value``` fields.\
 The ```scope``` defines the variable that the condition is about to check.\
 The ```value``` field can be a number, text, boolean or any other type of value.\
 [Examples](#value-examples)
@@ -478,7 +478,7 @@ The ```value``` field can be a number, text, boolean or any other type of value.
   }
 }
 ```
-The **AND** condition check wether **all** of the conditions specified in the ```conditions``` field are satisfied. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
+The **AND** condition check whether **all** of the conditions specified in the ```conditions``` field are satisfied. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
 The ```conditions``` field is an array of conditions.\
 [Examples](#and-examples)
 
@@ -492,7 +492,7 @@ The ```conditions``` field is an array of conditions.\
   }
 }
 ```
-The **OR** condition check wether **atleast one** of the conditions specified in the ```conditions``` field is satisfied. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
+The **OR** condition check whether **atleast one** of the conditions specified in the ```conditions``` field is satisfied. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
 The ```conditions``` field is an array of conditions.\
 [Examples](#or-examples)
 
@@ -729,7 +729,7 @@ These examples are working with conditions, if you haven't already studied the [
     }
   }
   ```
-  In this example, there are two variants specified in the ```admission``` block. Both variant conditions check the existence of ```admission_nihss``` and ```aspects_score``` at the same time. Notice that the conditions specify wether we check that the existence is true or the existence is false.
+  In this example, there are two variants specified in the ```admission``` block. Both variant conditions check the existence of ```admission_nihss``` and ```aspects_score``` at the same time. Notice that the conditions specify whether we check that the existence is true or the existence is false.
   - If both ```admission_nihss``` and ```aspects_score``` values are **not** existent.\
     Generated text is: ```NIHSS and ASPECT not performed. ```
   - If the ```admission_nihss``` value is existent and its value is ```3```, and ```aspects_score``` value is **not** existent.\
@@ -871,7 +871,7 @@ These examples are working with conditions, if you haven't already studied the [
     "text": "Defined scope exists."
   }
   ```
-  Our scope for this example is ```scopeOfVariable``` and the value is ```true```. Since the value is ```true``` we check wether our scope **exists**.
+  Our scope for this example is ```scopeOfVariable``` and the value is ```true```. Since the value is ```true``` we check whether our scope **exists**.
   - If ```scopeOfVariable``` is defined and has a non-empty value, the condition is met and we generate the specified ```text```.
   - If ```scopeOfVariable``` is not defined or has a empty value, the condition is not met and we skip the generation of ```text```.
 
@@ -886,7 +886,7 @@ These examples are working with conditions, if you haven't already studied the [
     "text": "Defined scope does not exist."
   }
   ```
-  Our scope for this example is ```scopeOfVariable``` and the value is ```false```. Since the value is ```false``` we check wether our scope **does not exist**.
+  Our scope for this example is ```scopeOfVariable``` and the value is ```false```. Since the value is ```false``` we check whether our scope **does not exist**.
   - If ```scopeOfVariable``` is defined and has a non-empty value, the condition is not met and we skip the generation of ```text```.
   - If ```scopeOfVariable``` is not defined or has a empty value, the condition is met and we generate the specified ```text```.
 
@@ -903,7 +903,7 @@ These examples are working with conditions, if you haven't already studied the [
     }
   }
   ```
-  Our scope for this example is ```scopeOfVariable``` and the value is ```true```. Since the value is ```true``` we check wether our scope **exists**.
+  Our scope for this example is ```scopeOfVariable``` and the value is ```true```. Since the value is ```true``` we check whether our scope **exists**.
   - If ```scopeOfVariable``` is defined and has a non-empty value, the condition is met and we continue with executing the following ```customNamedBlock```.
   - If ```scopeOfVariable``` is not defined or has a empty value, the condition is not met and we skip the execution of the following ```customNamedBlock```.
 
