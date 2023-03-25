@@ -5,7 +5,7 @@ import logging
 from app.generator import MedicalRecordsGenerator
 from app.language import Language
 from data.models import Diagnosis, Discharge, Etiology, PostStrokeComplications, PostAcuteCare, Treatment, Admission, \
-    Onset, Patient, Thrombolysis, Thrombectomy, MedicalRecord
+    Onset, Patient, Thrombolysis, Thrombectomy, MedicalRecord, FollowUpImaging
 from utils.load_utils import load_json_file
 
 
@@ -263,6 +263,22 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
             self.assertEqual("2B", result.thrombectomy.tici_score)
             self.assertEqual("tici_score_2B", result.thrombectomy.tici_score_meaning)
 
+    def test_post_treatment_imaging_empty(self):
+        self.generator.data = {}
+
+        result = self.generator.create_follow_up_imaging()
+
+        self.assertIsInstance(result, FollowUpImaging)
+
+    def test_post_treatment_imaging_with_data(self):
+        self.generator.data = self.data
+
+        result = self.generator.create_follow_up_imaging()
+
+        self.assertIsInstance(result, FollowUpImaging)
+        self.assertEqual("no", result.imaging_type)
+        self.assertEqual("brain infarct", result.findings)
+
     def test_post_acute_care_empty(self):
         self.generator.data = {}
 
@@ -277,8 +293,6 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
 
         self.assertIsInstance(result, PostAcuteCare)
         self.assertEqual("no AF", result.afib_flutter)
-        self.assertEqual("brain infarct", result.findings)
-        self.assertEqual("no", result.imaging_type)
         self.assertEqual("yes", result.swallowing_screening)
         self.assertEqual("other", result.swallowing_screening_type)
         self.assertTrue(result.physiotherapy)
@@ -368,6 +382,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
                     "onset": "Onset on Jun 10 2022. ",
                     "admission": "ASPECT score 10. ",
                     "treatment": "Treatment showing dtg 56",
+                    "follow_up_imaging": "",
                     "post_acute_care": "Received physiotherapy, and speechtherapy. ",
                     "post_stroke_complications": "Post stroke complications: "
                                                  "pneumonia, deep vein thrombosis (DVT), and drip site sepsis. ",

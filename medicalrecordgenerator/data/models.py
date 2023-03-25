@@ -121,15 +121,15 @@ class Treatment:
         self.thrombectomy = thrombectomy
 
 
-# class FollowUpImaging:
-#     """
-#     A class representing follow-up imaging. Is part of MedicalRecord.
-#
-#     """
-#
-#     def __init__(self, findings: Optional[str], imaging_type: Optional[str]):
-#         self.findings = findings
-#         self.imaging_type = imaging_type
+class FollowUpImaging:
+    """
+    A class representing follow-up imaging. Is part of MedicalRecord.
+
+    """
+
+    def __init__(self, findings: Optional[str], imaging_type: Optional[str]):
+        self.findings = findings
+        self.imaging_type = imaging_type
 
 
 class PostAcuteCare:
@@ -138,13 +138,11 @@ class PostAcuteCare:
 
     """
 
-    def __init__(self, afib_flutter: Optional[str], findings: Optional[str], imaging_type: Optional[str],
+    def __init__(self, afib_flutter: Optional[str],
                  swallowing_screening: Optional[str], swallowing_screening_type: Optional[str],
                  physiotherapy_received: Optional[str], ergotherapy_received: Optional[str],
                  speechtherapy_received: Optional[str], therapies: Optional[str]):
         self.afib_flutter = afib_flutter
-        self.findings = findings
-        self.imaging_type = imaging_type
         self.swallowing_screening = swallowing_screening
         self.swallowing_screening_type = swallowing_screening_type
         self.physiotherapy = physiotherapy_received is not None and physiotherapy_received == "yes"
@@ -209,14 +207,15 @@ class MedicalRecord:
     """
 
     def __init__(self, diagnosis: Diagnosis, patient: Patient, onset: Onset, admission: Admission, treatment: Treatment,
-                 post_acute_care: Optional[PostAcuteCare], post_stroke_complications: PostStrokeComplications,
-                 etiology: Optional[Etiology], discharge: Discharge):
+                 follow_up_imaging: Optional[FollowUpImaging], post_acute_care: Optional[PostAcuteCare],
+                 post_stroke_complications: PostStrokeComplications, etiology: Optional[Etiology],
+                 discharge: Discharge):
         self.diagnosis = diagnosis
         self.patient = patient
         self.onset = onset
         self.admission = admission
         self.treatment = treatment
-        # self.follow_up_imaging = follow_up_imaging
+        self.follow_up_imaging = follow_up_imaging
         self.post_acute_care = post_acute_care
         self.post_stroke_complications = post_stroke_complications
         self.etiology = etiology
@@ -236,7 +235,7 @@ class MedicalRecord:
             "onset": vars(self.onset) if self.onset else {},
             "admission": vars(self.admission) if self.admission else {},
             "treatment": vars(self.treatment) if self.treatment else {},
-            # "follow_up_imaging": vars(self.follow_up_imaging) if self.follow_up_imaging else {},
+            "follow_up_imaging": vars(self.follow_up_imaging) if self.follow_up_imaging else {},
             "post_acute_care": vars(self.post_acute_care) if self.post_acute_care else {},
             "post_stroke_complications": vars(self.post_stroke_complications) if self.post_stroke_complications else {},
             "etiology": vars(self.etiology) if self.etiology else {},

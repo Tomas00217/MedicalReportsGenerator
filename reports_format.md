@@ -74,6 +74,9 @@ The following is the default structure that every dictionary, that is to be used
   "treatment": {
     "variants": []    
   },
+  "follow_up_imaging": {
+    "variants": []
+  },
   "post_acute_care": {
     "variants": [] 
   },
@@ -293,7 +296,7 @@ The following is the default structure that every dictionary, that is to be used
 
 #### **Blocks**
 
-The whole generated report is divided into nine separate blocks. These blocks are: ```diagnosis, patient, onset, admission, treatment, post_acute_care, post_stroke_complications, etiology and discharge```. Every dictionary should contain all of the blocks even if left empty. \
+The whole generated report is divided into ten separate blocks. These blocks are: ```diagnosis, patient, onset, admission, treatment, follow_up_imaging, post_acute_care, post_stroke_complications, etiology and discharge```. Every dictionary should contain all of the blocks even if left empty. \
 Every block can contain multiple [variants](#variants) which specify the generated sentences.
 
 #### **Settings**
@@ -556,9 +559,9 @@ List of all scopes:
 | treatment.dio                            | integer                                                                                                                                                                      |
 | treatment.thrombectomy_transport         | [True, False]                                                                                                                                                                |
 | treatment.tici_score_meaning             | ['tici_score_0', 'tici_score_1', 'tici_score_2A', 'tici_score_2B', 'tici_score_2C', 'tici_score_3']                                                                          |
+| follow_up_imaging.findings               | concatenated string                                                                                                                                                          |
+| follow_up_imaging.imaging_type           | ['CT', 'MR', 'no']                                                                                                                                                           |
 | post_acute_care.afib_flutter             | ['known AF', 'detected', 'no AF', 'not screened']                                                                                                                            |
-| post_acute_care.findings                 | concatenated string                                                                                                                                                          |
-| post_acute_care.imaging_type             | ['CT', 'MR', 'no']                                                                                                                                                           |
 | post_acute_care.swallowing_screening     | ['yes', 'no', 'not applicable']                                                                                                                                              |
 | post_acute_care.swallowing_screening_type| ['GUSS', 'ASSIST', 'water test', 'other']                                                                                                                                    |
 | post_acute_care.physiotherapy            | [True, False]                                                                                                                                                                |

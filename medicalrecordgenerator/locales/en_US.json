@@ -553,6 +553,36 @@
       }
     ]
   },
+  "follow_up_imaging": {
+    "variants": [
+      {
+        "condition": {
+          "type": "EXISTENCE",
+          "scope": "follow_up_imaging.findings",
+          "value": true
+        },
+        "text": "On follow up ${follow_up_imaging.imaging_type} found ${follow_up_imaging.findings}. "
+      },
+      {
+        "condition": {
+          "type": "OR",
+          "conditions": [
+            {
+              "type": "EXISTENCE",
+              "scope": "follow_up_imaging.imaging_type",
+              "value": false
+            },
+            {
+              "type": "VALUE",
+              "scope": "follow_up_imaging.imaging_type",
+              "value": "no"
+            }
+          ]
+        },
+        "text": "No follow up imaging performed. "
+      }
+    ]
+  },
   "post_acute_care": {
     "variants": [
       {
@@ -581,32 +611,6 @@
             }
           ]
         }
-      },
-      {
-        "condition": {
-          "type": "EXISTENCE",
-          "scope": "post_acute_care.findings",
-          "value": true
-        },
-        "text": "On follow up ${post_acute_care.imaging_type} found ${post_acute_care.findings}. "
-      },
-      {
-        "condition": {
-          "type": "OR",
-          "conditions": [
-            {
-              "type": "EXISTENCE",
-              "scope": "post_acute_care.imaging_type",
-              "value": false
-            },
-            {
-              "type": "VALUE",
-              "scope": "post_acute_care.imaging_type",
-              "value": "no"
-            }
-          ]
-        },
-        "text": "No follow up imaging performed. "
       },
       {
         "condition": {

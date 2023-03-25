@@ -117,9 +117,9 @@ class TreatmentData(DataclassFromDict):
     thrombectomy_transport: bool = False
 
 
-# @dataclass()
-# class ImagingData(DataclassFromDict):
-#     imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
+@dataclass()
+class ImagingData(DataclassFromDict):
+    imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
 
 
 @dataclass()
@@ -136,7 +136,6 @@ class ImagingTreatmentData(DataclassFromDict):
 @dataclass()
 class PostAcuteCareData(DataclassFromDict):
     afib_flutter: Optional[str] = field_from_dict("afib_flutter", default=None)
-    imaging_type: Optional[str] = field_from_dict("post_treatment_imaging", default=None)
     swallowing_screening: Optional[str] = field_from_dict("swallowing_screening_done", default=None)
     swallowing_screening_type: Optional[str] = field_from_dict("swallowing_screening_type", default=None)
     physiotherapy_received: Optional[str] = field_from_dict(default=None)

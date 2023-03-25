@@ -8,9 +8,9 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from app.language import Language
 from data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
     PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
-    DiagnosisOcclusionsData, ImagingTreatmentData, RiskFactorsData, PriorTreatmentData, PatientData
+    DiagnosisOcclusionsData, ImagingTreatmentData, RiskFactorsData, PriorTreatmentData, PatientData, ImagingData
 from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
-    PostAcuteCare, PostStrokeComplications, Etiology, Discharge, MedicalRecord, Patient
+    PostAcuteCare, PostStrokeComplications, Etiology, Discharge, MedicalRecord, Patient, FollowUpImaging
 
 
 class MyTemplate(Template):
@@ -148,9 +148,9 @@ class MedicalRecordsGenerator:
             "treatment": MyTemplate(self.language.treatment.get_block_result(variables)
                                     if medical_record.treatment else "").safe_substitute(scoped_values),
 
-            # "follow_up_imaging": MyTemplate(self.language.follow_up_imaging.get_block_result(variables)
-            #                                 if self.medical_record.follow_up_imaging else "")
-            # .safe_substitute(scoped_values),
+            "follow_up_imaging": MyTemplate(self.language.follow_up_imaging.get_block_result(variables)
+                                            if medical_record.follow_up_imaging else "")
+            .safe_substitute(scoped_values),
 
             "post_acute_care": MyTemplate(self.language.post_acute_care.get_block_result(variables)
                                           if medical_record.post_acute_care else "")
@@ -183,7 +183,7 @@ class MedicalRecordsGenerator:
                              self.create_onset(),
                              self.create_admission(),
                              self.create_treatment(),
-                             # self.create_follow_up_imaging(),
+                             self.create_follow_up_imaging(),
                              self.create_post_acute_care(),
                              self.create_post_stroke_complications(),
                              self.create_etiology(),
@@ -307,28 +307,28 @@ class MedicalRecordsGenerator:
 
         return treatment
 
-    # def create_follow_up_imaging(self) -> Optional[FollowUpImaging]:
-    #     """Creates the FollowUpImaging part of MedicalRecord
-    #
-    #     Returns
-    #     -------
-    #     FollowUpImaging
-    #         The follow-up imaging part medical record with all the template values yet to be replaced.
-    #         If the patient was transported and therefore no follow-up imaging could be performed
-    #
-    #     """
-    #
-    #     if self.transported:
-    #         return None
-    #
-    #     imaging_data = ImagingData.from_dict(self.data)
-    #     imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
-    #
-    #     imaging = FollowUpImaging(self.parse_data(
-    #         self.get_variables("post_treatment_findings"), vars(imaging_treatment_data)),
-    #         imaging_data.imaging_type)
-    #
-    #     return imaging
+    def create_follow_up_imaging(self) -> Optional[FollowUpImaging]:
+        """Creates the FollowUpImaging part of MedicalRecord
+
+        Returns
+        -------
+        FollowUpImaging
+            The follow-up imaging part medical record with all the template values yet to be replaced.
+            If the patient was transported and therefore no follow-up imaging could be performed
+
+        """
+
+        if self.transported:
+            return None
+
+        imaging_data = ImagingData.from_dict(self.data)
+        imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
+
+        imaging = FollowUpImaging(self.parse_data(
+            self.get_variables("post_treatment_findings"), vars(imaging_treatment_data)),
+            imaging_data.imaging_type)
+
+        return imaging
 
     def create_post_acute_care(self) -> Optional[PostAcuteCare]:
         """Creates the PostAcuteCare part of MedicalRecord
@@ -345,12 +345,8 @@ class MedicalRecordsGenerator:
             return None
 
         post_acute_care_data = PostAcuteCareData.from_dict(self.data)
-        imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
 
         post_acute_care = PostAcuteCare(post_acute_care_data.afib_flutter,
-                                        self.parse_data(self.get_variables("post_treatment_findings"),
-                                                        vars(imaging_treatment_data)),
-                                        post_acute_care_data.imaging_type,
                                         post_acute_care_data.swallowing_screening,
                                         post_acute_care_data.swallowing_screening_type,
                                         post_acute_care_data.physiotherapy_received,
