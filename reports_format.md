@@ -56,7 +56,9 @@ The file name should correspond to the language code of the language the diction
 
 ### **Default structure**
 
-The following is the default structure that every dictionary, that is to be used by this application, should follow. *Disclaimer: For the generator to work correctly do not remove any of the parts of the following json file.*
+The following is the default structure that every dictionary, that is to be used by this application, should follow. You can validate your json againts the schema defined [here](schema.json) using an [online-validator](https://www.jsonschemavalidator.net/).
+
+*Disclaimer: For the generator to work correctly do not remove any of the parts of the following json file.*
 ```json
 {
   "diagnosis": {

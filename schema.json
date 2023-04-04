@@ -1,0 +1,384 @@
+{
+    "$schema": "https://json-schema.org/draft-04/schema",
+    "title": "Input format",
+    "description": "Input format for the generator",
+    "type": "object",
+    "properties": {
+        "diagnosis": {
+            "$ref": "#/definitions/block"
+        },
+        "patient": {
+            "$ref": "#/definitions/block"
+        },
+        "onset": {
+            "$ref": "#/definitions/block"
+        },
+        "admission": {
+            "$ref": "#/definitions/block"
+        },
+        "treatment": {
+            "$ref": "#/definitions/block"
+        },
+        "follow_up_imaging": {
+            "$ref": "#/definitions/block"
+        },
+        "post_acute_care": {
+            "$ref": "#/definitions/block"
+        },
+        "post_stroke_complications": {
+            "$ref": "#/definitions/block"
+        },
+        "etiology": {
+            "$ref": "#/definitions/block"
+        },
+        "discharge": {
+            "$ref": "#/definitions/block"
+        },
+        "settings" : {
+            "type": "object",
+            "properties": {
+                "date_format": { "type": "string" },
+                "time_format": { "type": "string" }
+            },
+            "additionalProperties": false,
+            "required": [ "date_format", "time_format" ]
+        },
+        "variables": {
+            "type": "object",
+            "properties": {
+                "imaging_type": {
+                    "type": "object",
+                    "properties": {
+                        "CT": { "type": "string" },
+                        "CT CTA": { "type": "string" },
+                        "CT CTA perfusion": { "type": "string" },
+                        "MR DWI/FLAIR": { "type": "string" },
+                        "MR DWI/FLAIR MRA": { "type": "string" },
+                        "MR DWI/FLAIR MRA perfusion": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "minProperties": 6
+                },
+                "occlusion_position": {
+                    "type": "object",
+                    "properties": {
+                        "occlusion_on_angio": { "type": "string" },
+                        "occlusion_left_mca_m1": { "type": "string" },
+                        "occlusion_left_mca_m2": { "type": "string" },
+                        "occlusion_left_mca_m3": { "type": "string" },
+                        "occlusion_left_aca": { "type": "string" },
+                        "occlusion_left_pca_p1": { "type": "string" },
+                        "occlusion_left_pca_p2": { "type": "string" },
+                        "occlusion_left_cae": { "type": "string" },
+                        "occlusion_left_cai": { "type": "string" },
+                        "occlusion_right_mca_m1": { "type": "string" },
+                        "occlusion_right_mca_m2": { "type": "string" },
+                        "occlusion_right_mca_m3": { "type": "string" },
+                        "occlusion_right_aca": { "type": "string" },
+                        "occlusion_right_pca_p1": { "type": "string" },
+                        "occlusion_right_pca_p2": { "type": "string" },
+                        "occlusion_right_cae": { "type": "string" },
+                        "occlusion_right_cai": { "type": "string" },
+                        "occlusion_ba": { "type": "string" },
+                        "occlusion_va": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "occlusion_on_angio", "occlusion_left_mca_m1", "occlusion_left_mca_m2", "occlusion_left_mca_m3", "occlusion_left_aca", "occlusion_left_pca_p1", "occlusion_left_pca_p2", "occlusion_left_cae", "occlusion_left_cai", "occlusion_right_mca_m1", "occlusion_right_mca_m2", "occlusion_right_mca_m3", "occlusion_right_aca", "occlusion_right_pca_p1", "occlusion_right_pca_p2", "occlusion_right_cae", "occlusion_right_cai", "occlusion_ba", "occlusion_va" ]
+                },
+                "admission_type": {
+                    "type": "object",
+                    "properties": {
+                        "icu/stroke unit": { "type": "string" },
+                        "monitored bed": { "type": "string" },
+                        "standard bed": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "icu/stroke unit", "monitored bed", "standard bed" ]
+                },
+                "ivt_treatment": {
+                    "type": "object",
+                    "properties": {
+                        "alteplase": { "type": "string" },
+                        "tenecteplase": { "type": "string" },
+                        "streptokinase": { "type": "string" },
+                        "staphylokinase": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "alteplase", "tenecteplase", "streptokinase", "staphylokinase" ]
+                },
+                "no_thrombolysis_reason": {
+                    "type": "object",
+                    "properties": {
+                        "done elsewhere": { "type": "string" },
+                        "time window": { "type": "string" },
+                        "mild deficit": { "type": "string" },
+                        "consent": { "type": "string" },
+                        "cost of treatment": { "type": "string" },
+                        "transferred elsewhere": { "type": "string" },
+                        "only MT": { "type": "string" },
+                        "not available": { "type": "string" },
+                        "other": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "done elsewhere", "time window", "mild deficit", "consent", "cost of treatment", "transferred elsewhere", "only MT", "not available", "other" ]
+                },
+                "no_thrombectomy_reason": {
+                    "type": "object",
+                    "properties": {
+                        "done elsewhere": { "type": "string" },
+                        "time window": { "type": "string" },
+                        "mild deficit": { "type": "string" },
+                        "large vessel occlusion": { "type": "string" },
+                        "disability": { "type": "string" },
+                        "consent": { "type": "string" },
+                        "cost of treatment": { "type": "string" },
+                        "transferred elsewhere": { "type": "string" },
+                        "not available": { "type": "string" },
+                        "technically not possible": { "type": "string" },
+                        "other": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "done elsewhere", "time window", "mild deficit", "large vessel occlusion", "disability", "consent", "cost of treatment", "transferred elsewhere", "not available", "technically not possible", "other" ]
+                },
+                "post_treatment_findings": {
+                    "type": "object",
+                    "properties": {
+                        "post_treatment_infarction": { "type": "string" },
+                        "post_treatment_no_bleeding": { "type": "string" },
+                        "post_treatment_remote": { "type": "string" },
+                        "post_treatment_hi_i": { "type": "string" },
+                        "post_treatment_hi_ii": { "type": "string" },
+                        "post_treatment_ph_i": { "type": "string" },
+                        "post_treatment_ph_ii": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "post_treatment_infarction", "post_treatment_no_bleeding", "post_treatment_remote", "post_treatment_hi_i", "post_treatment_hi_ii", "post_treatment_ph_i", "post_treatment_ph_ii" ]
+                },
+                "post_stroke_complications": {
+                    "type": "object",
+                    "properties": {
+                        "post_stroke_pneumonia": { "type": "string" },
+                        "post_stroke_dvt": { "type": "string" },
+                        "post_stroke_embolism": { "type": "string" },
+                        "post_stroke_infection": { "type": "string" },
+                        "post_stroke_sores": { "type": "string" },
+                        "post_stroke_sepsis": { "type": "string" },
+                        "post_stroke_extension": { "type": "string" },
+                        "post_stroke_other": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "post_stroke_pneumonia", "post_stroke_dvt", "post_stroke_embolism", "post_stroke_infection", "post_stroke_sores", "post_stroke_sepsis", "post_stroke_extension", "post_stroke_other" ]
+                },
+                "therapies": {
+                    "type": "object",
+                    "properties": {
+                        "physiotherapy": { "type": "string" },
+                        "ergotherapy": { "type": "string" },
+                        "speechtherapy": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "physiotherapy", "ergotherapy", "speechtherapy" ]
+                },
+                "etiology": {
+                    "type": "object",
+                    "properties": {
+                        "etiology_large_artery": { "type": "string" },
+                        "etiology_cardioembolism": { "type": "string" },
+                        "etiology_other": { "type": "string" },
+                        "etiology_cryptogenic_stroke": { "type": "string" },
+                        "etiology_small_vessel": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "etiology_large_artery", "etiology_cardioembolism", "etiology_other", "etiology_cryptogenic_stroke", "etiology_small_vessel" ]
+                },
+                "discharge_destination": {
+                    "type": "object",
+                    "properties": {
+                        "home": { "type": "string" },
+                        "same hospital": { "type": "string" },
+                        "another hospital": { "type": "string" },
+                        "social care": { "type": "string" },
+                        "dead": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "home", "same hospital", "another hospital", "social care", "dead" ]
+                },
+                "medications": {
+                    "type": "object",
+                    "properties": {
+                        "discharge_antidiabetics": { "type": "string" },
+                        "discharge_antihypertensives": { "type": "string" },
+                        "discharge_asa": { "type": "string" },
+                        "discharge_cilostazol": { "type": "string" },
+                        "discharge_clopidrogel": { "type": "string" },
+                        "discharge_ticagrelor": { "type": "string" },
+                        "discharge_ticlopidine": { "type": "string" },
+                        "discharge_prasugrel": { "type": "string" },
+                        "discharge_dipyridamol": { "type": "string" },
+                        "discharge_warfarin": { "type": "string" },
+                        "discharge_dabigatran": { "type": "string" },
+                        "discharge_rivaroxaban": { "type": "string" },
+                        "discharge_apixaban": { "type": "string" },
+                        "discharge_edoxaban": { "type": "string" },
+                        "discharge_statin": { "type": "string" },
+                        "discharge_heparin": { "type": "string" },
+                        "discharge_other": { "type": "string" },
+                        "discharge_anticoagulant_recommended": { "type": "string" },
+                        "discharge_other_antiplatelet": { "type": "string" },
+                        "discharge_other_anticoagulant": { "type": "string" },
+                        "discharge_any_anticoagulant": { "type": "string" },
+                        "discharge_any_antiplatelet": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "discharge_antidiabetics", "discharge_antihypertensives", "discharge_asa", "discharge_cilostazol", "discharge_clopidrogel", "discharge_ticagrelor", "discharge_ticlopidine", "discharge_prasugrel", "discharge_dipyridamol", "discharge_warfarin", "discharge_dabigatran", "discharge_rivaroxaban", "discharge_apixaban", "discharge_edoxaban", "discharge_statin", "discharge_heparin", "discharge_other", "discharge_anticoagulant_recommended", "discharge_other_antiplatelet", "discharge_other_anticoagulant", "discharge_any_anticoagulant", "discharge_any_antiplatelet" ]
+                },
+                "tici_score_meaning": {
+                    "type": "object",
+                    "properties": {
+                        "tici_score_0": { "type": "string" },
+                        "tici_score_1": { "type": "string" },
+                        "tici_score_2A": { "type": "string" },
+                        "tici_score_2B": { "type": "string" },
+                        "tici_score_2C": { "type": "string" },
+                        "tici_score_3": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "tici_score_0", "tici_score_1", "tici_score_2A", "tici_score_2B", "tici_score_2C", "tici_score_3" ]
+                },
+                "prior_treatment": {
+                    "type": "object",
+                    "properties": {
+                        "before_onset_antidiabetics": { "type": "string" },
+                        "before_onset_antihypertensives": { "type": "string" },
+                        "before_onset_asa": { "type": "string" },
+                        "before_onset_cilostazol": { "type": "string" },
+                        "before_onset_clopidrogel": { "type": "string" },
+                        "before_onset_ticagrelor": { "type": "string" },
+                        "before_onset_ticlopidine": { "type": "string" },
+                        "before_onset_prasugrel": { "type": "string" },
+                        "before_onset_dipyridamol": { "type": "string" },
+                        "before_onset_warfarin": { "type": "string" },
+                        "before_onset_dabigatran": { "type": "string" },
+                        "before_onset_rivaroxaban": { "type": "string" },
+                        "before_onset_apixaban": { "type": "string" },
+                        "before_onset_edoxaban": { "type": "string" },
+                        "before_onset_statin": { "type": "string" },
+                        "before_onset_heparin": { "type": "string" },
+                        "before_onset_other": { "type": "string" },
+                        "before_onset_anticoagulant_recommended": { "type": "string" },
+                        "before_onset_contraception": { "type": "string" },
+                        "before_onset_other_antiplatelet": { "type": "string" },
+                        "before_onset_other_anticoagulant": { "type": "string" },
+                        "before_onset_any_anticoagulant": { "type": "string" },
+                        "before_onset_any_antiplatelet": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "before_onset_antidiabetics", "before_onset_antihypertensives", "before_onset_asa", "before_onset_cilostazol", "before_onset_clopidrogel", "before_onset_ticagrelor", "before_onset_ticlopidine", "before_onset_prasugrel", "before_onset_dipyridamol", "before_onset_warfarin", "before_onset_dabigatran", "before_onset_rivaroxaban", "before_onset_apixaban", "before_onset_edoxaban", "before_onset_statin", "before_onset_heparin", "before_onset_other", "before_onset_anticoagulant_recommended", "before_onset_contraception", "before_onset_other_antiplatelet", "before_onset_other_anticoagulant", "before_onset_any_anticoagulant", "before_onset_any_antiplatelet"]
+                },
+                "risk_factors": {
+                    "type": "object",
+                    "properties": {
+                        "risk_hypertension": { "type": "string" },
+                        "risk_diabetes": { "type": "string" },
+                        "risk_hyperlipidemia": { "type": "string" },
+                        "risk_atrial_fibrilation": { "type": "string" },
+                        "risk_congestive_heart_failure": { "type": "string" },
+                        "risk_smoker": { "type": "string" },
+                        "risk_previous_stroke": { "type": "string" },
+                        "risk_previous_ischemic_stroke": { "type": "string" },
+                        "risk_previous_hemorrhagic_stroke": { "type": "string" },
+                        "risk_coronary_artery_disease_or_myocardial_infarction": { "type": "string" },
+                        "risk_covid": { "type": "string" },
+                        "risk_hiv": { "type": "string" },
+                        "risk_other": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "risk_hypertension", "risk_diabetes", "risk_hyperlipidemia", "risk_atrial_fibrilation", "risk_congestive_heart_failure", "risk_smoker", "risk_previous_stroke", "risk_previous_ischemic_stroke", "risk_previous_hemorrhagic_stroke", "risk_coronary_artery_disease_or_myocardial_infarction", "risk_covid", "risk_hiv", "risk_other"]
+                },
+                "sex": {
+                    "type": "object",
+                    "properties": {
+                        "male": { "type": "string" },
+                        "female": { "type": "string" },
+                        "other": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "male", "female", "other" ]
+                },
+                "department_type": {
+                    "type": "object",
+                    "properties": {
+                        "neurology": { "type": "string" },
+                        "neurosurgery": { "type": "string" },
+                        "critical care/icu": { "type": "string" },
+                        "internal medicine": { "type": "string" },
+                        "other": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "neurology", "neurosurgery", "critical care/icu", "internal medicine", "other" ]
+                },
+                "arrival_mode": {
+                    "type": "object",
+                    "properties": {
+                        "ems": { "type": "string" },
+                        "private transportation": { "type": "string" },
+                        "another hospital": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "ems", "private transportation", "another hospital"]
+                },
+                "swallowing_screening_type": {
+                    "type": "object",
+                    "properties": {
+                        "GUSS": { "type": "string" },
+                        "ASSIST": { "type": "string" },
+                        "water test": { "type": "string" },
+                        "other": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": [ "GUSS", "ASSIST", "water test", "other"]
+                }
+            }
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "diagnosis", "patient", "onset", "admission", "treatment", "follow_up_imaging", "post_acute_care", "post_stroke_complications", "etiology", "discharge", "settings", "variables" ],
+
+    "definitions": {
+        "block": {
+            "type": "object",
+            "properties": {
+                "variants": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "condition": { "$ref": "#/definitions/condition" },
+                            "text": { "type": "string" }
+                        },
+                        "patternProperties": {
+                            "^(?!condition$|text$).*": {
+                                "$ref": "#/definitions/block"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [ "condition" ]
+                    }
+                }
+            },
+            "required": [ "variants" ]
+        },
+      	"condition": {
+            "type": "object",
+            "properties": {
+                "type": { "enum": [ "EXISTENCE", "VALUE", "AND", "OR", "NOT" ] },
+                "scope": { "type": "string" },
+                "value": {},
+                "conditions": { 
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/condition" }
+                }
+            }
+        }
+    }
+  }
