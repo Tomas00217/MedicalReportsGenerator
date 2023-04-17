@@ -50,7 +50,14 @@ Alternatively, the full path to the poetry binary can always be used:
 All of this information and more can be found on the [official website](https://python-poetry.org/docs/).
 
 ## **Running the generator**
-Running via command line in the folder with the implementation 
+To run the implementation we first need to install the dependecies, that can be done running command via command line
+- ```poetry install```
+
+After that we can run the implementation via command line in the folder with the implementation (medicalrecordgenerator folder)
+
+- ```poetry run py .\__main__.py```
+
+or
 - ```& ((poetry env info --path) + "\Scripts\activate.ps1")```
 - ```python .\__main__.py```
 
