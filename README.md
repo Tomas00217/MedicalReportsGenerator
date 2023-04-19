@@ -61,11 +61,14 @@ or
 - ```& ((poetry env info --path) + "\Scripts\activate.ps1")```
 - ```python .\__main__.py```
 
+The production version of generator requires connection to a postgres database. For showcase purposes reading from csv with cmd option ```--csv``` is possible. 
+The prepared .csv contains 7 records that can be generated.
+
 Command line options:
 - ```-h```, ```--help``` -> Shows the help screen
 - ```-i```, ```--subject_id``` -> Specifies the id of the subject for which we want to generate the report. **None** by default, resulting in generating for every subject.
 - ```-l```, ```--language``` -> Specifies the language file which we want to use for the generation process. **en_US** by default.
-- ```--csv``` -> Option for test and showcase purposes reading from the csv instead of database.
+- ```--csv``` -> Option for test and showcase purposes reading from the prepared csv instead of database.
 
 ## **Writing report structure**
 The rules for writing the structure for reports is described [here](reports_format.md).
