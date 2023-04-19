@@ -31,7 +31,7 @@ def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None
     """
 
     if load_csv:
-        data = load_csv_file()
+        data = load_csv_file(subject_id)
     else:
         data = get_patient_info(subject_id)
 

@@ -1,6 +1,7 @@
 import json
 import glob
 import logging
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -60,7 +61,7 @@ def load_json_file(file_name: str) -> dict:
         return language
 
 
-def load_csv_file():
+def load_csv_file(subject_id: Optional[int]):
     """Loads data from csv file
 
     Returns
@@ -94,4 +95,8 @@ def load_csv_file():
                     })
     df = df.replace({np.nan: None})
     data = df.to_dict("records")
+
+    if subject_id is not None:
+        return [data[int(subject_id) - 1]]
+
     return data
