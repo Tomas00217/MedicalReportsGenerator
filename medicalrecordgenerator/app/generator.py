@@ -53,12 +53,6 @@ class MedicalRecordsGenerator:
         Creates the Etiology part of MedicalRecord
     create_discharge()
         Creates the Discharge part of MedicalRecord
-    create_diagnosis()
-        Creates the Diagnosis part of MedicalRecord
-    create_diagnosis()
-        Creates the Diagnosis part of MedicalRecord
-    create_diagnosis()
-        Creates the Diagnosis part of MedicalRecord
     get_variables()
         Gets the 'variables' sub dictionary from the dictionary
     get_setting()

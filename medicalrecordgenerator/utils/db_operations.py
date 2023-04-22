@@ -10,16 +10,16 @@ from utils.queries import select_all, select_by_id
 
 
 def get_patient_info(subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
-    """Creates connection to the database and fetches data about patient
+    """Creates a connection to the database and fetches data about patient
 
     Parameters
     ----------
     subject_id
-        The id of subject for which the medical record should be generated.
+        The id of the subject for which the medical report should be generated.
 
     Returns
     -------
-        Fetched data from database
+        Fetched data from the database
     """
 
     # Connect to the PostgreSQL database server
@@ -36,7 +36,7 @@ def get_patient_info(subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
             database=os.getenv("EMS_DB_NAME")
         )
 
-        # Register a customized adapter for PostgreSQL to load decimal as floats
+        # Register a customized adapter for PostgreSQL to load decimals as floats
         DEC2FLOAT = psycopg2.extensions.new_type(
             psycopg2.extensions.DECIMAL.values,
             'DEC2FLOAT',
@@ -62,7 +62,7 @@ def get_patient_info_from_db(conn, subject_id: Optional[int] = None) -> list[tup
     conn
         Connection to the database from which we create the cursor
     subject_id
-        The id of subject for which the medical record should be generated.
+        The id of subject for which the medical report should be generated.
 
     Returns
     -------
