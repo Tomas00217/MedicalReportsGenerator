@@ -7,7 +7,7 @@ DEFAULT_TIME_FORMAT = "%H:%M%p"
 
 class Diagnosis:
     """
-    A class representing diagnosis. Is part of MedicalRecord.
+    A class representing diagnosis. Is part of MedicalReport.
 
     """
 
@@ -25,7 +25,7 @@ class Diagnosis:
 
 class Patient:
     """
-    A class representing patient. Is part of MedicalRecord
+    A class representing patient. Is part of MedicalReport
 
     """
 
@@ -41,7 +41,7 @@ class Patient:
 
 class Onset:
     """
-    A class representing onset. Is part of MedicalRecord.
+    A class representing onset. Is part of MedicalReport.
 
     """
 
@@ -56,7 +56,7 @@ class Onset:
 
 class Admission:
     """
-    A class representing admission. Is part of MedicalRecord.
+    A class representing admission. Is part of MedicalReport.
 
     """
 
@@ -106,7 +106,7 @@ class Thrombectomy:
 
 class Treatment:
     """
-    A class representing treatment. Is part of MedicalRecord.
+    A class representing treatment. Is part of MedicalReport.
 
     """
 
@@ -123,7 +123,7 @@ class Treatment:
 
 class FollowUpImaging:
     """
-    A class representing follow-up imaging. Is part of MedicalRecord.
+    A class representing follow-up imaging. Is part of MedicalReport.
 
     """
 
@@ -134,7 +134,7 @@ class FollowUpImaging:
 
 class PostAcuteCare:
     """
-    A class representing post acute care. Is part of MedicalRecord.
+    A class representing post acute care. Is part of MedicalReport.
 
     """
 
@@ -153,7 +153,7 @@ class PostAcuteCare:
 
 class PostStrokeComplications:
     """
-    A class representing post stroke complications. Is part of MedicalRecord.
+    A class representing post stroke complications. Is part of MedicalReport.
 
     """
 
@@ -163,7 +163,7 @@ class PostStrokeComplications:
 
 class Etiology:
     """
-    A class representing etiology. Is part of MedicalRecord.
+    A class representing etiology. Is part of MedicalReport.
 
     """
 
@@ -182,7 +182,7 @@ class Etiology:
 
 class Discharge:
     """
-    A class representing discharge. Is part of MedicalRecord.
+    A class representing discharge. Is part of MedicalReport.
 
     """
 
@@ -200,9 +200,9 @@ class Discharge:
         self.discharge_medication = discharge_medication
 
 
-class MedicalRecord:
+class MedicalReport:
     """
-    A class representing the final Medical record composed of smaller parts.
+    A class representing the final Medical report composed of smaller parts.
 
     """
 

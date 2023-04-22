@@ -1,6 +1,6 @@
 import logging
 
-from app.generator import MedicalRecordsGenerator
+from app.generator import MedicalReportsGenerator
 from app.language import Language
 from utils import load_utils
 from utils.db_operations import get_patient_info
@@ -49,8 +49,8 @@ def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None
 
         # generate records
         for idx, row in enumerate(data):
-            generator = MedicalRecordsGenerator(language, row)
-            report = generator.generate_medical_record(TEMPLATES_PATH, DEFAULT_TEMPLATE)
+            generator = MedicalReportsGenerator(language, row)
+            report = generator.generate_medical_report(TEMPLATES_PATH, DEFAULT_TEMPLATE)
             print(report)
             """
             with open(f"med_record{idx+1}.txt", "w") as file:

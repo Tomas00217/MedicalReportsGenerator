@@ -2,7 +2,7 @@ import logging
 import unittest
 
 from app.language import Condition, ConditionEmpty, ConditionValue, ConditionExistence, ConditionAnd, ConditionOr, \
-    ConditionNot, Variant, MedicalRecordBlock
+    ConditionNot, Variant, MedicalReportBlock
 
 
 class TestCondition(unittest.TestCase):
@@ -399,7 +399,7 @@ class TestVariant(unittest.TestCase):
 
         result = Variant.parse_rest(data)
 
-        self.assertIsInstance(result, MedicalRecordBlock)
+        self.assertIsInstance(result, MedicalReportBlock)
 
     def test_parse_block_invalid(self):
         data = {"block": {}}
@@ -451,7 +451,7 @@ class TestVariant(unittest.TestCase):
 
 class TestMedicalRecordBlock(unittest.TestCase):
     def test_parse_single(self):
-        medical_record_block = MedicalRecordBlock("Test", [])
+        medical_record_block = MedicalReportBlock("Test", [])
 
         data = [{"condition": {"type": "VALUE", "scope": "scope2.b", "value": "hello"}, "text": "Some text"}]
 
@@ -461,7 +461,7 @@ class TestMedicalRecordBlock(unittest.TestCase):
         self.assertIsInstance(result[0], Variant)
 
     def test_parse_multiple(self):
-        medical_record_block = MedicalRecordBlock("Test", [])
+        medical_record_block = MedicalReportBlock("Test", [])
 
         data = [{"condition": {"type": "VALUE", "scope": "scope2.b", "value": "hello"},
                  "text": "Some text"},
@@ -479,7 +479,7 @@ class TestMedicalRecordBlock(unittest.TestCase):
         self.assertIsInstance(result[2], Variant)
 
     def test_parse_invalid(self):
-        medical_record_block = MedicalRecordBlock("Test", [])
+        medical_record_block = MedicalReportBlock("Test", [])
 
         data = [{}]
 
@@ -490,7 +490,7 @@ class TestMedicalRecordBlock(unittest.TestCase):
         variants = [{"condition": {"type": "VALUE", "scope": "scope.a", "value": "hello"},
                      "text": "Some text;"}]
 
-        medical_record_block = MedicalRecordBlock("Test", variants)
+        medical_record_block = MedicalReportBlock("Test", variants)
         data = {"scope": {"a": "hello"}}
 
         result = medical_record_block.get_block_result(data)
@@ -501,7 +501,7 @@ class TestMedicalRecordBlock(unittest.TestCase):
         variants = [{"condition": {"type": "VALUE", "scope": "scope.a", "value": "hello"},
                      "text": "Some text;"}]
 
-        medical_record_block = MedicalRecordBlock("Test", variants)
+        medical_record_block = MedicalReportBlock("Test", variants)
         data = {"scope": {"a": "hey"}}
 
         result = medical_record_block.get_block_result(data)
@@ -517,7 +517,7 @@ class TestMedicalRecordBlock(unittest.TestCase):
                      "block": {"variants": [{"condition": {"type": "EXISTENCE", "scope": "scope.b", "value": True},
                                              "text": "Some other text again;"}]}}]
 
-        medical_record_block = MedicalRecordBlock("Test", variants)
+        medical_record_block = MedicalReportBlock("Test", variants)
         data = {"scope": {"a": "hey", "b": 5}, "scope2": {"b": "aloha"}}
 
         result = medical_record_block.get_block_result(data)
@@ -533,7 +533,7 @@ class TestMedicalRecordBlock(unittest.TestCase):
                      "block": {"variants": [{"condition": {"type": "EXISTENCE", "scope": "scope.b", "value": True},
                                              "text": "Some other text again;"}]}}]
 
-        medical_record_block = MedicalRecordBlock("Test", variants)
+        medical_record_block = MedicalReportBlock("Test", variants)
         data = {"scope": {"a": "", "b": 5}, "scope2": {"b": "hello"}}
 
         result = medical_record_block.get_block_result(data)

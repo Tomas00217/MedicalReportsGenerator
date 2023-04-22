@@ -10,7 +10,7 @@ from data.data_objects import DiagnosisData, OnsetData, AdmissionData, Treatment
     PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData, RiskFactorsData, PriorTreatmentData, PatientData, ImagingData
 from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
-    PostAcuteCare, PostStrokeComplications, Etiology, Discharge, MedicalRecord, Patient, FollowUpImaging
+    PostAcuteCare, PostStrokeComplications, Etiology, Discharge, MedicalReport, Patient, FollowUpImaging
 
 
 class MyTemplate(Template):
@@ -21,38 +21,38 @@ class MyTemplate(Template):
     idpattern = r'(?-i:[._a-zA-Z][._a-zA-Z0-9]*)'
 
 
-class MedicalRecordsGenerator:
+class MedicalReportsGenerator:
     """
-    A class representing the medical record generator.
+    A class representing the medical report generator.
 
-    Serves to generate the medical record piece by piece.
+    Serves to generate the medical report piece by piece.
 
     Methods
     -------
-    generate_medical_record()
+    generate_medical_report()
         Loads the jinja2 template and renders the template with generated structure
     generate_structure()
-        Generates the whole structure of a medical record
+        Generates the whole structure of a medical report
     create_structure()
-        Creates the whole MedicalRecord from all of its parts
+        Creates the whole MedicalReport from all of its parts
     create_diagnosis()
-        Creates the Diagnosis part of MedicalRecord
+        Creates the Diagnosis part of MedicalReport
     create_onset()
-        Creates the Onset part of MedicalRecord
+        Creates the Onset part of MedicalReport
     create_admission()
-        Creates the Admission part of MedicalRecord
+        Creates the Admission part of MedicalReport
     create_treatment()
-        Creates the Treatment part of MedicalRecord
+        Creates the Treatment part of MedicalReport
     create_follow_up_imaging()
-        Creates the FollowUpImaging part of MedicalRecord
+        Creates the FollowUpImaging part of MedicalReport
     create_post_acute_care()
-        Creates the PostAcuteCare part of MedicalRecord
+        Creates the PostAcuteCare part of MedicalReport
     create_post_stroke_complications()
-        Creates the PostStrokeComplications part of MedicalRecord
+        Creates the PostStrokeComplications part of MedicalReport
     create_etiology()
-        Creates the Etiology part of MedicalRecord
+        Creates the Etiology part of MedicalReport
     create_discharge()
-        Creates the Discharge part of MedicalRecord
+        Creates the Discharge part of MedicalReport
     get_variables()
         Gets the 'variables' sub dictionary from the dictionary
     get_setting()
@@ -87,7 +87,7 @@ class MedicalRecordsGenerator:
         self.data = data
         self.transported = False
 
-    def generate_medical_record(self, path: str, file: str) -> str:
+    def generate_medical_report(self, path: str, file: str) -> str:
         """Loads the jinja2 template and renders the template with generated structure
 
         Parameters
@@ -99,80 +99,80 @@ class MedicalRecordsGenerator:
         Returns
         -------
         str
-            Generated medical record with all the values substituted
+            Generated medical report with all the values substituted
         """
 
         env = Environment(loader=FileSystemLoader(path), autoescape=select_autoescape())
         template = env.get_template(file)
 
-        record = self.generate_structure()
+        report = self.generate_structure()
 
-        return template.render(record=record)
+        return template.render(record=report)
 
     def generate_structure(self) -> dict:
-        """Generates the whole structure of a medical record with replaced string template values
+        """Generates the whole structure of a medical report with replaced string template values
 
         Returns
         -------
         dict
-            Medical record as a dict to be used for jinja2 template
+            Medical report as a dict to be used for jinja2 template
         """
 
-        medical_record = self.create_medical_record()
+        medical_report = self.create_medical_report()
 
-        # We create a deep copy of dictionary with variables from medical record for the purpose of condition evaluation
+        # We create a deep copy of dictionary with variables from medical report for the purpose of condition evaluation
         # while parsing, these variables are then translated and used for substitution
-        variables = copy.deepcopy(medical_record.to_dict())
-        translations = self.translate_variables(medical_record)
+        variables = copy.deepcopy(medical_report.to_dict())
+        translations = self.translate_variables(medical_report)
         scoped_values = self.prepare_scoped_values(translations)
 
-        record = {
+        report = {
             "diagnosis": MyTemplate(self.language.diagnosis.get_block_result(variables)
-                                    if medical_record.diagnosis else "").safe_substitute(scoped_values),
+                                    if medical_report.diagnosis else "").safe_substitute(scoped_values),
 
             "patient": MyTemplate(self.language.patient.get_block_result(variables)
-                                  if medical_record.patient else "").safe_substitute(scoped_values),
+                                  if medical_report.patient else "").safe_substitute(scoped_values),
 
             "onset": MyTemplate(self.language.onset.get_block_result(variables)
-                                if medical_record.onset else "").safe_substitute(scoped_values),
+                                if medical_report.onset else "").safe_substitute(scoped_values),
 
             "admission": MyTemplate(self.language.admission.get_block_result(variables)
-                                    if medical_record.admission else "").safe_substitute(scoped_values),
+                                    if medical_report.admission else "").safe_substitute(scoped_values),
 
             "treatment": MyTemplate(self.language.treatment.get_block_result(variables)
-                                    if medical_record.treatment else "").safe_substitute(scoped_values),
+                                    if medical_report.treatment else "").safe_substitute(scoped_values),
 
             "follow_up_imaging": MyTemplate(self.language.follow_up_imaging.get_block_result(variables)
-                                            if medical_record.follow_up_imaging else "")
+                                            if medical_report.follow_up_imaging else "")
             .safe_substitute(scoped_values),
 
             "post_acute_care": MyTemplate(self.language.post_acute_care.get_block_result(variables)
-                                          if medical_record.post_acute_care else "")
+                                          if medical_report.post_acute_care else "")
             .safe_substitute(scoped_values),
 
             "post_stroke_complications": MyTemplate(self.language.post_stroke_complications.get_block_result(variables)
-                                                    if medical_record.post_stroke_complications else "")
+                                                    if medical_report.post_stroke_complications else "")
             .safe_substitute(scoped_values),
 
             "etiology": MyTemplate(self.language.etiology.get_block_result(variables)
-                                   if medical_record.etiology else "").safe_substitute(scoped_values),
+                                   if medical_report.etiology else "").safe_substitute(scoped_values),
 
             "discharge": MyTemplate(self.language.discharge.get_block_result(variables)
-                                    if medical_record.discharge else "").safe_substitute(scoped_values),
+                                    if medical_report.discharge else "").safe_substitute(scoped_values),
         }
 
-        return record
+        return report
 
-    def create_medical_record(self) -> MedicalRecord:
-        """Creates the whole MedicalRecord from all of its parts
+    def create_medical_report(self) -> MedicalReport:
+        """Creates the whole MedicalReport from all of its parts
 
         Returns
         -------
-        MedicalRecord
-            The whole medical record with all the template values yet to be replaced
+        MedicalReport
+            The whole medical report with all the template values yet to be replaced
         """
 
-        return MedicalRecord(self.create_diagnosis(),
+        return MedicalReport(self.create_diagnosis(),
                              self.create_patient(),
                              self.create_onset(),
                              self.create_admission(),
@@ -184,12 +184,12 @@ class MedicalRecordsGenerator:
                              self.create_discharge())
 
     def create_diagnosis(self) -> Diagnosis:
-        """Creates the Diagnosis part of MedicalRecord
+        """Creates the Diagnosis part of MedicalReport
 
         Returns
         -------
         Diagnosis
-            The diagnosis part medical record with all the template values yet to be replaced
+            The diagnosis part medical report with all the template values yet to be replaced
         """
 
         diagnosis_data = DiagnosisData.from_dict(self.data)
@@ -206,12 +206,12 @@ class MedicalRecordsGenerator:
         return diagnosis
 
     def create_patient(self) -> Patient:
-        """Creates the Patient part of MedicalRecord
+        """Creates the Patient part of MedicalReport
 
         Returns
         -------
         Patient
-            The patient part medical record with all the template values yet to be replaced
+            The patient part medical report with all the template values yet to be replaced
         """
 
         patient_data = PatientData.from_dict(self.data)
@@ -229,12 +229,12 @@ class MedicalRecordsGenerator:
         return patient
 
     def create_onset(self) -> Onset:
-        """Creates the Onset part of MedicalRecord
+        """Creates the Onset part of MedicalReport
 
         Returns
         -------
         Onset
-            The onset part medical record with all the template values yet to be replaced
+            The onset part medical report with all the template values yet to be replaced
         """
 
         onset_data = OnsetData.from_dict(self.data)
@@ -247,12 +247,12 @@ class MedicalRecordsGenerator:
         return onset
 
     def create_admission(self) -> Admission:
-        """Creates the Admission part of MedicalRecord
+        """Creates the Admission part of MedicalReport
 
         Returns
         -------
         Admission
-            The admission part medical record with all the template values yet to be replaced
+            The admission part medical report with all the template values yet to be replaced
         """
 
         admission_data = AdmissionData.from_dict(self.data)
@@ -271,12 +271,12 @@ class MedicalRecordsGenerator:
         return admission
 
     def create_treatment(self) -> Treatment:
-        """Creates the Treatment part of MedicalRecord. Includes both Thrombolysis and Thrombectomy
+        """Creates the Treatment part of MedicalReport. Includes both Thrombolysis and Thrombectomy
 
         Returns
         -------
         Treatment
-            The treatment part medical record with all the template values yet to be replaced
+            The treatment part medical report with all the template values yet to be replaced
         """
 
         treatment_data = TreatmentData.from_dict(self.data)
@@ -302,12 +302,12 @@ class MedicalRecordsGenerator:
         return treatment
 
     def create_follow_up_imaging(self) -> Optional[FollowUpImaging]:
-        """Creates the FollowUpImaging part of MedicalRecord
+        """Creates the FollowUpImaging part of MedicalReport
 
         Returns
         -------
         FollowUpImaging
-            The follow-up imaging part medical record with all the template values yet to be replaced.
+            The follow-up imaging part medical report with all the template values yet to be replaced.
             If the patient was transported and therefore no follow-up imaging could be performed
 
         """
@@ -325,12 +325,12 @@ class MedicalRecordsGenerator:
         return imaging
 
     def create_post_acute_care(self) -> Optional[PostAcuteCare]:
-        """Creates the PostAcuteCare part of MedicalRecord
+        """Creates the PostAcuteCare part of MedicalReport
 
         Returns
         -------
         PostAcuteCare
-            The post acute care part medical record with all the template values yet to be replaced.
+            The post acute care part medical report with all the template values yet to be replaced.
             If the patient was transported and therefore no post acute care could be performed
 
         """
@@ -357,12 +357,12 @@ class MedicalRecordsGenerator:
         return post_acute_care
 
     def create_post_stroke_complications(self) -> PostStrokeComplications:
-        """Creates the PostStrokeComplications part of MedicalRecord
+        """Creates the PostStrokeComplications part of MedicalReport
 
         Returns
         -------
         PostStrokeComplications
-            The post stroke complications part medical record with all the template values yet to be replaced
+            The post stroke complications part medical report with all the template values yet to be replaced
 
         """
 
@@ -374,12 +374,12 @@ class MedicalRecordsGenerator:
         return post_stroke_complications
 
     def create_etiology(self) -> Optional[Etiology]:
-        """Creates the Etiology part of MedicalRecord. Includes LargeArteryAtherosclerosis and Cardioembolism
+        """Creates the Etiology part of MedicalReport. Includes LargeArteryAtherosclerosis and Cardioembolism
 
         Returns
         -------
         Etiology
-            The etiology part medical record with all the template values yet to be replaced.
+            The etiology part medical report with all the template values yet to be replaced.
             If the patient was transported and therefore no etiology could be performed
 
         """
@@ -397,12 +397,12 @@ class MedicalRecordsGenerator:
         return etiology
 
     def create_discharge(self) -> Discharge:
-        """Creates the Discharge part of MedicalRecord
+        """Creates the Discharge part of MedicalReport
 
         Returns
         -------
         Discharge
-            The discharge part medical record with all the template values yet to be replaced.
+            The discharge part medical report with all the template values yet to be replaced.
 
         """
         discharge_data = DischargeData.from_dict(self.data)
@@ -588,7 +588,7 @@ class MedicalRecordsGenerator:
 
         return new.join(string.rsplit(old, 1))
 
-    def translate_variables(self, mr: MedicalRecord) -> dict:
+    def translate_variables(self, mr: MedicalReport) -> dict:
         """Translates the variables in the discharge report
 
         Returns

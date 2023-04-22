@@ -2,10 +2,10 @@ import datetime
 import unittest
 import logging
 
-from app.generator import MedicalRecordsGenerator
+from app.generator import MedicalReportsGenerator
 from app.language import Language
 from data.models import Diagnosis, Discharge, Etiology, PostStrokeComplications, PostAcuteCare, Treatment, Admission, \
-    Onset, Patient, Thrombolysis, Thrombectomy, MedicalRecord, FollowUpImaging
+    Onset, Patient, Thrombolysis, Thrombectomy, MedicalReport, FollowUpImaging
 from utils.load_utils import load_json_file
 
 
@@ -39,20 +39,20 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.data["discharge_ticlopidine"] = True
         self.data["discharge_date"] = datetime.date(2022, 11, 24)
         self.data["discharge_medication"] = True
-        self.generator = MedicalRecordsGenerator(language, {})
+        self.generator = MedicalReportsGenerator(language, {})
 
     def test_replace_last(self):
         test_str = "orange, bananna, apple, strawberry"
         replacement = ", and"
 
-        result = MedicalRecordsGenerator.replace_last(test_str, ",", replacement)
+        result = MedicalReportsGenerator.replace_last(test_str, ",", replacement)
 
         self.assertEqual("orange, bananna, apple, and strawberry", result)
 
     def test_prepare_scoped_values_simple(self):
         values = {"scope": {"a": 4, "b": 1}}
 
-        result = MedicalRecordsGenerator.prepare_scoped_values(values)
+        result = MedicalReportsGenerator.prepare_scoped_values(values)
 
         self.assertEqual({"scope.a": 4, "scope.b": 1}, result)
 
@@ -62,7 +62,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
                   "scope3": {"a": 2163, "b": 4324},
                   "scope4": {"a": "hey", "b": "aloha", "c": "now"}}
 
-        result = MedicalRecordsGenerator.prepare_scoped_values(values)
+        result = MedicalReportsGenerator.prepare_scoped_values(values)
         expected = {"scope1.a": 4, "scope1.b": 1,
                     "scope2.a": "hey", "scope2.b": 1, "scope2.c": 1564687,
                     "scope3.a": 2163, "scope3.b": 4324,
@@ -74,7 +74,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         data = None
         key = "key"
 
-        result = MedicalRecordsGenerator.translate_data(data, key)
+        result = MedicalReportsGenerator.translate_data(data, key)
 
         self.assertEqual("", result)
 
@@ -82,7 +82,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         data = {"test": "value"}
         key = "test"
 
-        result = MedicalRecordsGenerator.translate_data(data, key)
+        result = MedicalReportsGenerator.translate_data(data, key)
 
         self.assertEqual("value", result)
 
@@ -91,7 +91,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         key = "invalid"
 
         with self.assertLogs(None, logging.ERROR):
-            result = MedicalRecordsGenerator.translate_data(data, key)
+            result = MedicalReportsGenerator.translate_data(data, key)
 
         self.assertEqual("", result)
 
@@ -360,9 +360,9 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertEqual("cilostazol, clopidrogel, and ticlopidine", result.discharge_medication)
 
     def test_create_medical_record(self):
-        result = self.generator.create_medical_record()
+        result = self.generator.create_medical_report()
 
-        self.assertIsInstance(result, MedicalRecord)
+        self.assertIsInstance(result, MedicalReport)
         self.assertIsInstance(result.diagnosis, Diagnosis)
         self.assertIsInstance(result.patient, Patient)
         self.assertIsInstance(result.onset, Onset)
@@ -394,7 +394,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_generate_medical_record(self):
         self.generator.data = self.data
 
-        result = self.generator.generate_medical_record("fixtures", "test.txt")
+        result = self.generator.generate_medical_report("fixtures", "test.txt")
         expected = "Diagnosis test with CT CTA variableTest patient whose sex is not other M/77Onset on Jun 10 2022. " \
                    "ASPECT score 10. Treatment showing dtg 56Received physiotherapy, and speechtherapy. " \
                    "Post stroke complications: pneumonia, deep vein thrombosis (DVT), and drip site sepsis. " \

@@ -407,7 +407,7 @@ class Variant:
     Methods
     -------
     parse_rest(kwargs)
-        Parses the kwargs as either a str or MedicalRecordBlock
+        Parses the kwargs as either a str or MedicalReportBlock
     get_variant_result(data)
         Gets the final result of the parsed variant
     """
@@ -428,7 +428,7 @@ class Variant:
 
     @staticmethod
     def parse_rest(kwargs: dict) -> Union[str, Any]:
-        """Parses the kwargs as either a str or MedicalRecordBlock
+        """Parses the kwargs as either a str or MedicalReportBlock
 
         Parameters
         ----------
@@ -437,14 +437,14 @@ class Variant:
 
         Returns
         -------
-        Union[str, MedicalRecordBlock]
+        Union[str, MedicalReportBlock]
             Text inside the variant or Nested block of data inside the variant
         """
 
         if "text" in kwargs.keys():
             return kwargs["text"]
 
-        return MedicalRecordBlock(list(kwargs.keys())[0], **kwargs[list(kwargs.keys())[0]])
+        return MedicalReportBlock(list(kwargs.keys())[0], **kwargs[list(kwargs.keys())[0]])
 
     def get_variant_result(self, data: dict) -> str:
         """Gets the final result of the parsed variant
@@ -469,7 +469,7 @@ class Variant:
         return ""
 
 
-class MedicalRecordBlock:
+class MedicalReportBlock:
     """
     A class representing a block of data inside the json language file
 
@@ -558,17 +558,17 @@ class Language:
                  follow_up_imaging: dict, post_acute_care: dict, post_stroke_complications: dict, etiology: dict,
                  discharge: dict, settings: dict, variables: dict):
         try:
-            self.diagnosis = MedicalRecordBlock("diagnosis", **diagnosis)
-            self.patient = MedicalRecordBlock("patient", **patient)
-            self.onset = MedicalRecordBlock("onset", **onset)
-            self.admission = MedicalRecordBlock("admission", **admission)
-            self.treatment = MedicalRecordBlock("treatment", **treatment)
-            self.follow_up_imaging = MedicalRecordBlock("follow_up_imaging", **follow_up_imaging)
-            self.post_acute_care = MedicalRecordBlock("post_acute_care", **post_acute_care)
-            self.post_stroke_complications = MedicalRecordBlock("post_stroke_complications",
+            self.diagnosis = MedicalReportBlock("diagnosis", **diagnosis)
+            self.patient = MedicalReportBlock("patient", **patient)
+            self.onset = MedicalReportBlock("onset", **onset)
+            self.admission = MedicalReportBlock("admission", **admission)
+            self.treatment = MedicalReportBlock("treatment", **treatment)
+            self.follow_up_imaging = MedicalReportBlock("follow_up_imaging", **follow_up_imaging)
+            self.post_acute_care = MedicalReportBlock("post_acute_care", **post_acute_care)
+            self.post_stroke_complications = MedicalReportBlock("post_stroke_complications",
                                                                 **post_stroke_complications)
-            self.etiology = MedicalRecordBlock("etiology", **etiology)
-            self.discharge = MedicalRecordBlock("discharge", **discharge)
+            self.etiology = MedicalReportBlock("etiology", **etiology)
+            self.discharge = MedicalReportBlock("discharge", **discharge)
             self.settings = settings
             self.variables = variables
         except (KeyError, TypeError, AttributeError):
