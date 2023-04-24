@@ -5,12 +5,17 @@
 - [**Installation**](#installation)
   - [**Python**](#python)
   - [**Poetry**](#poetry)
+  - [**Postgresql**](#postgresql)
+- [**Project download**](#project-download)
+- [**Preparing the database**](#preparing-the-database)
 - [**Running the generator**](#running-the-generator)
 - [**Writing report structure**](#writing-report-structure)
 
 
 ## **Project description**
 Automatic generation of medical reports from the RES-Q system. This project is used for bachelor's thesis.
+The production version of generator requires connection to a postgres database. For showcase purposes reading from csv with cmd option ```--csv``` is possible. 
+The prepared .csv contains 7 records that can be generated. If you wish to only use the ```--csv``` option, you can skip the installation of [postgresql](#postgresql) as well as skip the preparation of the database [part](#preparing-the-database) and setting the env variables.
 
 ## **Installation**
 
@@ -49,20 +54,87 @@ Alternatively, the full path to the poetry binary can always be used:
   
 All of this information and more can be found on the [official website](https://python-poetry.org/docs/).
 
+### **Postgresql**
+This step can be skipped if you only want to test the application with ```--csv``` option.
+
+Download version 15.2 from this [link](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) and install by following the instruction in wizard.
+
+## **Project download**
+The project can be downloaded from [github](https://github.com/Tomas00217/MedicalRecordsGenerator).
+
+Clone the project to the designated folder with running the command:
+```
+git clone https://github.com/Tomas00217/MedicalRecordsGenerator.git
+```
+
+In case you do not have git installed, follow the instructions on this [link](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+## **Preparing the database**
+This step can be skipped if you only want to test the application with ```--csv``` option.
+
+1. Open **cmd** and navigate to the bin folder of postgresql e.g. ```C:\Program Files\PostgreSQL\15\bin```
+
+2. Create empty database by running command (input the password of your user specifed by -U if required): 
+    ```
+    createdb.exe -U <username> -E UTF8 -T template0 --locale=en_US.UTF-8 <database name>
+    ```
+    ```<username>``` is the user name under which u want to connect to database (usually postgres)
+
+    ```<database name>``` is the name of the database you want to use
+
+    Example: ```createdb.exe -U postgres -E UTF8 -T template0 --locale=en_US.UTF-8 strokemodel```
+
+3. Restore the database by running command (input the password of your user specifed by -U if required):
+   ```
+   pg_restore.exe -U <username> -d <database name> <path\strokemodel_backup.tar>
+   ```
+    ```<username>``` is the user name under which u want to connect to database (usually postgres)
+
+    ```<database name>``` is the name of the database from previous step.
+
+    ```<path>``` is the path where you have clonned the project, from there we want the file **strokemodel_backup.tar**
+
+    Example: ```pg_restore.exe -U postgres -d strokemodel "C:\MedicalRecordsGenerator\strokemodel_backup.tar"```
+
 ## **Running the generator**
-To run the implementation we first need to install the dependecies, that can be done running command via command line
+To run the implementation we first need to install the dependecies, that can be done running command via command line in the folder we clonned the project to.
 - ```poetry install```
 
-After that we can run the implementation via command line in the folder with the implementation (medicalrecordgenerator folder)
+**Set environment variables for database**
 
-- ```poetry run py .\__main__.py```
+This can be skipped if you decided not to prepare the database.
 
-or
-- ```& ((poetry env info --path) + "\Scripts\activate.ps1")```
-- ```python .\__main__.py```
+Activate the virtual environment by running:
+- ```poetry shell```
 
-The production version of generator requires connection to a postgres database. For showcase purposes reading from csv with cmd option ```--csv``` is possible. 
-The prepared .csv contains 7 records that can be generated.
+Then set the env variables for database, set the following:
+- ```SET EMS_DB_USER=<username>```
+- ```SET EMS_DB_PASSWORD=<password>```
+- ```SET EMS_DB_HOST=<host>```
+- ```SET EMS_DB_NAME=<database name>```
+
+where
+- ```<username>``` - user name used for authentication when creating db
+- ```<password>``` - password used for authentication
+- ```<host>``` - host address of the database
+- ```<database name>``` - database name used when creating db
+
+Example:
+- ```SET EMS_DB_USER=postgres```
+- ```SET EMS_DB_PASSWORD=Heslo.1```
+- ```SET EMS_DB_HOST=localhost```
+- ```SET EMS_DB_NAME=strokemodel```
+
+**Run the program**
+
+Running the implementation is possible via command line in the folder with the implementation (medicalrecordgenerator folder)
+
+- ```cd medicalrecordgenerator```
+- ```py .\__main__.py``` while in virtual environment or ```poetry run py .\__main__.py``` when outside
+
+Accessing the virtual environment is possible with ```poetry shell```
+
+Leave virtual environment with ```exit``` 
 
 Command line options:
 - ```-h```, ```--help``` -> Shows the help screen
