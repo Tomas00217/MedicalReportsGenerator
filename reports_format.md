@@ -514,7 +514,7 @@ The ```conditions``` field is an array of conditions.\
 
 ##### **Combinations**
 
-All of the conditions above can be combined and nested into the conditions which support nesting.\
+All the conditions above can be combined and nested into the conditions which support nesting.\
 [Examples](#combinations-examples)
 
 ### **Scope**
@@ -525,7 +525,7 @@ List of all scopes:
 | Variable                                 | Possible values                                                                                                                                                              |
 |------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | diagnosis.stroke_type                    | ['ischemic', 'intracerebral hemorrhage', 'transient ischemic', 'subarachnoid hemorrhage', 'cerebral venous thrombosis', 'stroke mimics', 'undetermined']                     |
-| diagnosis.aspects_score                  | int                                                                                                                                                                          |
+| diagnosis.aspects_score                  | integer                                                                                                                                                                      |
 | diagnosis.imaging_type                   | ['CT', 'CT CTA', 'CT CTA perfusion', 'MR DWI/FLAIR', 'MR DWI/FLAIR MRA', 'MR DWI/FLAIR MRA perfusion']                                                                       |
 | diagnosis.imaging_timestamp              | datetime                                                                                                                                                                     |
 | diagnosis.imaging_within_hour            | [True, False]                                                                                                                                                                |

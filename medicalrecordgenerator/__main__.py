@@ -30,7 +30,7 @@ def main(argv=None):
     except getopt.GetoptError as err:
         logging.error(err)
 
-    generate(app_language, load_csv, subject_id, )
+    print(generate(app_language, load_csv, subject_id))
 
 
 if __name__ == '__main__':

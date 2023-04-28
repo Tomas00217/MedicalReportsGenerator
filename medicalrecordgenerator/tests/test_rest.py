@@ -18,7 +18,7 @@ class TestGenerate(unittest.TestCase):
         with open('fixtures/expected_result.txt') as f:
             expected = f.read()
 
-        self.assert_stdout_for_generate(None, expected)
+        self.assertEqual(expected, generate("en_US", False, None))
 
     def test_generate_by_id(self):
         with open('fixtures/expected_result.txt') as f:
@@ -26,7 +26,8 @@ class TestGenerate(unittest.TestCase):
 
         for i in range(1, 8):
             with self.subTest(f"Test subject with id {i}"):
-                self.assert_stdout_for_generate(i, expected[i-1])
+                result = generate("en_US", False, i)
+                self.assertEqual(expected[i-1], result)
 
 
 class TestDbOperations(unittest.TestCase):

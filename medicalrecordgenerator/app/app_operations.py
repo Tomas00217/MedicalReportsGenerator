@@ -11,7 +11,7 @@ TEMPLATES_PATH = "templates"
 DEFAULT_TEMPLATE = "main.txt"
 
 
-def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None) -> None:
+def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None) -> str:
     """Generates all medical records for each row in the postgres database if the subject_id is None.
     Otherwise, generates only one medical record for the specified subject.
 
@@ -26,9 +26,10 @@ def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None
 
     Returns
     -------
-    None
-        Doesn't return nothing yet, just prints the result
+    str
+        Returns the generated reports
     """
+    report = ""
 
     if load_csv:
         data = load_csv_file(subject_id)
@@ -39,23 +40,20 @@ def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None
         # load language
         language_dict = load_utils.load_language(app_language)
         if not language_dict:
-            return
+            return ""
 
         try:
             language = Language(**language_dict)
         except (KeyError, TypeError, AttributeError) as e:
             logging.error(repr(e))
-            return
+            return ""
 
         # generate records
         for idx, row in enumerate(data):
             generator = MedicalReportsGenerator(language, row)
-            report = generator.generate_medical_report(TEMPLATES_PATH, DEFAULT_TEMPLATE)
-            print(report)
-            """
-            with open(f"med_record{idx+1}.txt", "w") as file:
-                file.write(report + "\n")
-            """
+            report += generator.generate_medical_report(TEMPLATES_PATH, DEFAULT_TEMPLATE) + "\n"
+
+    return report
 
 
 def show_help():
