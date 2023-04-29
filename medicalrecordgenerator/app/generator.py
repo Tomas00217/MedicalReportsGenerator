@@ -30,7 +30,7 @@ class MedicalReportsGenerator:
 
     Methods
     -------
-    generate_medical_report()
+    generate_medical_report(filepath)
         Loads the jinja2 template and renders the template with generated structure
     generate_structure()
         Generates the whole structure of a medical report
@@ -54,11 +54,11 @@ class MedicalReportsGenerator:
         Creates the Etiology part of MedicalReport
     create_discharge()
         Creates the Discharge part of MedicalReport
-    get_variables()
+    get_variables(key)
         Gets the 'variables' sub dictionary from the dictionary
-    get_setting()
+    get_setting(key)
         Gets the specified setting from the dictionary
-    prepare_scoped_values()
+    prepare_scoped_values(values)
         Prepares the values as scoped values for substitution
     translate_data(dictionary, key)
         Translates the data specified by key with the values from dictionary
@@ -68,7 +68,7 @@ class MedicalReportsGenerator:
         Replaces the last substring with new substring of given string
     get_tici_meaning(dictionary, tici_score)
         Gets the tici meaning based on the tici score
-    translate_variables()
+    translate_variables(mr)
         Translates the variables in the discharge report
 
     """
