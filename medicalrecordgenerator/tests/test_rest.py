@@ -1,7 +1,10 @@
+import os
 import unittest
 import io
 import re
 from unittest import mock
+
+import psycopg2
 
 from app.app_operations import generate
 from data.subject_storage import SubjectStorage
@@ -15,13 +18,15 @@ class TestGenerate(unittest.TestCase):
         generate("en_US", False, subject_id)
         self.assertEqual(expected_output.strip(), mock_stdout.getvalue().strip())
 
+    @unittest.skipIf(os.environ.get("EMS_DB_NAME") is None, "because it depends on database")
     def test_generate_all(self):
         expected_result_file_path = FIXTURES_PATH / "expected_result.txt"
         with open(expected_result_file_path) as f:
             expected = f.read()
 
-        self.assertEqual(expected, generate("en_US", False, None))
+        self.assertEqual(expected, generate("en_US", None, False))
 
+    @unittest.skipIf(os.environ.get("EMS_DB_NAME") is None, "because it depends on database")
     def test_generate_by_id(self):
         expected_result_file_path = FIXTURES_PATH / "expected_result.txt"
         with open(expected_result_file_path) as f:
@@ -29,7 +34,8 @@ class TestGenerate(unittest.TestCase):
 
         for i in range(1, 8):
             with self.subTest(f"Test subject with id {i}"):
-                result = generate("en_US", False, i)
+                result = generate("en_US", i, False)
+
                 self.assertEqual(expected[i-1], result)
 
 
