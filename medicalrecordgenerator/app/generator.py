@@ -11,6 +11,7 @@ from data.data_objects import DiagnosisData, OnsetData, AdmissionData, Treatment
     DiagnosisOcclusionsData, ImagingTreatmentData, RiskFactorsData, PriorTreatmentData, PatientData, ImagingData
 from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy, Treatment, \
     PostAcuteCare, PostStrokeComplications, Etiology, Discharge, MedicalReport, Patient, FollowUpImaging
+from pathlib import Path
 
 
 class MyTemplate(Template):
@@ -87,27 +88,29 @@ class MedicalReportsGenerator:
         self.data = data
         self.transported = False
 
-    def generate_medical_report(self, path: str, file: str) -> str:
+    def generate_medical_report(self, filepath: Path) -> str:
         """Loads the jinja2 template and renders the template with generated structure
 
         Parameters
         ----------
-        path : str
-            Path towards the dictionary with templates
-        file : str
-            File name
+        filepath : str
+            Path towards the template
+
         Returns
         -------
         str
             Generated medical report with all the values substituted
         """
 
+        path = filepath.parent
+        file = filepath.name
+
         env = Environment(loader=FileSystemLoader(path), autoescape=select_autoescape())
         template = env.get_template(file)
 
         report = self.generate_structure()
 
-        return template.render(record=report)
+        return template.render(report=report)
 
     def generate_structure(self) -> dict:
         """Generates the whole structure of a medical report with replaced string template values

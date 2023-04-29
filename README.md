@@ -127,20 +127,37 @@ Example:
 
 **Run the program**
 
-Running the implementation is possible via command line in the folder with the implementation (medicalrecordgenerator folder)
+Running the implementation is possible via command line
 
-- ```cd medicalrecordgenerator```
-- ```py .\__main__.py``` while in virtual environment or ```poetry run py .\__main__.py``` when outside
+- ```py medicalrecordgenerator``` while in virtual environment 
+- ```poetry run py medicalrecordgenerator``` when outside virtual environment
 
 Accessing the virtual environment is possible with ```poetry shell```
 
 Leave virtual environment with ```exit``` 
 
 Command line options:
-- ```-h```, ```--help``` -> Shows the help screen
-- ```-i```, ```--subject_id``` -> Specifies the id of the subject for which we want to generate the report. **None** by default, resulting in generating for every subject.
-- ```-l```, ```--language``` -> Specifies the language file which we want to use for the generation process. **en_US** by default.
-- ```--csv``` -> Option for test and showcase purposes reading from the prepared csv instead of database.
+-  ```-h, --help``` -> show this help message and exit
+-  ```-c [CSV], --csv [CSV]``` ->
+                        Specify whether to load data from csv instead of
+                        database, value supplied with this option specifies
+                        the csv file, when omitted default csv is used
+-  ```-l LANGUAGE, --language LANGUAGE``` ->
+                        Specify the language which to use for the generation
+                        process. en_US by default.
+-  ```-i SUBJECT_ID, --subject_id SUBJECT_ID``` ->
+                        Specify the id of the subject for which to generate
+                        the report. None by default, resulting in generation
+                        for every subject.
+-  ```-t TEMPLATE, --template TEMPLATE``` ->
+                        Specify the path to report definition template to be
+                        used
+-  ```--list``` ->                Lists the available subject ids and exits
+-  ```-s [STORE], --store [STORE]``` ->
+                        Specify whether to store the result to txt file,value
+                        supplied with this option specifies the file path,
+                        when omittedresult is stored to project root.
+
 
 ## **Writing report structure**
 The rules for writing the structure for reports is described [here](reports_format.md).

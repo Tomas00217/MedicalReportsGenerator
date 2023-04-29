@@ -56,7 +56,7 @@ The file name should correspond to the language code of the language the diction
 
 ### **Default structure**
 
-The following is the default structure that every dictionary, that is to be used by this application, should follow. You can validate your json againts the schema defined [here](schema.json) using an [online-validator](https://www.jsonschemavalidator.net/).
+The following is the default structure that every dictionary, that is to be used by this application, should follow. You can validate your json againts the schema defined [here](src/report/stroke_discharge/schema.json) using an [online-validator](https://www.jsonschemavalidator.net/).
 
 *Disclaimer: For the generator to work correctly do not remove any of the parts of the following json file.*
 ```json
@@ -351,11 +351,11 @@ The "variables" part of the dictionary specifies custom translations for the giv
 
 ### **Variants**
 
-As specified in the [blocks](#blocks) section, each block can contain multiple variants of generated senteces.
+As specified in the [blocks](#blocks) section, each block can contain multiple variants of generated senteces. The variants are evaluated from top the bottom therefore their order does matter on the output.
 
 #### **Structure**
 
-Each variant is written inside its own pair of curly brackets ```{}```.\
+Each variant is an object.\
 Those are all a part of the ```"variants": []``` bracket inside the given block.\
 There are two types of structures for variants:
 - [Simple](#simple)
@@ -386,7 +386,7 @@ Here, the ```date_format``` and ```time_format``` settings will be used. With de
 
 The complex variant is composed of a ```condition``` and a ```custom named block```.
 If the ```condition``` is met, the corresponding ```custom named block``` will be executed, otherwise it will be skipped.\
-A ```custom named block``` also contains the ```variants``` part. This makes it possible to nest multiple variants/custom named blocks. The name of the custom named block does not matter and is on the author of the dictionary to choose.\
+A ```custom named block``` also contains the ```variants``` part. This makes it possible to nest multiple variants/custom named blocks. The name of the custom named block does not matter and is on the author of the dictionary to choose. The reason of having custom named block is to allow for better decomposition in case of larger files.\
 The complex structure looks as follows:
 ```json
   {
@@ -424,11 +424,12 @@ There are two kinds of structures of a condition. The structure is based on the 
     }
   }
   ```
-To find out which kind to use refer to [types of conditions](#type).
+Which kind of condition to use is based on its type.
 
 #### **Type**
 
-There are five types of conditions. These are:
+An empty condition that is always true is represented by an empty object.\
+Other than that there are five types of conditions. These are:
 - **EXISTENCE** (uses the **first** kind of structure of condition)
 - **VALUE** (uses the **first** kind of structure of condition)
 - **AND** (uses the **second** kind of structure of condition)
@@ -508,7 +509,7 @@ The ```conditions``` field is an array of conditions.\
   }
 }
 ```
-The **NOT** condition negates and checks the conditions specified in the ```conditions``` field. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
+The **NOT** condition negates and checks **all** the conditions specified in the ```conditions``` field; therefore, it is **true** only when **all** the conditions are **false**. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
 The ```conditions``` field is an array of conditions.\
 [Examples](#not-examples)
 

@@ -1,17 +1,16 @@
 import logging
+from pathlib import Path
 
 from app.generator import MedicalReportsGenerator
 from app.language import Language
-from utils import load_utils
-from utils.db_operations import get_patient_info
-from utils.load_utils import load_csv_file
+from data.subject_storage import SubjectStorage
+from utils.definitions import DEFAULT_CSV_PATH, DEFAULT_TEMPLATE_PATH
+from utils.load_language_utils import load_language
 from typing import Optional
 
-TEMPLATES_PATH = "templates"
-DEFAULT_TEMPLATE = "main.txt"
 
-
-def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None) -> str:
+def generate(app_language: str, subject_id: Optional[int], load_csv: bool, csv_file: str = DEFAULT_CSV_PATH,
+             definition_template_path: Path = DEFAULT_TEMPLATE_PATH) -> str:
     """Generates all medical records for each row in the postgres database if the subject_id is None.
     Otherwise, generates only one medical record for the specified subject.
 
@@ -19,10 +18,14 @@ def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None
     ----------
     app_language : str
         The language of the medical record to be generated in
-    load_csv
+    load_csv : bool
         Boolean value deciding whether we load the data from csv or not
+    csv_file : str
+        Path to csv file
     subject_id : Optional[int]
-        The id of subject for which the medical record should be generated.
+        The id of subject for which the medical record should be generated. If none, all subjects are generated.
+    definition_template_path : Path
+        The path to file with the template
 
     Returns
     -------
@@ -31,14 +34,12 @@ def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None
     """
     report = ""
 
-    if load_csv:
-        data = load_csv_file(subject_id)
-    else:
-        data = get_patient_info(subject_id)
+    subject_storage = SubjectStorage(load_csv, csv_file)
+    data = subject_storage.get_data(subject_id)
 
     if data:
         # load language
-        language_dict = load_utils.load_language(app_language)
+        language_dict = load_language(app_language)
         if not language_dict:
             return ""
 
@@ -51,17 +52,15 @@ def generate(app_language: str, load_csv: bool, subject_id: Optional[int] = None
         # generate records
         for idx, row in enumerate(data):
             generator = MedicalReportsGenerator(language, row)
-            report += generator.generate_medical_report(TEMPLATES_PATH, DEFAULT_TEMPLATE) + "\n"
+            report += generator.generate_medical_report(definition_template_path) + "\n"
+    else:
+        logging.info("No data found")
 
     return report
 
 
-def show_help():
-    help_str = f"Medical Reports Generator\n" \
-               f"-h, --help -> Shows the help screen\n" \
-               f"-i, --subject_id -> Specifies the id of the subject for which we want to generate the report. " \
-               f"None by default, resulting in generating for every subject.\n" \
-               f"-l, --language -> Specifies the language file which we want to use for the generation process. " \
-               f"en_US by default.\n" \
-               f"--csv -> Option for test and showcase purposes reading from the csv instead of database."
-    print(help_str)
+def list_ids(load_csv: bool, csv_file: str):
+    subject_storage = SubjectStorage(load_csv, csv_file)
+    data = subject_storage.get_subject_ids()
+
+    return data
