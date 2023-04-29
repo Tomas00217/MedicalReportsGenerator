@@ -4,8 +4,9 @@ import re
 from unittest import mock
 
 from app.app_operations import generate
-from utils.db_operations import get_patient_info_from_db
+from data.subject_storage import SubjectStorage
 from utils.queries import select_all, select_by_id
+from tests.definitions import FIXTURES_PATH
 
 
 class TestGenerate(unittest.TestCase):
@@ -15,13 +16,15 @@ class TestGenerate(unittest.TestCase):
         self.assertEqual(expected_output.strip(), mock_stdout.getvalue().strip())
 
     def test_generate_all(self):
-        with open('fixtures/expected_result.txt') as f:
+        expected_result_file_path = FIXTURES_PATH / "expected_result.txt"
+        with open(expected_result_file_path) as f:
             expected = f.read()
 
         self.assertEqual(expected, generate("en_US", False, None))
 
     def test_generate_by_id(self):
-        with open('fixtures/expected_result.txt') as f:
+        expected_result_file_path = FIXTURES_PATH / "expected_result.txt"
+        with open(expected_result_file_path) as f:
             expected = f.readlines()
 
         for i in range(1, 8):
@@ -40,8 +43,9 @@ class TestDbOperations(unittest.TestCase):
 
     def test_get_patient_info_from_db(self):
         dbc = self.fix_dbc()
+        subject_storage = SubjectStorage()
 
-        get_patient_info_from_db(dbc)
+        subject_storage.get_patient_info_from_db(dbc)
 
         with dbc.cursor() as cursor:
             expect_sql = select_all(True)

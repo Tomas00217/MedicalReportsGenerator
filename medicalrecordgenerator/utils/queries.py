@@ -89,3 +89,9 @@ def select_by_id(subject_id: int) -> str:
     query += f" WHERE SHCM.subject_id={subject_id}"
 
     return query
+
+
+def select_subject_ids() -> str:
+    query = "SELECT subject_id FROM strokehealthcaremodel_strokehealthcaremodel ORDER BY subject_id"
+
+    return query

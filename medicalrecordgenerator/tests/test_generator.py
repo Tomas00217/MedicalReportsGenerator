@@ -6,15 +6,19 @@ from app.generator import MedicalReportsGenerator
 from app.language import Language
 from data.models import Diagnosis, Discharge, Etiology, PostStrokeComplications, PostAcuteCare, Treatment, Admission, \
     Onset, Patient, Thrombolysis, Thrombectomy, MedicalReport, FollowUpImaging
-from utils.load_utils import load_json_file
+from tests.definitions import FIXTURES_PATH
+from utils.load_language_utils import load_json_file
 
 
 class TestMedicalRecordsGenerator(unittest.TestCase):
     def setUp(self) -> None:
-        language_file = load_json_file("fixtures/language.json")
+        language_file_path = FIXTURES_PATH / "language.json"
+        data_file_path = FIXTURES_PATH / "data.json"
+
+        language_file = load_json_file(language_file_path)
         language = Language(**language_file)
 
-        self.data = load_json_file("fixtures/data.json")
+        self.data = load_json_file(data_file_path)
         self.data["occlusion_left_mca_m1"] = True
         self.data["occlusion_right_mca_m1"] = True
         self.data["risk_diabetes"] = True
@@ -394,7 +398,9 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_generate_medical_record(self):
         self.generator.data = self.data
 
-        result = self.generator.generate_medical_report("fixtures", "test.txt")
+        path_to_template = FIXTURES_PATH / "test.txt"
+
+        result = self.generator.generate_medical_report(path_to_template)
         expected = "Diagnosis test with CT CTA variableTest patient whose sex is not other M/77Onset on Jun 10 2022. " \
                    "ASPECT score 10. Treatment showing dtg 56Received physiotherapy, and speechtherapy. " \
                    "Post stroke complications: pneumonia, deep vein thrombosis (DVT), and drip site sepsis. " \

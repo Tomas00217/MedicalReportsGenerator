@@ -1,0 +1,10 @@
+{{report.diagnosis -}}
+{{report.patient -}}
+{{report.onset -}}
+{{report.admission -}}
+{{report.treatment -}}
+{{report.follow_up_imaging -}}
+{{report.post_acute_care -}}
+{{report.post_stroke_complications -}}
+{{report.etiology -}}
+{{report.discharge -}}

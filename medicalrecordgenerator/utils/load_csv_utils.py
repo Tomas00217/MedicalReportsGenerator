@@ -1,67 +1,11 @@
-import json
-import glob
-import logging
-from typing import Optional
-
 import numpy as np
 import pandas as pd
+from typing import Optional
+
+from utils.definitions import DEFAULT_CSV_PATH
 
 
-DEFAULT_LANGUAGE = 'locales\\en_US.json'
-PATH = 'locales\\*.json'
-
-
-def load_language(app_language: str) -> dict:
-    """Loads the language dictionary for given language
-
-    Parameters
-    ----------
-    app_language : str
-        Language for which the dictionary should be loaded
-
-    Returns
-    -------
-    dict
-        Dictionary for the given language
-
-    """
-    language_list = glob.glob(PATH)
-
-    for lang in language_list:
-        filename = lang.split('\\')
-        lang_code = filename[-1].split('.')[0]
-
-        if lang_code == app_language:
-            return load_json_file(lang)
-
-    return load_json_file(DEFAULT_LANGUAGE)
-
-
-def load_json_file(file_name: str) -> dict:
-    """Loads the json file
-
-    Parameters
-    ----------
-    file_name : str
-        Name of the json file to be loaded
-
-    Returns
-    -------
-    dict
-        Dictionary from the loaded json file
-
-    """
-    with open(file_name, 'r', encoding='utf8') as file:
-        language = {}
-        try:
-            language = json.loads(file.read())
-        except json.decoder.JSONDecodeError as e:
-            logging.error(e)
-
-        return language
-
-
-def load_csv_file(subject_id: Optional[int]):
+def load_data_from_csv_file(subject_id: Optional[int], csv_file: str = DEFAULT_CSV_PATH):
     """Loads data from csv file
 
     Returns
@@ -70,7 +14,7 @@ def load_csv_file(subject_id: Optional[int]):
         Dictionary with key value pairs of data from csv
 
     """
-    df = pd.read_csv("data\\data.csv")
+    df = pd.read_csv(csv_file)
     df = df.replace({"f": False})
     df = df.replace({"t": True})
 
@@ -100,3 +44,11 @@ def load_csv_file(subject_id: Optional[int]):
         return [data[int(subject_id) - 1]]
 
     return data
+
+
+def load_ids_from_csv_file(csv_file: str = DEFAULT_CSV_PATH):
+    df = pd.read_csv(csv_file, usecols=['subject_id'])
+
+    ids = sorted(df['subject_id'].values.tolist())
+
+    return ids
