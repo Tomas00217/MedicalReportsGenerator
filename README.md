@@ -1,4 +1,4 @@
-# **Medical Records Generator** <!-- omit in toc -->
+# **Medical Reports Generator** <!-- omit in toc -->
 
 ## **Contents** <!-- omit in toc -->
 - [**Project description**](#project-description)
