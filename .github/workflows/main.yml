@@ -43,4 +43,4 @@ jobs:
 
       - run: poetry install --no-interaction
 
-      - run: poetry run python -m unittest discover medicalrecordgenerator
+      - run: poetry run python -m unittest discover medicalreportsgenerator
