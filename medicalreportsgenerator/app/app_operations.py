@@ -9,8 +9,9 @@ from utils.load_language_utils import load_language
 from typing import Optional
 
 
-def generate(app_language: str, subject_id: Optional[int], load_csv: bool, csv_file: str = DEFAULT_CSV_PATH,
-             definition_template_path: Path = DEFAULT_TEMPLATE_PATH) -> str:
+def generate(app_language: str, subject_id: Optional[int], load_csv: Optional[bool] = False,
+             csv_file: Optional[str] = DEFAULT_CSV_PATH,
+             definition_template_path: Optional[Path] = DEFAULT_TEMPLATE_PATH) -> str:
     """Generates all medical records for each row in the postgres database if the subject_id is None.
     Otherwise, generates only one medical record for the specified subject.
 
@@ -18,14 +19,14 @@ def generate(app_language: str, subject_id: Optional[int], load_csv: bool, csv_f
     ----------
     app_language : str
         The language of the medical record to be generated in
-    load_csv : bool
-        Boolean value deciding whether we load the data from csv or not
-    csv_file : str
-        Path to csv file
     subject_id : Optional[int]
         The id of subject for which the medical record should be generated. If none, all subjects are generated.
-    definition_template_path : Path
-        The path to file with the template
+    load_csv : Optional[bool]
+        Boolean value deciding whether we load the data from csv or not
+    csv_file : Optional[str]
+        Path to csv file
+    definition_template_path : Optional[Path]
+        Path to file with the template
 
     Returns
     -------

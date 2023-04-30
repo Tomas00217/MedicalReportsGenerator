@@ -15,24 +15,25 @@ def main():
     store_path = DEFAULT_STORE_PATH
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--csv", help="Specify whether to load data from csv instead of database, "
-                                            "value supplied with this option specifies the csv file, when omitted "
-                                            "default csv is used",
+    parser.add_argument("-c", "--csv", help="Specify whether to load data from CSV instead of the database. The value "
+                                            "supplied with this option specifies the CSV file. When omitted, "
+                                            "default CSV is used",
                         required=False, nargs="?", const=DEFAULT_CSV_PATH)
     parser.add_argument("-l", "--language", help="Specify the language which to use for the generation "
-                                                 "process. en_US by default.",
+                                                 "process. en_US by default",
                         required=False, default="en_US")
     parser.add_argument("-i", "--subject_id", help="Specify the id of the subject for which to generate the "
                                                    "report. None by default, resulting in generation for every "
-                                                   "subject.",
+                                                   "subject",
                         required=False, default=None, type=int)
-    parser.add_argument("-t", "--template", help="Specify the path to report definition template to be used",
+    parser.add_argument("-t", "--template", help="Specify the path to report definition template for use",
                         required=False, default=DEFAULT_TEMPLATE_PATH)
     parser.add_argument("--list", help="Lists the available subject ids and exits",
                         required=False, action="store_true")
-    parser.add_argument("-s", "--store", help="Specify whether to store the result to txt file,"
-                                              "value supplied with this option specifies the file path, when omitted"
-                                              "result is stored to project root.",
+    parser.add_argument("-s", "--store", help="Specify whether to store the result to a txt file. By default, "
+                                              "the result is printed to the console. The value supplied with this "
+                                              "option specifies the file path. When omitted, the result is stored in "
+                                              "the project root",
                         required=False, nargs="?", const=DEFAULT_STORE_PATH)
 
     argument = parser.parse_args()
