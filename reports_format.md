@@ -404,7 +404,7 @@ Conditions are a part of every variant. They are used to decide which text to ge
 
 #### **Structure**
 
-There are two kinds of structures of a condition. The structure is based on the ```type``` of a condition.
+There are three kinds of structures of a condition. The structure is based on the ```type``` of a condition.
 - First kind: 
   ```json
   {
@@ -424,6 +424,15 @@ There are two kinds of structures of a condition. The structure is based on the 
     }
   }
   ```
+- Third kind:
+  ```json
+  {
+    "condition": {
+      "type": "",
+      "condition": {}
+    }
+  }
+  ```
 Which kind of condition to use is based on its type.
 
 #### **Type**
@@ -434,7 +443,7 @@ Other than that there are five types of conditions. These are:
 - **VALUE** (uses the **first** kind of structure of condition)
 - **AND** (uses the **second** kind of structure of condition)
 - **OR** (uses the **second** kind of structure of condition)
-- **NOT** (uses the **second** kind of structure of condition)
+- **NOT** (uses the **third** kind of structure of condition)
 
 ##### **EXISTENCE**
 
@@ -505,12 +514,12 @@ The ```conditions``` field is an array of conditions.\
 {
   "condition": {
     "type": "NOT",
-    "conditions": []
+    "condition": {}
   }
 }
 ```
-The **NOT** condition negates and checks **all** the conditions specified in the ```conditions``` field; therefore, it is **true** only when **all** the conditions are **false**. It contains only the ```conditions``` field. This condition allows nesting of other conditions.\
-The ```conditions``` field is an array of conditions.\
+The **NOT** condition negates and checks the condition specified in the ```condition``` field; therefore, it is **true** only when the condition is **false**. It contains only the ```condition``` field. This condition allows nesting of other condition.\
+The ```condition``` field is an object containing condition.\
 [Examples](#not-examples)
 
 ##### **Combinations**
@@ -1084,13 +1093,11 @@ These examples are working with conditions, if you haven't already studied the [
   {
     "condition": {
       "type": "NOT",
-      "conditions": [
-        {
-          "type": "VALUE",
-          "scope": "example",
-          "value": "other"
-        }
-      ]
+      "condition": {
+        "type": "VALUE",
+        "scope": "example",
+        "value": "other"
+      }
     },
     "text": "The value of 'example' is not 'other'."
   }
@@ -1129,13 +1136,11 @@ These examples are working with conditions, if you haven't already studied the [
         },
         {
           "type": "NOT",
-          "conditions": [
-            {
-              "type": "VALUE",
-              "scope": "ValueScope",
-              "value": 7
-            }
-          ]
+          "condition": {
+            "type": "VALUE",
+            "scope": "ValueScope",
+            "value": 7
+          }
         }
       ]
     },

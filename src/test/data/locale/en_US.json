@@ -46,13 +46,11 @@
                   },
                   {
                     "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "diagnosis.imaging_type",
-                        "value": "CT"
-                      }
-                    ]
+                    "condition": {
+                      "type": "VALUE",
+                      "scope": "diagnosis.imaging_type",
+                      "value": "CT"
+                    }
                   }
                 ]
               },
@@ -72,13 +70,11 @@
             {
               "condition": {
                 "type": "NOT",
-                "conditions": [
-                  {
-                    "type": "VALUE",
-                    "scope": "patient.sex",
-                    "value": "other"
-                  }
-                ]
+                "condition": {
+                  "type": "VALUE",
+                  "scope": "patient.sex",
+                  "value": "other"
+                }
               },
               "text": "${patient.sex}/${patient.age}, "
             },
@@ -348,43 +344,35 @@
                 "conditions": [
                   {
                     "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "treatment.no_thrombolysis_reasons",
-                        "value": "other"
-                      }
-                    ]
+                    "condition": {
+                      "type": "VALUE",
+                      "scope": "treatment.no_thrombolysis_reasons",
+                      "value": "other"
+                    }
                   },
                   {
                     "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "treatment.no_thrombolysis_reasons",
-                        "value": "time window"
-                      }
-                    ]
+                    "condition": {
+                      "type": "VALUE",
+                      "scope": "treatment.no_thrombolysis_reasons",
+                      "value": "time window"
+                    }
                   },
                   {
                     "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "treatment.no_thrombolysis_reasons",
-                        "value": "not available"
-                      }
-                    ]
+                    "condition": {
+                      "type": "VALUE",
+                      "scope": "treatment.no_thrombolysis_reasons",
+                      "value": "not available"
+                    }
                   },
                   {
                     "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "treatment.no_thrombolysis_reasons",
-                        "value": "done elsewhere"
-                      }
-                    ]
+                    "condition": {
+                      "type": "VALUE",
+                      "scope": "treatment.no_thrombolysis_reasons",
+                      "value": "done elsewhere"
+                    }
                   }
                 ]
               },
@@ -466,43 +454,35 @@
                 "conditions": [
                   {
                     "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "treatment.no_thrombectomy_reasons",
-                        "value": "other"
-                      }
-                    ]
+                    "condition": {
+                      "type": "VALUE",
+                      "scope": "treatment.no_thrombectomy_reasons",
+                      "value": "other"
+                    }
                   },
                   {
                     "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "treatment.no_thrombectomy_reasons",
-                        "value": "time window"
-                      }
-                    ]
+                    "condition": {
+                      "type": "VALUE",
+                      "scope": "treatment.no_thrombectomy_reasons",
+                      "value": "time window"
+                    }
                   },
                   {
                     "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "treatment.no_thrombectomy_reasons",
-                        "value": "not available"
-                      }
-                    ]
+                    "condition": {
+                      "type": "VALUE",
+                      "scope": "treatment.no_thrombectomy_reasons",
+                      "value": "not available"
+                    }
                   },
                   {
                     "type": "NOT",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "treatment.no_thrombectomy_reasons",
-                        "value": "transferred elsewhere"
-                      }
-                    ]
+                    "condition": {
+                      "type": "VALUE",
+                      "scope": "treatment.no_thrombectomy_reasons",
+                      "value": "transferred elsewhere"
+                    }
                   }
                 ]
               },
@@ -714,23 +694,21 @@
             {
               "condition": {
                 "type": "NOT",
-                "conditions": [
-                  {
-                    "type": "OR",
-                    "conditions": [
-                      {
-                        "type": "VALUE",
-                        "scope": "etiology.afib_flutter",
-                        "value": "known AF"
-                      },
-                      {
-                        "type": "VALUE",
-                        "scope": "etiology.afib_flutter",
-                        "value": "detected"
-                      }
-                    ]
-                  }
-                ]
+                "condition": {
+                  "type": "OR",
+                  "conditions": [
+                    {
+                      "type": "VALUE",
+                      "scope": "etiology.afib_flutter",
+                      "value": "known AF"
+                    },
+                    {
+                      "type": "VALUE",
+                      "scope": "etiology.afib_flutter",
+                      "value": "detected"
+                    }
+                  ]
+                }
               },
               "text": "Etiology is cardioembolic. "
             }
@@ -756,13 +734,11 @@
             {
               "condition": {
                 "type": "NOT",
-                "conditions": [
-                  {
-                    "type": "VALUE",
-                    "scope": "etiology.carotid_stenosis_level",
-                    "value": "over 70"
-                  }
-                ]
+                "condition": {
+                  "type": "VALUE",
+                  "scope": "etiology.carotid_stenosis_level",
+                  "value": "over 70"
+                }
               },
               "text": "Etiology is atherosclerosis. "
             }
@@ -800,13 +776,11 @@
       {
         "condition": {
           "type": "NOT",
-          "conditions": [
-            {
-              "type": "VALUE",
-              "scope": "discharge.discharge_destination",
-              "value": "dead"
-            }
-          ]
+          "condition": {
+            "type": "VALUE",
+            "scope": "discharge.discharge_destination",
+            "value": "dead"
+          }
         },
         "discharged": {
           "variants": [
@@ -840,13 +814,11 @@
             },
             {
               "type": "NOT",
-              "conditions": [
-                {
-                  "type": "VALUE",
-                  "scope": "discharge.discharge_destination",
-                  "value": "dead"
-                }
-              ]
+              "condition": {
+                "type": "VALUE",
+                "scope": "discharge.discharge_destination",
+                "value": "dead"
+              }
             }
           ]
         },
@@ -855,13 +827,11 @@
       {
         "condition": {
           "type": "NOT",
-          "conditions": [
-            {
-              "type": "VALUE",
-              "scope": "discharge.discharge_destination",
-              "value": "dead"
-            }
-          ]
+          "condition": {
+            "type": "VALUE",
+            "scope": "discharge.discharge_destination",
+            "value": "dead"
+          }
         },
         "scores": {
           "variants": [
