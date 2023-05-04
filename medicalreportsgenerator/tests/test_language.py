@@ -41,7 +41,7 @@ class TestCondition(unittest.TestCase):
         self.assertEqual(conditions, [])
 
     def test_parse_list_single(self):
-        data = [{"type": "EXISTENCE", "scope": "test_scope", "value": "test_value"}]
+        data = [{"type": "EXISTENCE", "scope": "test_scope", "value": True}]
         condition = Condition()
         conditions = condition.parse_conditions(data)
 
@@ -49,7 +49,7 @@ class TestCondition(unittest.TestCase):
         self.assertIsInstance(conditions[0], ConditionExistence)
 
     def test_parse_list_multiple(self):
-        data = [{"type": "EXISTENCE", "scope": "test_scope", "value": "test_value"},
+        data = [{"type": "EXISTENCE", "scope": "test_scope", "value": True},
                 {"type": "VALUE", "scope": "test_scope2", "value": "test_value2"},
                 {}]
         condition = Condition()
@@ -59,7 +59,7 @@ class TestCondition(unittest.TestCase):
 
         self.assertIsInstance(conditions[0], ConditionExistence)
         self.assertEqual("test_scope", conditions[0].scope)
-        self.assertEqual("test_value", conditions[0].value)
+        self.assertEqual(True, conditions[0].value)
 
         self.assertIsInstance(conditions[1], ConditionValue)
         self.assertEqual("test_scope2", conditions[1].scope)
@@ -69,7 +69,7 @@ class TestCondition(unittest.TestCase):
 
     def test_parse_and(self):
         data = {"type": "AND",
-                "conditions": [{"type": "EXISTENCE", "scope": "test_scope", "value": "test_value"}]}
+                "conditions": [{"type": "EXISTENCE", "scope": "test_scope", "value": True}]}
         condition = Condition.parse_condition(data)
 
         self.assertIsInstance(condition, ConditionAnd)
@@ -78,7 +78,7 @@ class TestCondition(unittest.TestCase):
 
     def test_parse_or(self):
         data = {"type": "OR",
-                "conditions": [{"type": "VALUE", "scope": "test_scope", "value": "test_value"}]}
+                "conditions": [{"type": "VALUE", "scope": "test_scope", "value": True}]}
         condition = Condition.parse_condition(data)
 
         self.assertIsInstance(condition, ConditionOr)
@@ -87,15 +87,14 @@ class TestCondition(unittest.TestCase):
 
     def test_parse_not(self):
         data = {"type": "NOT",
-                "conditions": [{"type": "EXISTENCE", "scope": "test_scope", "value": "test_value"}]}
+                "condition": {"type": "EXISTENCE", "scope": "test_scope", "value": True}}
         condition = Condition.parse_condition(data)
 
         self.assertIsInstance(condition, ConditionNot)
-        self.assertEqual(len(condition.conditions), 1)
-        self.assertIsInstance(condition.conditions[0], ConditionExistence)
+        self.assertIsInstance(condition.condition, ConditionExistence)
 
     def test_parse_throws(self):
-        data = {"type": "EXISTENCE", "scope": "test_scope", "": "test_value"}
+        data = {"type": "EXISTENCE", "scope": "test_scope", "": True}
 
         with self.assertRaises(AttributeError):
             Condition.parse_condition(data)
@@ -339,7 +338,7 @@ class TestConditionOr(unittest.TestCase):
 
 class TestConditionNot(unittest.TestCase):
     def test_not_true_simple(self):
-        condition = ConditionNot([{"type": "VALUE", "scope": "scope.a", "value": 4}])
+        condition = ConditionNot({"type": "VALUE", "scope": "scope.a", "value": 4})
 
         data = {"scope": {"a": 1}}
 
@@ -347,30 +346,10 @@ class TestConditionNot(unittest.TestCase):
 
         self.assertTrue(result)
 
-    def test_not_true_complex(self):
-        condition = ConditionNot([{"type": "EXISTENCE", "scope": "scope.a", "value": False},
-                                  {"type": "VALUE", "scope": "scope.b", "value": 4}])
-
-        data = {"scope": {"a": "aloha", "b": 1}}
-
-        result = condition.get_condition_result(data)
-
-        self.assertTrue(result)
-
     def test_not_false_simple(self):
-        condition = ConditionNot([{"type": "VALUE", "scope": "scope.a", "value": 4}])
+        condition = ConditionNot({"type": "VALUE", "scope": "scope.a", "value": 4})
 
         data = {"scope": {"a": 4}}
-
-        result = condition.get_condition_result(data)
-
-        self.assertFalse(result)
-
-    def test_not_false_complex(self):
-        condition = ConditionNot([{"type": "EXISTENCE", "scope": "scope.a", "value": True},
-                                  {"type": "VALUE", "scope": "scope.b", "value": 4}])
-
-        data = {"scope": {"a": "test", "b": 4}}
 
         result = condition.get_condition_result(data)
 

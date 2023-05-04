@@ -12,13 +12,11 @@
       {
         "condition": {
           "type": "NOT",
-          "conditions": [
-            {
-              "type": "VALUE",
-              "scope": "patient.sex",
-              "value": "other"
-            }
-          ]
+          "condition": {
+            "type": "VALUE",
+            "scope": "patient.sex",
+            "value": "other"
+          }
         },
         "text": "Test patient whose sex is not other ${patient.sex}/${patient.age}"
       }
@@ -114,13 +112,11 @@
             },
             {
               "type": "NOT",
-              "conditions": [
-                {
-                  "type": "VALUE",
-                  "scope": "discharge.discharge_destination",
-                  "value": "dead"
-                }
-              ]
+              "condition": {
+                "type": "VALUE",
+                "scope": "discharge.discharge_destination",
+                "value": "dead"
+              }
             }
           ]
         },

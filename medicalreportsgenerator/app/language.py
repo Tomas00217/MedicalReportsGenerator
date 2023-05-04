@@ -60,7 +60,7 @@ class Condition:
             if condition["type"] == "OR":
                 return ConditionOr(condition.get("conditions"))
             if condition["type"] == "NOT":
-                return ConditionNot(condition.get("conditions"))
+                return ConditionNot(condition.get("condition"))
         except KeyError:
             raise KeyError(f"Invalid 'type' key inside condition block")
 
@@ -365,17 +365,17 @@ class ConditionNot(Condition):
         Gets the boolean result of the NOT condition.
     """
 
-    def __init__(self, conditions: List[dict]):
+    def __init__(self, condition: dict):
         """
 
         Parameters
         ----------
-        conditions : List[dict]
-            List of conditions from the json file for given condition
+        condition : dict
+            Condition from the json file to be negated
         """
 
         super().__init__()
-        self.conditions = self.parse_conditions(conditions)
+        self.condition = self.parse_condition(condition)
 
     def get_condition_result(self, data: dict) -> bool:
         """Gets the boolean result of the NOT condition.
@@ -388,16 +388,11 @@ class ConditionNot(Condition):
         Returns
         -------
         bool
-            True if the negation of condition defined in the 'conditions' section of json dictionary is true,
+            True if the negation of condition defined in the 'condition' section of json dictionary is true,
             False otherwise
         """
 
-        is_true = True
-
-        for condition in self.conditions:
-            is_true = is_true and not condition.get_condition_result(data)
-
-        return is_true
+        return not self.condition.get_condition_result(data)
 
 
 class Variant:
