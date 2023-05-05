@@ -51,7 +51,7 @@ class MedicalReportsGenerator:
         self.data = {}
         self.transported = False
 
-    def generate_medical_report(self, data: Any) -> str:
+    def generate_medical_report(self, data: dict) -> str:
         """Loads the jinja2 template and renders the template with generated structure
 
         Parameters
@@ -113,10 +113,12 @@ class MedicalReportsGenerator:
 
 
             "follow_up_imaging": self.__get_substituted_block(self.language.follow_up_imaging,
-                                                              medical_report.follow_up_imaging, variables, scoped_values),
+                                                              medical_report.follow_up_imaging,
+                                                              variables, scoped_values),
 
 
-            "post_acute_care": self.__get_substituted_block(self.language.post_acute_care, medical_report.post_acute_care,
+            "post_acute_care": self.__get_substituted_block(self.language.post_acute_care,
+                                                            medical_report.post_acute_care,
                                                             variables, scoped_values),
 
             "post_stroke_complications": self.__get_substituted_block(self.language.post_stroke_complications,
@@ -596,7 +598,8 @@ class MedicalReportsGenerator:
         """
 
         # Diagnosis
-        mr.diagnosis.imaging_type = self.__translate_data(self.__get_variables("imaging_type"), mr.diagnosis.imaging_type)
+        mr.diagnosis.imaging_type = self.__translate_data(self.__get_variables("imaging_type"),
+                                                          mr.diagnosis.imaging_type)
 
         # Patient
         mr.patient.sex = self.__translate_data(self.__get_variables("sex"), mr.patient.sex)
@@ -604,7 +607,8 @@ class MedicalReportsGenerator:
         # Admission
         mr.admission.admission_type = self.__translate_data(self.__get_variables("admission_type"),
                                                             mr.admission.admission_type)
-        mr.admission.arrival_mode = self.__translate_data(self.__get_variables("arrival_mode"), mr.admission.arrival_mode)
+        mr.admission.arrival_mode = self.__translate_data(self.__get_variables("arrival_mode"),
+                                                          mr.admission.arrival_mode)
         mr.admission.department_type = self.__translate_data(self.__get_variables("department_type"),
                                                              mr.admission.department_type)
 
@@ -616,7 +620,8 @@ class MedicalReportsGenerator:
         mr.treatment.no_thrombectomy_reasons = self.__translate_data(self.__get_variables("no_thrombectomy_reason"),
                                                                      mr.treatment.no_thrombectomy_reasons)
         mr.treatment.thrombectomy.tici_score_meaning = self.__translate_data(self.__get_variables("tici_score_meaning"),
-                                                                             mr.treatment.thrombectomy.tici_score_meaning)
+                                                                             mr.treatment.thrombectomy.
+                                                                             tici_score_meaning)
 
         # Post acute care
         if not self.transported:
