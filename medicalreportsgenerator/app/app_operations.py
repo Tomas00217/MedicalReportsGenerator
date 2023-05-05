@@ -67,9 +67,9 @@ def list_ids(load_csv: bool, csv_file: str) -> List[int]:
 
     Parameters
     ----------
-    load_csv: bool
+    load_csv : bool
         Boolean value deciding whether to load from csv or not
-    csv_file: str
+    csv_file : str
         Path to csv file
 
     Returns

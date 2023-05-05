@@ -57,7 +57,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_prepare_scoped_values_simple(self):
         values = {"scope": {"a": 4, "b": 1}}
 
-        result = MedicalReportsGenerator.prepare_scoped_values(values)
+        result = self.generator._MedicalReportsGenerator__prepare_scoped_values(values)
 
         self.assertEqual({"scope.a": 4, "scope.b": 1}, result)
 
@@ -67,7 +67,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
                   "scope3": {"a": 2163, "b": 4324},
                   "scope4": {"a": "hey", "b": "aloha", "c": "now"}}
 
-        result = MedicalReportsGenerator.prepare_scoped_values(values)
+        result = self.generator._MedicalReportsGenerator__prepare_scoped_values(values)
         expected = {"scope1.a": 4, "scope1.b": 1,
                     "scope2.a": "hey", "scope2.b": 1, "scope2.c": 1564687,
                     "scope3.a": 2163, "scope3.b": 4324,
@@ -79,7 +79,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         data = None
         key = "key"
 
-        result = MedicalReportsGenerator.translate_data(data, key)
+        result = self.generator._MedicalReportsGenerator__translate_data(data, key)
 
         self.assertEqual("", result)
 
@@ -87,7 +87,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         data = {"test": "value"}
         key = "test"
 
-        result = MedicalReportsGenerator.translate_data(data, key)
+        result = self.generator._MedicalReportsGenerator__translate_data(data, key)
 
         self.assertEqual("value", result)
 
@@ -96,7 +96,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         key = "invalid"
 
         with self.assertLogs(None, logging.ERROR):
-            result = MedicalReportsGenerator.translate_data(data, key)
+            result = self.generator._MedicalReportsGenerator__translate_data(data, key)
 
         self.assertEqual("", result)
 
