@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Optional, Any
+from typing import Optional, Any, List
 
 import psycopg2
 import psycopg2.extras
@@ -16,13 +16,33 @@ class SubjectStorage:
         self.from_csv = from_csv
         self.csv_file = csv_file
 
-    def get_data(self, subject_id: Optional[int] = None):
+    def get_data(self, subject_id: Optional[int] = None) -> Any:
+        """Gets all the data about patient from database or csv
+
+        Parameters
+        ----------
+        subject_id
+            Specifies the patient for which to get the data
+        Returns
+        -------
+        Any
+            The data af the patient
+        """
+
         if self.from_csv:
             return load_data_from_csv_file(subject_id, self.csv_file)
 
         return self.get_patient_info(False, subject_id)
 
-    def get_subject_ids(self):
+    def get_subject_ids(self) -> List[int]:
+        """Gets all the patient ids from database or csv
+
+        Returns
+        -------
+        List[int]
+            List of patient ids
+        """
+
         if self.from_csv:
             return load_ids_from_csv_file(self.csv_file)
 
