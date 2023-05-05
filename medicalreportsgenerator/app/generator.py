@@ -5,7 +5,7 @@ from typing import Any, Optional
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from app.language import Language
+from app.language import Language, MedicalReportBlock
 from data.data_objects import DiagnosisData, OnsetData, AdmissionData, TreatmentData, \
     PostAcuteCareData, PostStrokeComplicationsData, EtiologyData, DischargeData, MedicationData, \
     DiagnosisOcclusionsData, ImagingTreatmentData, RiskFactorsData, PriorTreatmentData, PatientData, ImagingData
@@ -14,9 +14,10 @@ from data.models import Diagnosis, Onset, Admission, Thrombolysis, Thrombectomy,
 from pathlib import Path
 
 
-class MyTemplate(Template):
+class TemplateWithPeriods(Template):
     """
-    Class representing a Template with custom pattern
+    Class representing a Template with custom pattern.
+    The pattern accepts periods in the values which should be replaced.
 
     """
     idpattern = r'(?-i:[._a-zA-Z][._a-zA-Z0-9]*)'
@@ -30,71 +31,33 @@ class MedicalReportsGenerator:
 
     Methods
     -------
-    generate_medical_report(filepath)
+    generate_medical_report(data)
         Loads the jinja2 template and renders the template with generated structure
-    generate_structure()
-        Generates the whole structure of a medical report
-    create_structure()
-        Creates the whole MedicalReport from all of its parts
-    create_diagnosis()
-        Creates the Diagnosis part of MedicalReport
-    create_onset()
-        Creates the Onset part of MedicalReport
-    create_admission()
-        Creates the Admission part of MedicalReport
-    create_treatment()
-        Creates the Treatment part of MedicalReport
-    create_follow_up_imaging()
-        Creates the FollowUpImaging part of MedicalReport
-    create_post_acute_care()
-        Creates the PostAcuteCare part of MedicalReport
-    create_post_stroke_complications()
-        Creates the PostStrokeComplications part of MedicalReport
-    create_etiology()
-        Creates the Etiology part of MedicalReport
-    create_discharge()
-        Creates the Discharge part of MedicalReport
-    get_variables(key)
-        Gets the 'variables' sub dictionary from the dictionary
-    get_setting(key)
-        Gets the specified setting from the dictionary
-    prepare_scoped_values(values)
-        Prepares the values as scoped values for substitution
-    translate_data(dictionary, key)
-        Translates the data specified by key with the values from dictionary
-    parse_data(dictionary, data)
-        Parses the variables from dictionary specified by the data
-    replace_last(string, old, new)
-        Replaces the last substring with new substring of given string
-    get_tici_meaning(dictionary, tici_score)
-        Gets the tici meaning based on the tici score
-    translate_variables(mr)
-        Translates the variables in the discharge report
-
     """
 
-    def __init__(self, language: Language, data: Any):
+    def __init__(self, language: Language, template_filepath: Path):
         """
 
         Parameters
         ----------
         language : Language
             Loaded language variant of the dictionary
-        data : Any
-            Data from the database
+        template_filepath : Path
+            File path towards the template
         """
 
         self.language = language
-        self.data = data
+        self.filepath = template_filepath
+        self.data = {}
         self.transported = False
 
-    def generate_medical_report(self, filepath: Path) -> str:
+    def generate_medical_report(self, data: Any) -> str:
         """Loads the jinja2 template and renders the template with generated structure
 
         Parameters
         ----------
-        filepath : str
-            Path towards the template
+        data : Any
+            Data of the patient from the database
 
         Returns
         -------
@@ -102,17 +65,18 @@ class MedicalReportsGenerator:
             Generated medical report with all the values substituted
         """
 
-        path = filepath.parent
-        file = filepath.name
+        path = self.filepath.parent
+        file = self.filepath.name
 
         env = Environment(loader=FileSystemLoader(path), autoescape=select_autoescape())
         template = env.get_template(file)
 
-        report = self.generate_structure()
+        self.data = data
+        report = self.__generate_structure()
 
         return template.render(report=report)
 
-    def generate_structure(self) -> dict:
+    def __generate_structure(self) -> dict:
         """Generates the whole structure of a medical report with replaced string template values
 
         Returns
@@ -121,52 +85,83 @@ class MedicalReportsGenerator:
             Medical report as a dict to be used for jinja2 template
         """
 
-        medical_report = self.create_medical_report()
+        medical_report = self.__create_medical_report()
 
         # We create a deep copy of dictionary with variables from medical report for the purpose of condition evaluation
         # while parsing, these variables are then translated and used for substitution
         variables = copy.deepcopy(medical_report.to_dict())
-        translations = self.translate_variables(medical_report)
-        scoped_values = self.prepare_scoped_values(translations)
+        translations = self.__translate_variables(medical_report)
+        scoped_values = self.__prepare_scoped_values(translations)
 
         report = {
-            "diagnosis": MyTemplate(self.language.diagnosis.get_block_result(variables)
-                                    if medical_report.diagnosis else "").safe_substitute(scoped_values),
+            "diagnosis": self.__get_substituted_block(self.language.diagnosis, medical_report.diagnosis,
+                                                      variables, scoped_values),
 
-            "patient": MyTemplate(self.language.patient.get_block_result(variables)
-                                  if medical_report.patient else "").safe_substitute(scoped_values),
+            "patient": self.__get_substituted_block(self.language.patient, medical_report.patient,
+                                                    variables, scoped_values),
 
-            "onset": MyTemplate(self.language.onset.get_block_result(variables)
-                                if medical_report.onset else "").safe_substitute(scoped_values),
+            "onset": self.__get_substituted_block(self.language.onset, medical_report.onset,
+                                                  variables, scoped_values),
 
-            "admission": MyTemplate(self.language.admission.get_block_result(variables)
-                                    if medical_report.admission else "").safe_substitute(scoped_values),
 
-            "treatment": MyTemplate(self.language.treatment.get_block_result(variables)
-                                    if medical_report.treatment else "").safe_substitute(scoped_values),
+            "admission": self.__get_substituted_block(self.language.admission, medical_report.admission,
+                                                      variables, scoped_values),
 
-            "follow_up_imaging": MyTemplate(self.language.follow_up_imaging.get_block_result(variables)
-                                            if medical_report.follow_up_imaging else "")
-            .safe_substitute(scoped_values),
 
-            "post_acute_care": MyTemplate(self.language.post_acute_care.get_block_result(variables)
-                                          if medical_report.post_acute_care else "")
-            .safe_substitute(scoped_values),
+            "treatment": self.__get_substituted_block(self.language.treatment, medical_report.treatment,
+                                                      variables, scoped_values),
 
-            "post_stroke_complications": MyTemplate(self.language.post_stroke_complications.get_block_result(variables)
-                                                    if medical_report.post_stroke_complications else "")
-            .safe_substitute(scoped_values),
 
-            "etiology": MyTemplate(self.language.etiology.get_block_result(variables)
-                                   if medical_report.etiology else "").safe_substitute(scoped_values),
+            "follow_up_imaging": self.__get_substituted_block(self.language.follow_up_imaging,
+                                                              medical_report.follow_up_imaging, variables, scoped_values),
 
-            "discharge": MyTemplate(self.language.discharge.get_block_result(variables)
-                                    if medical_report.discharge else "").safe_substitute(scoped_values),
+
+            "post_acute_care": self.__get_substituted_block(self.language.post_acute_care, medical_report.post_acute_care,
+                                                            variables, scoped_values),
+
+            "post_stroke_complications": self.__get_substituted_block(self.language.post_stroke_complications,
+                                                                      medical_report.post_stroke_complications,
+                                                                      variables, scoped_values),
+
+
+            "etiology": self.__get_substituted_block(self.language.etiology, medical_report.etiology,
+                                                     variables, scoped_values),
+
+
+            "discharge": self.__get_substituted_block(self.language.discharge, medical_report.discharge,
+                                                      variables, scoped_values),
+
         }
 
         return report
 
-    def create_medical_report(self) -> MedicalReport:
+    @staticmethod
+    def __get_substituted_block(language_block: MedicalReportBlock, generated_block: Any,
+                                variables: dict, scoped_values: dict) -> str:
+        """Gets the block result and substitutes it with values
+
+
+        Parameters
+        ----------
+        language_block : MedicalReportBlock
+            A block from the language class defining the structure
+        generated_block : Any
+            Generated block by the generator
+        variables : dict
+            Variables used to get the block result
+        scoped_values : dict
+            Values used for substitution
+
+        Returns
+        -------
+        str
+            block result with substitutions
+
+        """
+        return TemplateWithPeriods(language_block.get_block_result(variables) if generated_block else "")\
+            .safe_substitute(scoped_values)
+
+    def __create_medical_report(self) -> MedicalReport:
         """Creates the whole MedicalReport from all of its parts
 
         Returns
@@ -175,18 +170,18 @@ class MedicalReportsGenerator:
             The whole medical report with all the template values yet to be replaced
         """
 
-        return MedicalReport(self.create_diagnosis(),
-                             self.create_patient(),
-                             self.create_onset(),
-                             self.create_admission(),
-                             self.create_treatment(),
-                             self.create_follow_up_imaging(),
-                             self.create_post_acute_care(),
-                             self.create_post_stroke_complications(),
-                             self.create_etiology(),
-                             self.create_discharge())
+        return MedicalReport(self.__create_diagnosis(),
+                             self.__create_patient(),
+                             self.__create_onset(),
+                             self.__create_admission(),
+                             self.__create_treatment(),
+                             self.__create_follow_up_imaging(),
+                             self.__create_post_acute_care(),
+                             self.__create_post_stroke_complications(),
+                             self.__create_etiology(),
+                             self.__create_discharge())
 
-    def create_diagnosis(self) -> Diagnosis:
+    def __create_diagnosis(self) -> Diagnosis:
         """Creates the Diagnosis part of MedicalReport
 
         Returns
@@ -201,14 +196,14 @@ class MedicalReportsGenerator:
         diagnosis = Diagnosis(diagnosis_data.stroke_type,
                               diagnosis_data.aspects_score,
                               diagnosis_data.imaging_type,
-                              self.parse_data(self.get_variables("occlusion_position"), vars(diagnosis_occlusions)),
+                              self.__parse_data(self.__get_variables("occlusion_position"), vars(diagnosis_occlusions)),
                               diagnosis_data.imaging_timestamp,
                               diagnosis_data.imaging_within_hour,
-                              self.get_setting("time_format"))
+                              self.__get_setting("time_format"))
 
         return diagnosis
 
-    def create_patient(self) -> Patient:
+    def __create_patient(self) -> Patient:
         """Creates the Patient part of MedicalReport
 
         Returns
@@ -225,13 +220,13 @@ class MedicalReportsGenerator:
         patient = Patient(patient_data.patient_id,
                           patient_data.age,
                           patient_data.sex,
-                          self.parse_data(self.get_variables("risk_factors"), vars(risk_factors_data)),
-                          self.parse_data(self.get_variables("prior_treatment"), vars(prior_treatment_data)),
-                          self.parse_data(self.get_variables("risk_factors"), risk_atrial_fib))
+                          self.__parse_data(self.__get_variables("risk_factors"), vars(risk_factors_data)),
+                          self.__parse_data(self.__get_variables("prior_treatment"), vars(prior_treatment_data)),
+                          self.__parse_data(self.__get_variables("risk_factors"), risk_atrial_fib))
 
         return patient
 
-    def create_onset(self) -> Onset:
+    def __create_onset(self) -> Onset:
         """Creates the Onset part of MedicalReport
 
         Returns
@@ -244,12 +239,12 @@ class MedicalReportsGenerator:
 
         onset = Onset(onset_data.onset_timestamp,
                       onset_data.wake_up_stroke,
-                      self.get_setting("date_format"),
-                      self.get_setting("time_format"))
+                      self.__get_setting("date_format"),
+                      self.__get_setting("time_format"))
 
         return onset
 
-    def create_admission(self) -> Admission:
+    def __create_admission(self) -> Admission:
         """Creates the Admission part of MedicalReport
 
         Returns
@@ -269,11 +264,11 @@ class MedicalReportsGenerator:
                               admission_data.arrival_mode,
                               admission_data.department_type,
                               admission_data.prenotification,
-                              self.get_setting("time_format"))
+                              self.__get_setting("time_format"))
 
         return admission
 
-    def create_treatment(self) -> Treatment:
+    def __create_treatment(self) -> Treatment:
         """Creates the Treatment part of MedicalReport. Includes both Thrombolysis and Thrombectomy
 
         Returns
@@ -304,7 +299,7 @@ class MedicalReportsGenerator:
 
         return treatment
 
-    def create_follow_up_imaging(self) -> Optional[FollowUpImaging]:
+    def __create_follow_up_imaging(self) -> Optional[FollowUpImaging]:
         """Creates the FollowUpImaging part of MedicalReport
 
         Returns
@@ -321,13 +316,13 @@ class MedicalReportsGenerator:
         imaging_data = ImagingData.from_dict(self.data)
         imaging_treatment_data = ImagingTreatmentData.from_dict(self.data)
 
-        imaging = FollowUpImaging(self.parse_data(
-            self.get_variables("post_treatment_findings"), vars(imaging_treatment_data)),
+        imaging = FollowUpImaging(self.__parse_data(
+            self.__get_variables("post_treatment_findings"), vars(imaging_treatment_data)),
             imaging_data.imaging_type)
 
         return imaging
 
-    def create_post_acute_care(self) -> Optional[PostAcuteCare]:
+    def __create_post_acute_care(self) -> Optional[PostAcuteCare]:
         """Creates the PostAcuteCare part of MedicalReport
 
         Returns
@@ -355,11 +350,11 @@ class MedicalReportsGenerator:
                                      "ergotherapy": post_acute_care.ergotherapy,
                                      "speechtherapy": post_acute_care.speechtherapy}
 
-        post_acute_care.therapies = self.parse_data(self.get_variables("therapies"), post_acute_care_therapies)
+        post_acute_care.therapies = self.__parse_data(self.__get_variables("therapies"), post_acute_care_therapies)
 
         return post_acute_care
 
-    def create_post_stroke_complications(self) -> PostStrokeComplications:
+    def __create_post_stroke_complications(self) -> PostStrokeComplications:
         """Creates the PostStrokeComplications part of MedicalReport
 
         Returns
@@ -371,12 +366,12 @@ class MedicalReportsGenerator:
 
         post_stroke_complications_data = PostStrokeComplicationsData.from_dict(self.data)
 
-        post_stroke_complications = PostStrokeComplications(self.parse_data(
-            self.get_variables("post_stroke_complications"), vars(post_stroke_complications_data)))
+        post_stroke_complications = PostStrokeComplications(self.__parse_data(
+            self.__get_variables("post_stroke_complications"), vars(post_stroke_complications_data)))
 
         return post_stroke_complications
 
-    def create_etiology(self) -> Optional[Etiology]:
+    def __create_etiology(self) -> Optional[Etiology]:
         """Creates the Etiology part of MedicalReport. Includes LargeArteryAtherosclerosis and Cardioembolism
 
         Returns
@@ -399,7 +394,7 @@ class MedicalReportsGenerator:
 
         return etiology
 
-    def create_discharge(self) -> Discharge:
+    def __create_discharge(self) -> Discharge:
         """Creates the Discharge part of MedicalReport
 
         Returns
@@ -417,12 +412,12 @@ class MedicalReportsGenerator:
                               discharge_data.discharge_mrs,
                               discharge_data.contact_date,
                               discharge_data.mode_contact,
-                              self.parse_data(self.get_variables("medications"), vars(medication_data)),
-                              self.get_setting("date_format"))
+                              self.__parse_data(self.__get_variables("medications"), vars(medication_data)),
+                              self.__get_setting("date_format"))
 
         return discharge
 
-    def get_variables(self, key: str) -> Optional[dict]:
+    def __get_variables(self, key: str) -> Optional[dict]:
         """Gets the 'variables' sub dictionary from the dictionary
 
         Parameters
@@ -450,7 +445,7 @@ class MedicalReportsGenerator:
 
         return variable
 
-    def get_setting(self, key: str) -> Optional[str]:
+    def __get_setting(self, key: str) -> Optional[str]:
         """Gets the specified setting from the dictionary
 
         Parameters
@@ -478,7 +473,7 @@ class MedicalReportsGenerator:
         return setting
 
     @staticmethod
-    def prepare_scoped_values(values: dict) -> dict:
+    def __prepare_scoped_values(values: dict) -> dict:
         """Prepares the values as scoped values for substitution. Concatenating the keys of parent dictionary with the
         keys of the children dictionaries.
 
@@ -504,7 +499,7 @@ class MedicalReportsGenerator:
         return scoped_values
 
     @staticmethod
-    def translate_data(dictionary: dict, key: str) -> str:
+    def __translate_data(dictionary: dict, key: str) -> str:
         """Translates the data specified by key with the values from dictionary
 
         Parameters
@@ -534,7 +529,7 @@ class MedicalReportsGenerator:
 
         return ""
 
-    def parse_data(self, dictionary: dict, data: dict) -> str:
+    def __parse_data(self, dictionary: dict, data: dict) -> str:
         """Parses the variables from dictionary specified by the data
 
         Parameters
@@ -591,7 +586,7 @@ class MedicalReportsGenerator:
 
         return new.join(string.rsplit(old, 1))
 
-    def translate_variables(self, mr: MedicalReport) -> dict:
+    def __translate_variables(self, mr: MedicalReport) -> dict:
         """Translates the variables in the discharge report
 
         Returns
@@ -601,36 +596,36 @@ class MedicalReportsGenerator:
         """
 
         # Diagnosis
-        mr.diagnosis.imaging_type = self.translate_data(self.get_variables("imaging_type"), mr.diagnosis.imaging_type)
+        mr.diagnosis.imaging_type = self.__translate_data(self.__get_variables("imaging_type"), mr.diagnosis.imaging_type)
 
         # Patient
-        mr.patient.sex = self.translate_data(self.get_variables("sex"), mr.patient.sex)
+        mr.patient.sex = self.__translate_data(self.__get_variables("sex"), mr.patient.sex)
 
         # Admission
-        mr.admission.admission_type = self.translate_data(self.get_variables("admission_type"),
-                                                          mr.admission.admission_type)
-        mr.admission.arrival_mode = self.translate_data(self.get_variables("arrival_mode"), mr.admission.arrival_mode)
-        mr.admission.department_type = self.translate_data(self.get_variables("department_type"),
-                                                           mr.admission.department_type)
+        mr.admission.admission_type = self.__translate_data(self.__get_variables("admission_type"),
+                                                            mr.admission.admission_type)
+        mr.admission.arrival_mode = self.__translate_data(self.__get_variables("arrival_mode"), mr.admission.arrival_mode)
+        mr.admission.department_type = self.__translate_data(self.__get_variables("department_type"),
+                                                             mr.admission.department_type)
 
         # Treatment
-        mr.treatment.thrombolysis.ivt_treatment = self.translate_data(self.get_variables("ivt_treatment"),
-                                                                      mr.treatment.thrombolysis.ivt_treatment)
-        mr.treatment.no_thrombolysis_reasons = self.translate_data(self.get_variables("no_thrombolysis_reason"),
-                                                                   mr.treatment.no_thrombolysis_reasons)
-        mr.treatment.no_thrombectomy_reasons = self.translate_data(self.get_variables("no_thrombectomy_reason"),
-                                                                   mr.treatment.no_thrombectomy_reasons)
-        mr.treatment.thrombectomy.tici_score_meaning = self.translate_data(self.get_variables("tici_score_meaning"),
-                                                                           mr.treatment.thrombectomy.tici_score_meaning)
+        mr.treatment.thrombolysis.ivt_treatment = self.__translate_data(self.__get_variables("ivt_treatment"),
+                                                                        mr.treatment.thrombolysis.ivt_treatment)
+        mr.treatment.no_thrombolysis_reasons = self.__translate_data(self.__get_variables("no_thrombolysis_reason"),
+                                                                     mr.treatment.no_thrombolysis_reasons)
+        mr.treatment.no_thrombectomy_reasons = self.__translate_data(self.__get_variables("no_thrombectomy_reason"),
+                                                                     mr.treatment.no_thrombectomy_reasons)
+        mr.treatment.thrombectomy.tici_score_meaning = self.__translate_data(self.__get_variables("tici_score_meaning"),
+                                                                             mr.treatment.thrombectomy.tici_score_meaning)
 
         # Post acute care
         if not self.transported:
             mr.post_acute_care.swallowing_screening_type = \
-                self.translate_data(self.get_variables("swallowing_screening_type"),
-                                    mr.post_acute_care.swallowing_screening_type)
+                self.__translate_data(self.__get_variables("swallowing_screening_type"),
+                                      mr.post_acute_care.swallowing_screening_type)
 
         # Discharge
-        mr.discharge.discharge_destination = self.translate_data(self.get_variables("discharge_destination"),
-                                                                 mr.discharge.discharge_destination)
+        mr.discharge.discharge_destination = self.__translate_data(self.__get_variables("discharge_destination"),
+                                                                   mr.discharge.discharge_destination)
 
         return mr.to_dict()

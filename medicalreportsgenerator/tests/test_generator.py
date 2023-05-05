@@ -14,6 +14,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def setUp(self) -> None:
         language_file_path = FIXTURES_PATH / "language.json"
         data_file_path = FIXTURES_PATH / "data.json"
+        path_to_template = FIXTURES_PATH / "test.txt"
 
         language_file = load_json_file(language_file_path)
         language = Language(**language_file)
@@ -43,7 +44,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.data["discharge_ticlopidine"] = True
         self.data["discharge_date"] = datetime.date(2022, 11, 24)
         self.data["discharge_medication"] = True
-        self.generator = MedicalReportsGenerator(language, {})
+        self.generator = MedicalReportsGenerator(language, path_to_template)
 
     def test_replace_last(self):
         test_str = "orange, bananna, apple, strawberry"
@@ -56,7 +57,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_prepare_scoped_values_simple(self):
         values = {"scope": {"a": 4, "b": 1}}
 
-        result = MedicalReportsGenerator.prepare_scoped_values(values)
+        result = self.generator._MedicalReportsGenerator__prepare_scoped_values(values)
 
         self.assertEqual({"scope.a": 4, "scope.b": 1}, result)
 
@@ -66,7 +67,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
                   "scope3": {"a": 2163, "b": 4324},
                   "scope4": {"a": "hey", "b": "aloha", "c": "now"}}
 
-        result = MedicalReportsGenerator.prepare_scoped_values(values)
+        result = self.generator._MedicalReportsGenerator__prepare_scoped_values(values)
         expected = {"scope1.a": 4, "scope1.b": 1,
                     "scope2.a": "hey", "scope2.b": 1, "scope2.c": 1564687,
                     "scope3.a": 2163, "scope3.b": 4324,
@@ -78,7 +79,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         data = None
         key = "key"
 
-        result = MedicalReportsGenerator.translate_data(data, key)
+        result = self.generator._MedicalReportsGenerator__translate_data(data, key)
 
         self.assertEqual("", result)
 
@@ -86,7 +87,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         data = {"test": "value"}
         key = "test"
 
-        result = MedicalReportsGenerator.translate_data(data, key)
+        result = self.generator._MedicalReportsGenerator__translate_data(data, key)
 
         self.assertEqual("value", result)
 
@@ -95,7 +96,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         key = "invalid"
 
         with self.assertLogs(None, logging.ERROR):
-            result = MedicalReportsGenerator.translate_data(data, key)
+            result = self.generator._MedicalReportsGenerator__translate_data(data, key)
 
         self.assertEqual("", result)
 
@@ -103,7 +104,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         data = {"test": "value"}
         translations = {"test": "changed value"}
 
-        result = self.generator.parse_data(translations, data)
+        result = self.generator._MedicalReportsGenerator__parse_data(translations, data)
 
         self.assertEqual("changed value", result)
 
@@ -111,7 +112,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         data = {"test1": "value", "test2": "value2", "test3": "value3"}
         translations = {"test1": "changed value", "test2": "changed value2", "test3": "changed value3"}
 
-        result = self.generator.parse_data(translations, data)
+        result = self.generator._MedicalReportsGenerator__parse_data(translations, data)
 
         self.assertEqual("changed value, changed value2, and changed value3", result)
 
@@ -119,7 +120,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         key = "invalid_key"
 
         with self.assertLogs(None, logging.ERROR):
-            result = self.generator.get_variables(key)
+            result = self.generator._MedicalReportsGenerator__get_variables(key)
 
         self.assertIsNone(result)
 
@@ -131,7 +132,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
 
         key = "test"
 
-        result = self.generator.get_variables(key)
+        result = self.generator._MedicalReportsGenerator__get_variables(key)
         expected = {"first": "val1", "second": "val2", "third": "val3"}
 
         self.assertEqual(expected, result)
@@ -140,7 +141,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         key = "invalid_key"
 
         with self.assertLogs(None, logging.ERROR):
-            result = self.generator.get_setting(key)
+            result = self.generator._MedicalReportsGenerator__get_setting(key)
 
         self.assertIsNone(result)
 
@@ -151,21 +152,21 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
 
         key = "test1"
 
-        result = self.generator.get_setting(key)
+        result = self.generator._MedicalReportsGenerator__get_setting(key)
 
         self.assertEqual("val1", result)
 
     def test_diagnosis_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_diagnosis()
+        result = self.generator._MedicalReportsGenerator__create_diagnosis()
 
         self.assertIsInstance(result, Diagnosis)
 
     def test_diagnosis_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_diagnosis()
+        result = self.generator._MedicalReportsGenerator__create_diagnosis()
 
         self.assertIsInstance(result, Diagnosis)
         self.assertEqual("ischemic", result.stroke_type)
@@ -178,14 +179,14 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_patient_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_patient()
+        result = self.generator._MedicalReportsGenerator__create_patient()
 
         self.assertIsInstance(result, Patient)
 
     def test_patient_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_patient()
+        result = self.generator._MedicalReportsGenerator__create_patient()
 
         self.assertIsInstance(result, Patient)
         self.assertEqual(77, result.age)
@@ -198,14 +199,14 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_onset_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_onset()
+        result = self.generator._MedicalReportsGenerator__create_onset()
 
         self.assertIsInstance(result, Onset)
 
     def test_onset_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_onset()
+        result = self.generator._MedicalReportsGenerator__create_onset()
 
         self.assertIsInstance(result, Onset)
         self.assertEqual(datetime.date(2022, 6, 10).strftime("%b %d %Y"), result.onset_date)
@@ -215,14 +216,14 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_admission_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_admission()
+        result = self.generator._MedicalReportsGenerator__create_admission()
 
         self.assertIsInstance(result, Admission)
 
     def test_admission_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_admission()
+        result = self.generator._MedicalReportsGenerator__create_admission()
 
         self.assertIsInstance(result, Admission)
         self.assertEqual(9, result.admission_nihss)
@@ -239,14 +240,14 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_treatment_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_treatment()
+        result = self.generator._MedicalReportsGenerator__create_treatment()
 
         self.assertIsInstance(result, Treatment)
 
     def test_treatment_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_treatment()
+        result = self.generator._MedicalReportsGenerator__create_treatment()
 
         self.assertIsInstance(result, Treatment)
         self.assertTrue(result.thrombolysis_done)
@@ -270,14 +271,14 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_post_treatment_imaging_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_follow_up_imaging()
+        result = self.generator._MedicalReportsGenerator__create_follow_up_imaging()
 
         self.assertIsInstance(result, FollowUpImaging)
 
     def test_post_treatment_imaging_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_follow_up_imaging()
+        result = self.generator._MedicalReportsGenerator__create_follow_up_imaging()
 
         self.assertIsInstance(result, FollowUpImaging)
         self.assertEqual("no", result.imaging_type)
@@ -286,14 +287,14 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_post_acute_care_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_post_acute_care()
+        result = self.generator._MedicalReportsGenerator__create_post_acute_care()
 
         self.assertIsInstance(result, PostAcuteCare)
 
     def test_post_acute_care_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_post_acute_care()
+        result = self.generator._MedicalReportsGenerator__create_post_acute_care()
 
         self.assertIsInstance(result, PostAcuteCare)
         self.assertEqual("no AF", result.afib_flutter)
@@ -307,14 +308,14 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_post_stroke_complications_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_post_stroke_complications()
+        result = self.generator._MedicalReportsGenerator__create_post_stroke_complications()
 
         self.assertIsInstance(result, PostStrokeComplications)
 
     def test_post_stroke_complications_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_post_stroke_complications()
+        result = self.generator._MedicalReportsGenerator__create_post_stroke_complications()
         expected = "pneumonia, deep vein thrombosis (DVT), and drip site sepsis"
 
         self.assertIsInstance(result, PostStrokeComplications)
@@ -323,14 +324,14 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_etiology_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_etiology()
+        result = self.generator._MedicalReportsGenerator__create_etiology()
 
         self.assertIsInstance(result, Etiology)
 
     def test_etiology_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_etiology()
+        result = self.generator._MedicalReportsGenerator__create_etiology()
 
         self.assertIsInstance(result, Etiology)
         self.assertTrue(result.large_artery)
@@ -345,14 +346,14 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_discharge_empty(self):
         self.generator.data = {}
 
-        result = self.generator.create_discharge()
+        result = self.generator._MedicalReportsGenerator__create_discharge()
 
         self.assertIsInstance(result, Discharge)
 
     def test_discharge_with_data(self):
         self.generator.data = self.data
 
-        result = self.generator.create_discharge()
+        result = self.generator._MedicalReportsGenerator__create_discharge()
 
         self.assertIsInstance(result, Discharge)
         self.assertEqual(datetime.date(2022, 11, 24).strftime("%b %d %Y"), result.discharge_date)
@@ -364,7 +365,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertEqual("cilostazol, clopidrogel, and ticlopidine", result.discharge_medication)
 
     def test_create_medical_record(self):
-        result = self.generator.create_medical_report()
+        result = self.generator._MedicalReportsGenerator__create_medical_report()
 
         self.assertIsInstance(result, MedicalReport)
         self.assertIsInstance(result.diagnosis, Diagnosis)
@@ -380,7 +381,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
     def test_generate_structure(self):
         self.generator.data = self.data
 
-        result = self.generator.generate_structure()
+        result = self.generator._MedicalReportsGenerator__generate_structure()
         expected = {"diagnosis": "Diagnosis test with CT CTA variable",
                     "patient": "Test patient whose sex is not other M/77",
                     "onset": "Onset on Jun 10 2022. ",
@@ -396,11 +397,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.assertEqual(expected, result)
 
     def test_generate_medical_record(self):
-        self.generator.data = self.data
-
-        path_to_template = FIXTURES_PATH / "test.txt"
-
-        result = self.generator.generate_medical_report(path_to_template)
+        result = self.generator.generate_medical_report(self.data)
         expected = "Diagnosis test with CT CTA variableTest patient whose sex is not other M/77Onset on Jun 10 2022. " \
                    "ASPECT score 10. Treatment showing dtg 56Received physiotherapy, and speechtherapy. " \
                    "Post stroke complications: pneumonia, deep vein thrombosis (DVT), and drip site sepsis. " \
