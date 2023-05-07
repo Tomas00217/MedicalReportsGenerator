@@ -86,7 +86,7 @@ This step can be skipped if you only want to test the application with ```--csv`
 
 3. Restore the database by running command (input the password of your user specifed by -U if required):
    ```
-   pg_restore.exe -U <username> -d <database name> <path\strokemodel_backup.tar>
+   pg_restore.exe -U <username> -d <database name> <path\MedicalReportsGenerator\src\data\strokemodel_backup.tar>
    ```
     ```<username>``` is the user name under which u want to connect to database (usually postgres)
 
@@ -94,7 +94,7 @@ This step can be skipped if you only want to test the application with ```--csv`
 
     ```<path>``` is the path where you have clonned the project, from there we want the file **strokemodel_backup.tar**
 
-    Example: ```pg_restore.exe -U postgres -d strokemodel "C:\MedicalRecordsGenerator\strokemodel_backup.tar"```
+    Example: ```pg_restore.exe -U postgres -d strokemodel "C:\MedicalReportsGenerator\src\data\strokemodel_backup.tar"```
 
 ## **Running the generator**
 To run the implementation we first need to install the dependecies, that can be done running command via command line in the folder we clonned the project to.
@@ -129,8 +129,8 @@ Example:
 
 Running the implementation is possible via command line
 
-- ```py medicalrecordgenerator``` while in virtual environment 
-- ```poetry run py medicalrecordgenerator``` when outside virtual environment
+- ```py medicalreportsgenerator``` while in virtual environment 
+- ```poetry run py medicalreportsgenerator``` when outside virtual environment
 
 Accessing the virtual environment is possible with ```poetry shell```
 
