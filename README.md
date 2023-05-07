@@ -64,7 +64,7 @@ The project can be downloaded from [github](https://github.com/Tomas00217/Medica
 
 Clone the project to the designated folder with running the command:
 ```
-git clone https://github.com/Tomas00217/MedicalRecordsGenerator.git
+git clone https://github.com/Tomas00217/MedicalReportsGenerator.git
 ```
 
 In case you do not have git installed, follow the instructions on this [link](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
