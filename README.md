@@ -44,7 +44,7 @@ The installer creates a poetry wrapper in a well-known, platform-specific direct
 - ```$HOME/.local/bin``` on Unix.
 - ```%APPDATA%\Python\Scripts``` on Windows.
 
-If this directory is not present in your ```$PATH```, you can add it in order to invoke Poetry as poetry.
+If this directory is not present in your ```$PATH```, you can add it in order to invoke Poetry as poetry. After adding poetry to PATH, restart of the computer is required. To check if the poetry is installed, run ```poetry --version```.
 
 Alternatively, the full path to the poetry binary can always be used:
 
