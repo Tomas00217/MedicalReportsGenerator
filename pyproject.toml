@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "medicalrecordgenerator"
-version = "0.1.0"
+name = "medicalreportsgenerator"
+version = "0.2.0"
 description = "Project for bachelors thesis"
 authors = ["Tomas Stucka <Tomas00217@gmail.com>"]
 readme = "README.md"
