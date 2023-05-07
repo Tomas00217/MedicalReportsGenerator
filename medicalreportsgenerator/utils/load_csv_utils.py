@@ -41,7 +41,10 @@ def load_data_from_csv_file(subject_id: Optional[int], csv_file: str = DEFAULT_C
     data = df.to_dict("records")
 
     if subject_id is not None:
-        return [data[int(subject_id) - 1]]
+        try:
+            return [data[int(subject_id) - 1]]
+        except IndexError:
+            raise IndexError("Invalid subject id, try running with option --list to list available ids")
 
     return data
 

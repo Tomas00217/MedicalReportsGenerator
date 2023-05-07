@@ -38,7 +38,7 @@ def generate(app_language: str, subject_id: Optional[int], load_csv: Optional[bo
     subject_storage = SubjectStorage(load_csv, csv_file)
     data = subject_storage.get_data(subject_id)
 
-    if data:
+    if data and len(data) > 0:
         # load language
         language_dict = load_language(app_language)
         if not language_dict:
@@ -58,6 +58,7 @@ def generate(app_language: str, subject_id: Optional[int], load_csv: Optional[bo
             report += generator.generate_medical_report(row) + "\n"
     else:
         logging.info("No data found")
+        raise IndexError("Invalid subject id, try running with option --list to list available ids")
 
     return report
 
