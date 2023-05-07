@@ -1,4 +1,4 @@
-# **Medical Records Generator** <!-- omit in toc -->
+# **Medical Reports Generator** <!-- omit in toc -->
 
 ## **Contents** <!-- omit in toc -->
 - [**About**](#about)
@@ -41,14 +41,14 @@
 
 ## **About**
 
-The following document serves as a documentation of how to write a dictionary for the Medical Records Generator application.
+The following document serves as a documentation of how to write a dictionary for the Medical Reports Generator application.
 
 ## **Creating dictionary**
 
 ### **Setup**
 
 **Format**\
-The medical records generator works only with dictionaries written using the **json** format. 
+The medical reports generator works only with dictionaries written using the **json** format. 
 
 **Name**\
 The file name should correspond to the language code of the language the dictionary is written for. Language codes can be found at: https://www.fincher.org/Utilities/CountryLanguageList.shtml
@@ -593,7 +593,7 @@ List of all scopes:
 #### **Date format examples**
 The following examples will work with this date ```"2023-01-17 18:48:49.503070"```
 
-Default date format of the medical records generator is ```"%b %d %Y"```.
+Default date format of the medical reports generator is ```"%b %d %Y"```.
 
 - Example 1: ```"date_format": ""```\
 Formated date: Jan 17 2023\
@@ -609,7 +609,7 @@ Formated date: 17. January 2023
 
 The following examples will work with this date ```"2023-01-17 18:48:49.503070"```
 
-Default time format of the medical records generator is ```"%H:%M"```.
+Default time format of the medical reports generator is ```"%H:%M"```.
 
 - Example 1: ```"time_format": ""```\
 Formated time: 18:48\
