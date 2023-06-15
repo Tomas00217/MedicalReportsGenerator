@@ -25,7 +25,7 @@ def main():
     parser.add_argument("-i", "--subject_id", help="Specify the id of the subject for which to generate the "
                                                    "report. None by default, resulting in generation for every "
                                                    "subject",
-                        required=False, default=None, type=int)
+                        required=False, default=None, type=str)
     parser.add_argument("-t", "--template", help="Specify the path to report definition template for use",
                         required=False, default=DEFAULT_TEMPLATE_PATH)
     parser.add_argument("--list", help="Lists the available subject ids and exits",

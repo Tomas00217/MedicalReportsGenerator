@@ -187,6 +187,7 @@ class TestMedicalRecordsGenerator(unittest.TestCase):
         self.generator.data = self.data
 
         result = self.generator._MedicalReportsGenerator__create_patient()
+        print(result.patient_id)
 
         self.assertIsInstance(result, Patient)
         self.assertEqual(77, result.age)

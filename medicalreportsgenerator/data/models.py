@@ -29,7 +29,7 @@ class Patient:
 
     """
 
-    def __init__(self, patient_id: int, age: Optional[int], sex: Optional[str], risk_factors: Optional[str],
+    def __init__(self, patient_id: str, age: Optional[int], sex: Optional[str], risk_factors: Optional[str],
                  prior_treatment: Optional[str], risk_atrial_fibrilation: Optional[str]):
         self.patient_id = patient_id
         self.age = age
