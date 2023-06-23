@@ -142,7 +142,7 @@ class TestDbOperations(unittest.TestCase):
         self.assertEqual(expected, result)
 
     def test_select_by_id(self):
-        result = re.sub(r"\s+", "", select_by_id(1), flags=re.UNICODE)
+        result = re.sub(r"\s+", "", select_by_id("1"), flags=re.UNICODE)
         expected = re.sub(r"\s+", "", '''
         SELECT SHCM.*, STM.name AS stroke_type, ITM.name AS imaging_type, SM.name AS sex, 
         ADM.name AS admittance_department, AMM.name AS arrival_mode, HIM.name AS hospitalized_in, 
@@ -216,7 +216,7 @@ class TestDbOperations(unittest.TestCase):
         ON SHCM.carotid_stenosis_level_id = CSLM.id
 
         LEFT JOIN strokehealthcaremodel_departmenttypemodel AS DTM
-        ON SHCM.department_type_id = DTM.id WHERE SHCM.subject_id=1
+        ON SHCM.department_type_id = DTM.id WHERE SHCM.subject_id='1'
         ''', flags=re.UNICODE)
 
         self.assertEqual(expected, result)
