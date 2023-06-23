@@ -9,7 +9,7 @@ from utils.load_language_utils import load_language
 from typing import Optional, List
 
 
-def generate(app_language: str, subject_id: Optional[int], load_csv: Optional[bool] = False,
+def generate(app_language: str, subject_id: Optional[str], load_csv: Optional[bool] = False,
              csv_file: Optional[str] = DEFAULT_CSV_PATH,
              definition_template_path: Optional[Path] = DEFAULT_TEMPLATE_PATH) -> str:
     """Generates all medical records for each row in the postgres database if the subject_id is None.
@@ -19,7 +19,7 @@ def generate(app_language: str, subject_id: Optional[int], load_csv: Optional[bo
     ----------
     app_language : str
         The language of the medical record to be generated in
-    subject_id : Optional[int]
+    subject_id : Optional[str]
         The id of subject for which the medical record should be generated. If none, all subjects are generated.
     load_csv : Optional[bool]
         Boolean value deciding whether we load the data from csv or not
@@ -63,7 +63,7 @@ def generate(app_language: str, subject_id: Optional[int], load_csv: Optional[bo
     return report
 
 
-def list_ids(load_csv: bool, csv_file: str) -> List[int]:
+def list_ids(load_csv: bool, csv_file: str) -> List[str]:
     """ Return the list of all available ids of patients in the database or csv
 
     Parameters
@@ -75,7 +75,7 @@ def list_ids(load_csv: bool, csv_file: str) -> List[int]:
 
     Returns
     -------
-    List[int]
+    List[str]
         List of available ids
 
     """

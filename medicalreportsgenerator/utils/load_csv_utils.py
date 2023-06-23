@@ -5,7 +5,7 @@ from typing import Optional
 from utils.definitions import DEFAULT_CSV_PATH
 
 
-def load_data_from_csv_file(subject_id: Optional[int], csv_file: str = DEFAULT_CSV_PATH):
+def load_data_from_csv_file(subject_id: Optional[str], csv_file: str = DEFAULT_CSV_PATH):
     """Loads data from csv file
 
     Returns
@@ -42,9 +42,14 @@ def load_data_from_csv_file(subject_id: Optional[int], csv_file: str = DEFAULT_C
 
     if subject_id is not None:
         try:
-            return [data[int(subject_id) - 1]]
-        except IndexError:
-            raise IndexError("Invalid subject id, try running with option --list to list available ids")
+            subject = next((subj for subj in data if str(subj["subject_id"]) == subject_id), None)
+
+            if subject is None:
+                return
+
+            return [subject]
+        except Exception:
+            raise Exception("Error finding matching subject, try running with option --list to list available ids")
 
     return data
 

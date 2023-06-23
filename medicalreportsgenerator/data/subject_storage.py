@@ -16,7 +16,7 @@ class SubjectStorage:
         self.from_csv = from_csv
         self.csv_file = csv_file
 
-    def get_data(self, subject_id: Optional[int] = None) -> Any:
+    def get_data(self, subject_id: Optional[str] = None) -> Any:
         """Gets all the data about patient from database or csv
 
         Parameters
@@ -34,12 +34,12 @@ class SubjectStorage:
 
         return self.get_patient_info(False, subject_id)
 
-    def get_subject_ids(self) -> List[int]:
+    def get_subject_ids(self) -> List[str]:
         """Gets all the patient ids from database or csv
 
         Returns
         -------
-        List[int]
+        List[str]
             List of patient ids
         """
 
@@ -48,7 +48,7 @@ class SubjectStorage:
 
         return self.get_patient_info(True, None)
 
-    def get_patient_info(self, only_ids: bool = False, subject_id: Optional[int] = None) -> Any:
+    def get_patient_info(self, only_ids: bool = False, subject_id: Optional[str] = None) -> Any:
         """Creates a connection to the database and fetches data about patients, which can be either only the ids,
         or all the data
 
@@ -97,7 +97,7 @@ class SubjectStorage:
                 logging.info('Database connection closed.')
 
     @staticmethod
-    def get_patient_info_from_db(conn, subject_id: Optional[int] = None) -> list[tuple[Any, ...]]:
+    def get_patient_info_from_db(conn, subject_id: Optional[str] = None) -> list[tuple[Any, ...]]:
         """Fetches data about patient from the database
 
         Parameters
@@ -125,7 +125,7 @@ class SubjectStorage:
         return data
 
     @staticmethod
-    def get_patient_ids_from_db(conn) -> list[int]:
+    def get_patient_ids_from_db(conn) -> list[str]:
         """Fetches subject ids from the database
 
         Parameters

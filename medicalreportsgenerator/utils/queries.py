@@ -83,10 +83,10 @@ def select_all(ordered: bool) -> str:
     return query
 
 
-def select_by_id(subject_id: int) -> str:
+def select_by_id(subject_id: str) -> str:
     query = select_all(False)
 
-    query += f" WHERE SHCM.subject_id={subject_id}"
+    query += f" WHERE SHCM.subject_id='{subject_id}'"
 
     return query
 

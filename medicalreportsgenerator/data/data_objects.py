@@ -1,6 +1,6 @@
 from datetime import datetime, date
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 
 from dict_to_dataclass import DataclassFromDict, field_from_dict
 
@@ -38,7 +38,7 @@ class DiagnosisOcclusionsData(DataclassFromDict):
 
 @dataclass()
 class PatientData(DataclassFromDict):
-    patient_id: int = field_from_dict("subject_id", default=None)
+    patient_id: Union[str, int] = field_from_dict("subject_id", default=None)
     age: Optional[int] = field_from_dict(default=None)
     sex: Optional[str] = field_from_dict(default=None)
     risk_atrial_fibrilation: Optional[bool] = field_from_dict(default=None)
